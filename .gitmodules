@@ -1,0 +1,3 @@
+[submodule "Receipts_ImgPreprocess"]
+	path = Receipts_ImgPreprocess
+	url = https://github.com/MadlabSeniorProject2022/Receipts_ImgPreprocess.git
