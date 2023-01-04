@@ -1,16 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> Home </title>
     <link rel="stylesheet" href="{{ url_for ('static', filename='css/style.css') }}" >
-
 </head>
 <body>
+    <div class="table-users">
+        <div class="header">รายการใบเสร็จรับเงิน</div>
+            <div class="head-table">
+                <table cellspacing="0" >
+                    <tr>
+                        <th>รูปภาพใบเสร็จรับเงิน</th>
+                        <th>ชื่อไฟล์</th>
+                        <th>เลขที่ใบเสร็จรับเงิน</th>
+                        <th>วันที่ออกใบเสร็จรับเงิน</th>
+                        <th>ชื่อร้านค้า</th>
+                        <th>เลขประจำตัวผู้เสียภาษีของร้านค้า</th>
+                        <th>เบอร์โทรของร้านค้า</th>
+                    </tr>
 
-    <h1> This is my homepage </h1>
-    <p> Welcome to my first website </p>
+                    {% for ele in list_data: %}
+                        <tr id={{ele._id}}>
+                            <td><img src="{{ url_for('static', filename=ele.pathImage) }}" /></td>
+                            <td>{{ele.filename}}</td>
+                            <td>{{ele.receiptID}}</td>
+                            <td>{{ele.dateReceipt}}</td>
+                            <td>{{ele.shopName}}</td>
+                            <td>{{ele.taxIDShop}}</td>
+                            <td>{{ele.shopPhone}}</td>
+                        </tr>                
+                    {% endfor %}
+            
+                </table>        
+            </div>
+
+     </div>
 
 </body>
 </html>

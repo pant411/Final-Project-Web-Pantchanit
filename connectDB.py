@@ -15,11 +15,12 @@ myclient = pymongo.MongoClient(MONGO_URL,\
 
 mydb = myclient[NAME_DB]
 
-def update_data(pathImage: str, shopName: str, shopPhone: str,\
+def update_data(pathImage: str, filename: str, shopName: str, shopPhone: str,\
     taxIDShop: str, dateReceipt: str, receiptID: str, collection: str):
     mycol = mydb[collection]
     new_data = {
         "pathImage": pathImage,
+        "filename": filename,
         "shopName": shopName, 
         "shopPhone": shopPhone, 
         "taxIDShop": taxIDShop, 
