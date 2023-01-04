@@ -9,8 +9,9 @@
 <body>
     <div class="table-users">
         <div class="header">รายการใบเสร็จรับเงิน</div>
-            <div class="head-table">
-                <table cellspacing="0" >
+            <div class="fixTableHead">
+            <table cellspacing="0" >
+                <thead>
                     <tr>
                         <th>รูปภาพใบเสร็จรับเงิน</th>
                         <th>ชื่อไฟล์</th>
@@ -18,9 +19,11 @@
                         <th>วันที่ออกใบเสร็จรับเงิน</th>
                         <th>ชื่อร้านค้า</th>
                         <th>เลขประจำตัวผู้เสียภาษีของร้านค้า</th>
-                        <th>เบอร์โทรของร้านค้า</th>
-                    </tr>
+                        <th>เบอร์โทรศัพท์ของร้านค้า</th>
+                    </tr>                        
+                </thead>
 
+                <tbody  class="mytable">
                     {% for ele in list_data: %}
                         <tr id={{ele._id}}>
                             <td><img src="{{ url_for('static', filename=ele.pathImage) }}" /></td>
@@ -31,12 +34,19 @@
                             <td>{{ele.taxIDShop}}</td>
                             <td>{{ele.shopPhone}}</td>
                         </tr>                
-                    {% endfor %}
-            
-                </table>        
+                    {% endfor %}                        
+                </tbody>
+            </table>                 
             </div>
-
-     </div>
-
+            
+    </div>
+    <div class="bt-area">
+        <p id="text-upload">เพิ่มรายการใบเสร็จรับเงิน</p>
+        <form action="/submituploadreceipt" method="POST" enctype="multipart/form-data">
+            <input type="file" name="up-image" />
+            <input type="submit"/>
+         </form>   
+    </div>
+    
 </body>
 </html>

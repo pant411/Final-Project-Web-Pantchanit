@@ -1,5 +1,5 @@
 # built in module
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, render_template, request, redirect, url_for
 # from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
@@ -21,10 +21,10 @@ def home():
     print(list_data)
     return render_template("home.html", list_data = list_data)
 
-@app.route("/uploadreceipt", methods = ["POST"])
-def uploadReceipt():
+@app.route("/submituploadreceipt", methods = ["POST"])
+def submituploadReceipt():
     if request.method == "POST": 
-        file = request.files["image"]
+        file = request.files["up-image"]
         image = cv2.imdecode(np.fromstring(file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
         # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
@@ -35,7 +35,7 @@ def uploadReceipt():
             taxIDShop,dateReceipt,receiptID,collection="data")
         file.stream.seek(0)
         file.save("static/"+path_file) 
-        return "success"
+        return redirect(url_for('home'))
 
 if __name__ == "__main__":
     app.run(debug=True, port=8788)

@@ -1,5 +1,5 @@
 body {
-  background-color: #91ced4;
+  background: #91ced4;
 }
 body * {
   box-sizing: border-box;
@@ -12,6 +12,16 @@ body * {
   padding: 1rem;
   text-align: center;
   text-transform: uppercase;
+  
+}
+
+.fixTableHead {
+  overflow-y: auto;
+  max-height: 500px;
+}
+.fixTableHead thead th {
+  position: sticky;
+  top: 0;
 }
 
 img {
@@ -25,7 +35,6 @@ img {
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
   max-width: calc(100% - 2em);
   margin: 1em auto;
-  overflow: hidden;
   width: 1250px;
 }
 
@@ -85,18 +94,23 @@ table tr:nth-child(2n+1) {
     position: absolute;
   }
   td:nth-child(2):before {
-    content: "Name:";
+    content: "ชื่อไฟล์:";
   }
   td:nth-child(3):before {
-    content: "Email:";
+    content: "เลขที่ใบเสร็จรับเงิน:";
   }
   td:nth-child(4):before {
-    content: "Phone:";
+    content: "วันที่ออกใบเสร็จรับเงิน:";
   }
   td:nth-child(5):before {
-    content: "Comments:";
+    content: "ชื่อร้านค้า:";
   }
-
+  td:nth-child(6):before {
+    content: "เลขประจำตัวผู้เสียภาษีของร้านค้า:";
+  }
+  td:nth-child(7):before {
+    content: "เบอร์โทรของร้านค้า:";
+  }
   tr {
     padding: 10px 0;
     position: relative;
@@ -162,7 +176,61 @@ table tr:nth-child(2n+1) {
   }
 }
 
-.head-table {
-  overflow-y: auto;
-  height: 500px;
+span{
+  position: relative;
+  display: inline-flex;
+  width: 215px;
+  height: 55px;
+  margin: 0 15px;
+  perspective: 1000px;
+}
+span a{
+  font-size: 16px;
+  letter-spacing: 1px;
+  transform-style: preserve-3d;
+  transform: translateZ(-25px);
+  transition: transform .25s;
+  font-family: 'Montserrat', sans-serif;
+  
+}
+span a:before,
+span a:after{
+  position: absolute;
+  content: "เพิ่มรายการใบเสร็จรับเงิน";
+  height: 55px;
+  width: 215px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid #2b686e;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+span a:before{
+  color: #fff;
+  background: #2b686e;
+  transform: rotateY(0deg) translateZ(25px);
+}
+span a:after{
+  color: #2b686e;
+  transform: rotateX(90deg) translateZ(25px);
+}
+span a:hover{
+  transform: translateZ(-25px) rotateX(-90deg);
+}
+
+.bt-area {
+  position: relative;
+  max-width: calc(100% - 2em);
+  margin: 1em auto;
+  text-align: center;
+  vertical-align: middle;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#text-upload {
+  color: #2b686e;
+  font-weight: bold;
+  font-size: 24px;
 }
