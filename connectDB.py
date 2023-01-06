@@ -1,5 +1,6 @@
 import pymongo
 import os
+from bson import ObjectId
 
 # env
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ myclient = pymongo.MongoClient(MONGO_URL,\
 
 mydb = myclient[NAME_DB]
 
-def update_data(pathImage: str, filename: str, shopName: str, shopPhone: str,\
+def insert_data(pathImage: str, filename: str, shopName: str, shopPhone: str,\
     taxIDShop: str, dateReceipt: str, receiptID: str, collection: str):
     mycol = mydb[collection]
     new_data = {
@@ -27,8 +28,9 @@ def update_data(pathImage: str, filename: str, shopName: str, shopPhone: str,\
         "dateReceipt": dateReceipt, 
         "receiptID": receiptID
     }
-    mycol.insert_one(new_data)
-    # return x
+    res = mycol.insert_one(new_data)
+    ObjId = str(res.inserted_id)
+    return ObjId
 
 def find_all(collection: str):
     results = []
@@ -38,3 +40,10 @@ def find_all(collection: str):
         ele['_id'] = str(ele['_id'])
         results.append(ele)        
     return results
+
+def update_data(body: any, collection: str):
+    mycol = mydb[collection]
+    myquery = { "_id": ObjectId(body["_id"]) }
+    del body["_id"]
+    newvalues = { "$set": body }
+    mycol.update_one(myquery, newvalues)
