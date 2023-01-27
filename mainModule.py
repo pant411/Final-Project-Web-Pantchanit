@@ -1,14 +1,16 @@
-from Receipts_EntityExtraction.main import mainApp
-from Receipts_ImgPreprocess.preprocess import PreProcess
-from TesseractModule.RunTesseract import mainTesseract
-import cv2
+import sys
+sys.path.append("mainApp")
+from mainApp.MainExtraction import extraction
+from mainApp.MainImage import PreProcess
+# import cv2
+import pytesseract
+config = '--tessdata-dir tessdata-dir --oem 1 -l tha+eng --psm 6'
 
 def runMain(image_file):
-    image = cv2.imread(image_file)
-    pre_img = PreProcess(image)
-    ocr_res =  mainTesseract(pre_img)
-    print(ocr_res)
-    extract_res = mainApp(ocr_res)
-    return extract_res 
+    pre_img = PreProcess(image_file)
+    ocr_res = pytesseract.image_to_string(pre_img,config=config) 
+    res = extraction(ocr_res)
+    return res
 
-print(runMain('/Receipts_ImgPreprocess/Resource/receipt/20220916_072744059_iOS.jpg'))
+# x = runMain('Receipts_ImgPreprocess/Resource/receipt/20220916_072744059_iOS.jpg')
+# print(x)
