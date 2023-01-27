@@ -1,6 +1,8 @@
 import pymongo
 import os
 from bson import ObjectId
+from bson.timestamp import Timestamp
+import datetime as dt
 
 # env
 from dotenv import load_dotenv
@@ -16,17 +18,20 @@ myclient = pymongo.MongoClient(MONGO_URL,\
 
 mydb = myclient[NAME_DB]
 
-def insert_data(pathImage: str, filename: str, shopName: str, shopPhone: str,\
-    taxIDShop: str, dateReceipt: str, receiptID: str, collection: str):
+def insert_data(pathImage: str, filename: str, data: any, collection: str):
+    timestamp = Timestamp(int(dt.datetime.today().timestamp()), 1)
     mycol = mydb[collection]
     new_data = {
         "pathImage": pathImage,
         "filename": filename,
-        "shopName": shopName, 
-        "shopPhone": shopPhone, 
-        "taxIDShop": taxIDShop, 
-        "dateReceipt": dateReceipt, 
-        "receiptID": receiptID
+        "shopName": data["shopName"], 
+        "shopPhone": data["shopPhone"], 
+        "taxIDShop": data["taxIDShop"], 
+        "dateReceipt": data["dateReceipt"], 
+        "receiptID": data["receiptID"],
+        "address-shop": data["address-shop"],
+        "address-customer": data["address-customer"] ,
+        "timestamp": timestamp
     }
     res = mycol.insert_one(new_data)
     ObjId = str(res.inserted_id)

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> Home </title>
+    <title>Home </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for ('static', path='/css/style.css') }}" >
 </head>
 <body>
@@ -26,7 +27,7 @@
                 <tbody  class="mytable">
                     {% for ele in list_data: %}
                         <tr id={{ele._id}}>
-                            <td><img src="{{ url_for('static', path=ele.pathImage) }}" /></td>
+                            <td><img title="image of receipt" src="{{ url_for('static', path=ele.pathImage) }}" /></td>
                             <td>{{ele.filename}}</td>
                             <td>{{ele.receiptID}}</td>
                             <td>{{ele.dateReceipt}}</td>
@@ -40,13 +41,15 @@
             </div>
             
     </div>
-    <div class="bt-area">
-        <p id="text-upload">เพิ่มรายการใบเสร็จรับเงิน</p>
-        <form action="/uploadreceipt" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" />
-            <input type="submit" />
-         </form>   
-    </div>
+
+    <form action="/uploadreceipt" method="POST" enctype="multipart/form-data">
+        <div class="form-group mt-3 bt-area ">
+            <label >เพิ่มรายการใบเสร็จรับเงิน</label>
+            <input title="upload image" class="form-control form-width justify-content-center" name="file" type="file" />
+            <input type="submit" class="btn btn-primary mr-2" />
+        </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     
 </body>
 </html>
