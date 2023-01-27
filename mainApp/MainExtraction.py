@@ -1,79 +1,65 @@
 from pythainlp.util import normalize
-from ExtractionModule import findShopName, findPhoneShop, findTaxIDShop, findDate, findReceiptID, findCustomerShop
-# from pythainlp.tokenize import sent_tokenize
+from ExtractionModule import findShopName, findPhoneShop,\
+    findTaxIDShop,findDate, findReceiptID, findCustomerShop,\
+    findListOfItem, extractAddress
 from Utils import candidateFromList
 
 def extraction(text: str):
     Lines = text.splitlines()
-    # list of word may be in an entity
-    listShopName = []
-    listShopPhone = []
-    listShopTaxID = []
-    listDate = []
-    listReceiptID = []
-    listCustomerShop = []
-    # text may be a item of goods
-    # item_txt = []
+
+    item_txt1 = []
+    item_txt2 = []
+
     len_line = len(Lines)
+    line_item_txt1_p1 = ()
+    line_item_txt1_p2 = ()
+
     for idx in range(len_line):
         norm_txt = normalize(Lines[idx].strip('\"#$%&()*+:;<=>@[\]^_`{|}~\n'))
-        
-        if (idx+1)/len_line <= 0.40 or (idx+1)/len_line >= 0.68:
-            shopName = findShopName(text = norm_txt, threshold = 0.78)
-            if len(shopName) > 8:
-                listShopName.append({'lineNum': idx,'shopName': shopName})
+        if (idx+1)/len_line <= 0.45 or (idx+1)/len_line >= 0.68:
+            item_txt1.append({"line-num": idx,"txt": norm_txt})
+            line_item_txt1_p1 = (0,int(0.45*len_line)-1)
+            line_item_txt1_p2 = (int(0.68*len_line),len_line-1)
+        if (idx+1)/len_line > 0.2 and (idx+1)/len_line <= 0.68:
+            item_txt2.append({"line-num": idx,"txt": norm_txt})    
 
-            TaxIDShop = findTaxIDShop(text = norm_txt, threshold = 0.72)
-            if len(TaxIDShop) >= 13:
-                listShopTaxID.append({'lineNum': idx,'TaxIDShop': TaxIDShop})
+    listAddress = extractAddress(lsttext = item_txt1,line_item_txt1_p1=line_item_txt1_p1,line_item_txt1_p2=line_item_txt1_p2)
+    listShopTaxID = findTaxIDShop(lsttext = item_txt1, threshold = 0.72)
+    listShopPhone = findPhoneShop(lsttext = item_txt1,listShopTaxID = listShopTaxID)
+    listDate = findDate(lsttext = item_txt1, threshold = 0.72)
+    listReceiptID = findReceiptID(lsttext = item_txt1, threshold = 0.75)
+    listShopName = findShopName(lsttext = item_txt1, threshold = 0.78)
+    listCustomerShop = findCustomerShop(lsttext = item_txt1, line_end = listAddress["line-addr-customer"], threshold = 0.72)
+    listListOfItem = findListOfItem(lsttext = item_txt2, threshold = 0.80)
 
-            shopPhone = findPhoneShop(text = norm_txt, threshold = 0.75)
-            if len(shopPhone) > 3 and shopPhone not in TaxIDShop:
-                listShopPhone.append({'lineNum': idx,'shopPhone': shopPhone})
-            
-            DateShop = findDate(text = norm_txt, threshold = 0.72)
-            if len(DateShop) > 3:
-                listDate.append({'lineNum': idx,'DateShop': DateShop})
-
-            CustomerShop = findCustomerShop(text = norm_txt, threshold = 0.72)
-            if len(CustomerShop) > 3:
-                listCustomerShop.append({'lineNum': idx,'CustomerShop': CustomerShop})
-            
-        if (idx+1)/len_line >= 0.1 and (idx+1)/len_line <= 0.35:
-            ReceiptID = findReceiptID(text = norm_txt, threshold = 0.75)
-            if len(ReceiptID) > 1:
-                listReceiptID.append({'lineNum': idx,'ReceiptID': ReceiptID})
-        
-        # if (idx+1)/len_line > 0.35 and (idx+1)/len_line < 0.68:
-        #     item_txt.append(norm_txt)
-
-    shopName = candidateFromList(lst=listShopName,key='shopName')
-    # print(f'shopName is {shopName}')
+    shopName = candidateFromList(lst=listShopName)
 
     shopPhone = ''
     if len(listShopPhone) != 0:
-        shopPhone = listShopPhone[0]['shopPhone']
-    # print(f'shopPhone is {shopPhone}')
+        shopPhone = listShopPhone[0]
 
     taxIDShop = ''
     if len(listShopTaxID) != 0:
-        taxIDShop = listShopTaxID[0]['TaxIDShop']
-    # print(f'taxIDShop is {taxIDShop}')
+        taxIDShop = listShopTaxID[0]
 
     dateReceipt = ''
     if len(listDate) != 0:
-        dateReceipt = listDate[0]['DateShop']
-    # print(f'dateReceipt is {dateReceipt}')
+        dateReceipt = listDate[0]
 
     receiptID = ''
     if len(listReceiptID) != 0:
-        receiptID = listReceiptID[0]['ReceiptID']
+        receiptID = listReceiptID[0]
 
-    ''' return { 'shopName':shopName, 
-             'shopPhone':shopPhone, 
-             'taxIDShop':taxIDShop, 
-             'dateReceipt':dateReceipt, 
-             'receiptID':receiptID
+    customer = ''
+    if len(listCustomerShop) != 0:
+        customer = listCustomerShop[0]
+
+    return { 'shopName': shopName, 
+             'shopPhone': shopPhone, 
+             'taxIDShop': taxIDShop, 
+             'dateReceipt': dateReceipt, 
+             'receiptID': receiptID,
+             'customer': customer,
+             'address-shop': listAddress["addr-shop"],
+             'address-customer': listAddress["addr-customer"]
         }
-    '''
-    return shopName,shopPhone,taxIDShop,dateReceipt,receiptID
