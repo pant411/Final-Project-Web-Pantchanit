@@ -1,8 +1,8 @@
 import sys
-sys.path.append("Receipts_EntityExtraction")
-sys.path.append("Receipts_ImgPreprocess")
-from Receipts_EntityExtraction import mainApp
-from Receipts_ImgPreprocess import PreProcess
+sys.path.append("EntityExtraction")
+sys.path.append("ImgPreprocess")
+from EntityExtraction import mainApp
+from ImgPreprocess import PreProcess
 # import cv2
 import pytesseract
 config = '--tessdata-dir tessdata-dir --oem 1 -l tha+eng --psm 6'

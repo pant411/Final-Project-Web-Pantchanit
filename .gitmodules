@@ -1,6 +1,0 @@
-[submodule "Receipts_ImgPreprocess"]
-	path = Receipts_ImgPreprocess
-	url = https://github.com/MadlabSeniorProject2022/Receipts_ImgPreprocess.git
-[submodule "Receipts_EntityExtraction"]
-	path = Receipts_EntityExtraction
-	url = https://github.com/MadlabSeniorProject2022/Receipts_EntityExtraction.git

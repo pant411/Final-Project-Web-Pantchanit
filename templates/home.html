@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> Home </title>
-    <link rel="stylesheet" href="{{ url_for ('static', filename='css/style.css') }}" >
+    <link rel="stylesheet" href="{{ url_for ('static', path='/css/style.css') }}" >
 </head>
 <body>
     <div class="table-users">
@@ -26,7 +26,7 @@
                 <tbody  class="mytable">
                     {% for ele in list_data: %}
                         <tr id={{ele._id}}>
-                            <td><img src="{{ url_for('static', filename=ele.pathImage) }}" /></td>
+                            <td><img src="{{ url_for('static', path=ele.pathImage) }}" /></td>
                             <td>{{ele.filename}}</td>
                             <td>{{ele.receiptID}}</td>
                             <td>{{ele.dateReceipt}}</td>
@@ -42,9 +42,9 @@
     </div>
     <div class="bt-area">
         <p id="text-upload">เพิ่มรายการใบเสร็จรับเงิน</p>
-        <form action="/submituploadreceipt" method="POST" enctype="multipart/form-data">
-            <input type="file" name="up-image" />
-            <input type="submit"/>
+        <form action="/uploadreceipt" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" />
+            <input type="submit" />
          </form>   
     </div>
     
