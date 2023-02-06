@@ -63,7 +63,7 @@ def removeLine(image: cv2.Mat):
     img2 = image.copy()
     height_ori, width_ori = img2.shape[:2]
 
-    width_line = 1010
+    width_line = 1150
     height_line = int((height_ori/width_ori) * width_line)
     image2 = cv2.resize(img2, (width_line, height_line), interpolation=cv2.INTER_AREA)
 
@@ -100,14 +100,14 @@ def removeLine(image: cv2.Mat):
 
     return res
 
-def increase_resolution(image: cv2.Mat):
+def increase_resolution(image: cv2.Mat, path_model: str):
     height, width = image.shape[:2]
     # print(height, width)
-    if height <= 2048 or width <= 2048:
+    if 2*width <= 4500:
         sr = cv2.dnn_superres.DnnSuperResImpl_create()
-        path = "FSRCNN_x2.pb"
-        sr.readModel(path)
-        sr.setModel("fsrcnn",2)
+        # path = "LapSRN_x2.pb"
+        sr.readModel(path_model)
+        sr.setModel("lapsrn",2)
         result = sr.upsample(image)
         return result
     return image
