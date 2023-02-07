@@ -27,10 +27,13 @@ class ReceiptCreateMain(BaseModel):
     # about item
     items: List[Item] = []
     priceTotal: float
+    class Config:
+        orm_mode = True
 
 class ShopCreate(BaseModel):
     shopName: str
     taxIDShop: str
+    shopPhone: str
     addressShop: str
     owner_receiptId: int
 

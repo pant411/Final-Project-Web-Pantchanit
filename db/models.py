@@ -10,7 +10,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.schema import FetchedValue
 from .database import Base
 
-
 class Receipt(Base):
     __tablename__ = "receipts"
 
@@ -50,6 +49,7 @@ class Shop(Base): # back to Receipt
     id = Column(Integer, primary_key=True, index=True)
     shopName = Column(String(250), index=True)
     taxIDShop = Column(String(30), index=True)
+    shopPhone = Column(String(30), index=True)
     address = relationship("AddressShop", back_populates="owner_shop") # FK
     Created_At = Column(TIMESTAMP,
         server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
