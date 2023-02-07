@@ -16,6 +16,7 @@ pythainlp
 deskew
 typing
 fastapi
-"uvicorn[standard]"
+uvicorn[standard]
 jinja2
 sqlalchemy
+PyMySQL[rsa]

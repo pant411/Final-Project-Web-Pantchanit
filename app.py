@@ -1,5 +1,5 @@
 # built in module
-from fastapi import FastAPI, Request, File, UploadFile, status
+from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -17,12 +17,15 @@ from db.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-# UPLOAD_FOLDER = "img-receipt"
-# ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif"}
-
-# app = Flask(__name__)
 app = FastAPI()
-# app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -34,6 +37,10 @@ async def home(request: Request):
     # print(list_data)
     # return render_template("home.html", list_data = list_data)
     return templates.TemplateResponse("home.html", {"request": request, "list_data": []})
+
+@app.post("/receipts/", response_model=schemas.ResponseCreateReceipt)
+async def create_receipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
+    return crud.create_receipt_main(db=db, receipt=receipt)
 
 @app.post("/uploadreceipt", response_class=HTMLResponse)
 async def uploadReceipt(file: UploadFile, request: Request):

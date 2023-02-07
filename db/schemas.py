@@ -1,48 +1,59 @@
-from typing import List, Union
+from typing import List
 from datetime import datetime
-
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from pydantic.schema import Optional
 
 class Item(BaseModel): # back to Receipt
     nameItem: str
-    qty: float
-    pricePerQty: float
+    qty: Optional[float]
+    pricePerQty: Optional[float]
+    priceItem: float
+    class Config:
+        orm_mode = True
+
+class ReceiptCreateMain(BaseModel):
+    # about receipt
+    pathImage: str
+    receiptID: str
+    dateReceipt: datetime
+    # about shop
+    shopName: str
+    taxIDShop: str
+    addressShop: str
+    # about customer
+    customerName: str
+    # taxIDCust: str
+    addressCust: str
+    # about item
+    items: List[Item] = []
     priceTotal: float
 
-    class Config:
-        orm_mode = True
-
-class Receipt(BaseModel):
-    receiptID: str
-    dateReceipt: datetime
-    items: List[Item] = []
-
-    class Config:
-        orm_mode = True
-
-class AddressShop(BaseModel): # back to Shop
-    address: str
-
-class Shop(BaseModel):
+class ShopCreate(BaseModel):
     shopName: str
-    taxID: str
-    address: List[AddressShop]
+    taxIDShop: str
+    addressShop: str
+    owner_receiptId: int
 
-class AddressCustomer(BaseModel): # back to Shop
-    address: str
+class ShopAddressCreate(BaseModel):
+    addressShop: str
+    owner_shopId: int
 
-class Customer(BaseModel):
+class CustomerCreate(BaseModel): # back to Receipt
     customerName: str
-    # taxID: str
-    address: List[AddressCustomer]
+    # taxIDCustomer: str
+    addressCust: str
+    owner_receiptId: int
 
-class ReceiptCreate(BaseModel):
-    receiptID: str
-    dateReceipt: datetime
-    items: List[Item] = []
+class CustomerAddressCreate(BaseModel):
+    addressCust: str
+    owner_custId: int
 
 class ItemCreate(BaseModel): # back to Receipt
     nameItem: str
-    qty: float
-    pricePerQty: float
-    priceTotal: float
+    qty: Optional[float]
+    pricePerQty: Optional[float]
+    priceItem: float
+    owner_receiptId: int
+
+class ResponseCreateReceipt(BaseModel):
+    status: str
