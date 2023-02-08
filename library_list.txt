@@ -1,17 +1,10 @@
-# packages in environment at /opt/homebrew/Caskroom/miniforge/base/envs/proj:
-#
-# Name                    Version                   Build  Channel
-ipykernel                 6.17.0             pyh736e0ef_0    conda-forge
-ipython                   8.6.0              pyhd1c38e8_1    conda-forge
-jupyter_client            7.4.4              pyhd8ed1ab_0    conda-forge
-jupyter_core              4.11.2          py310hbe9552e_0    conda-forge
-matplotlib                3.6.2           py310hb6292c7_0    conda-forge
-numpy                     1.23.4          py310h5d7c261_1    conda-forge
-opencv                    4.6.0           py310hb6292c7_6    conda-forge
-pandas                    1.5.1           py310h2b830bf_1    conda-forge
-pillow                    9.2.0           py310h9337a76_3    conda-forge
-pytesseract               0.3.10             pyhd8ed1ab_0    conda-forge
-python                    3.10.6          hae75cb6_0_cpython    conda-forge
+matplotlib
+numpy
+opencv
+pandas
+pillow
+pytesseract
+python
 pythainlp
 deskew
 typing
@@ -20,3 +13,4 @@ uvicorn[standard]
 jinja2
 sqlalchemy
 PyMySQL[rsa]
+fastapi-pagination

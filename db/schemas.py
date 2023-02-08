@@ -80,18 +80,23 @@ class ResponseGetOneReceipt(BaseModel):
     class Config:
         orm_mode = True
 
-class ResponseReceipt(BaseModel):
+class ResponseReceiptAll(BaseModel):
     id: int
     pathImage: str
     receiptID: str
     dateReceipt: Optional[datetime]
-    shopID: int
-    customerID: int
-    Created_At: datetime
-    Updated_At: datetime
+    shopName: str
+    customerName: str
+    class Config:
+        orm_mode = True
 
 class ResponseCreateReceipt(BaseModel):
     status: str
+    class Config:
+        orm_mode = True
+
+class ResponseDeleteReceipt(ResponseCreateReceipt):
+    pass
 
 class ResponseAnalyzeReceipt(BaseModel):
     pathImage: str
@@ -104,3 +109,22 @@ class ResponseAnalyzeReceipt(BaseModel):
     addressShop: str
     customer: str
     addressCust: str
+    class Config:
+        orm_mode = True
+
+class ResponseShopAll(BaseModel):
+    id: int
+    shopName: str
+    taxIDShop: Optional[str]
+    shopPhone: Optional[str]
+    addressShop: Optional[str]
+    class Config:
+        orm_mode = True
+
+class ResponseCustomerAll(BaseModel):
+    id: int
+    customerName: Optional[str]
+    taxIDCust: Optional[str]
+    addressCust: Optional[str]
+    class Config:
+        orm_mode = True

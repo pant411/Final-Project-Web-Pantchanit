@@ -56,7 +56,6 @@ def create_shop(db: Session,
         db.refresh(db_shop)
     return db_shop
 
-
 def create_customer(db: Session, 
                     customerName: str, 
                     addressCust: str,
@@ -150,8 +149,16 @@ def getOneReceipt_byDBId_main(db: Session, id: int):
         'list_item': db_item
    }
 
-def getReceiptByPagination(db: Session, skip: int = 0, limit: int = 100):
-    db_receipt = db.query(models.Receipt).offset(skip).limit(limit).all()
+def getReceiptByAll(db: Session):
+    db_receipt = db.query(models.Receipt.id,
+                          models.Receipt.pathImage,
+                          models.Receipt.receiptID,
+                          models.Receipt.dateReceipt,
+                          models.Shop.shopName,
+                          models.Customer.customerName)\
+                   .join(models.Customer, models.Receipt.customerID==models.Customer.id)\
+                   .join(models.Shop, models.Receipt.shopID==models.Shop.id)\
+                   .all()
     return db_receipt
 
 def getOneShop_byDBId(db: Session, id: int):
@@ -170,10 +177,23 @@ def getItem_byDBId(db: Session, id: int):
    db_item = db.query(models.Item).filter(models.Item.owner_purchaseId == id).all()
    return db_item
 
+def getShopAll(db: Session):
+    db_shop = db.query(models.Shop).all()
+    return db_shop
+
+def getCustomerAll(db: Session):
+    db_cust = db.query(models.Customer).all()
+    return db_cust
+
+def getOneReceiptByID(db: Session, id: int):
+    return db.query(models.Receipt).filter(models.Receipt.id == id).first()
+
 #################################### for delete method ####################################
-# def removeOneReceipt_byIndex():
-#    return Pass
+def removeOneReceipt_byIndex(db: Session, id: int):
+    db_receipt = db.query(models.Receipt).filter_by(id=id).first()
+    db.delete(db_receipt)
+    db.commit()
 
 #################################### for patch method ####################################
 # def editOneReceipt_byIndex():
-#    return Pass
+#    return None

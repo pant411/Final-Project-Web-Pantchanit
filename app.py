@@ -1,6 +1,7 @@
 # built in module
 from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi_pagination import Page, paginate, add_pagination
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from typing import List
@@ -18,7 +19,10 @@ from db.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="My Final Project",
+              debug=True)
+
+add_pagination(app)
 
 # Dependency
 def get_db():
@@ -32,6 +36,8 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
+#################################### Default Module #################################### 
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     # list_data = find_all(collection="data")
@@ -39,12 +45,14 @@ async def home(request: Request):
     # return render_template("home.html", list_data = list_data)
     return templates.TemplateResponse("home.html", {"request": request, "list_data": []})
 
-@app.post("/receipts/create/", response_model=schemas.ResponseCreateReceipt)
+#################################### Receipt Module #################################### 
+
+@app.post("/receipts/create/", tags = ["Receipts"], response_model=schemas.ResponseCreateReceipt)
 async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
     return crud.create_receipt_main(db=db, receipt=receipt)
 
-@app.post("/receipts/analyze/", response_model=schemas.ResponseAnalyzeReceipt)
-async def uploadReceipt(file: UploadFile, request: Request):
+@app.post("/receipts/analyze/", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
+async def analyzeReceipt(file: UploadFile, request: Request):
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
@@ -59,11 +67,30 @@ async def uploadReceipt(file: UploadFile, request: Request):
     # return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     return data
 
-@app.get("/receipts/getOneByID/{receipt_id}", response_model=schemas.ResponseGetOneReceipt)
+@app.get("/receipts/getOneByID/{receipt_id}", tags = ["Receipts"], response_model=schemas.ResponseGetOneReceipt)
 async def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
     return crud.getOneReceipt_byDBId_main(db, receipt_id)
 
-@app.get("/receipts/getByPagination", response_model=List[schemas.ResponseReceipt])
-async def getReceiptByPagination(receipt_id: int, db: Session = Depends(get_db)):
-    return crud.getReceiptByPagination(db, receipt_id)
+@app.get("/receipts/getByPagination/", tags = ["Receipts"], response_model=Page[schemas.ResponseReceiptAll])
+async def getReceiptByPagination(db: Session = Depends(get_db)):
+    return paginate(crud.getReceiptByAll(db))
 
+@app.delete('/receipts/deleteReceiptByID/{receipt_id}', tags = ["Receipts"], response_model=schemas.ResponseDeleteReceipt)
+async def removeOneReceipt_byIndex(receipt_id: int, db: Session = Depends(get_db)):
+    db_receipt = crud.getOneReceiptByID(db, id = receipt_id)
+    if db_receipt is None:
+        raise HTTPException(status_code=404, detail="Receipt not found with the given ID")
+    crud.removeOneReceipt_byIndex(db, id = receipt_id)
+    return {"status": "success"}
+
+#################################### Shop Module #################################### 
+
+@app.get("/shops/getShopAll", tags = ["shops"], response_model=Page[schemas.ResponseShopAll])
+async def getShopAll(db: Session = Depends(get_db)):
+    return paginate(crud.getShopAll(db))
+
+#################################### Customer Module #################################### 
+
+@app.get("/customers/getCustomerAll", tags = ["customers"], response_model=Page[schemas.ResponseCustomerAll])
+async def getCustomerAll(db: Session = Depends(get_db)):
+    return paginate(crud.getCustomerAll(db))
