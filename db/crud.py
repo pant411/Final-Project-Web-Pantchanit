@@ -6,26 +6,31 @@ from . import models, schemas
 #################################### for get method #################################### 
 
 def create_receipt_main(db: Session, receipt: schemas.ReceiptCreateMain):
+    # create shop
+    db_shop = create_shop(
+                db, 
+                shopName = receipt.shopName, 
+                taxIDShop = receipt.taxIDShop, 
+                addressShop = receipt.addressShop,
+                shopPhone = receipt.shopPhone)
+    # create customer
+    db_cust = create_customer(db,
+                customerName = receipt.customerName,
+                addressCust = receipt.addressCust,
+                taxIDCust = receipt.taxIDCust)
+
     db_receipt = models.Receipt(
-        receiptID = receipt.receiptID, 
         pathImage = receipt.pathImage,
+        receiptID = receipt.receiptID, 
         dateReceipt = receipt.dateReceipt,
-        priceTotal = receipt.priceTotal
+        shopID = db_shop.id,
+        customerID = db_cust.id
     )
     db.add(db_receipt)
     db.commit()
     db.refresh(db_receipt)
-    print(db_receipt.id)
 
-    db_shop = create_shop(
-        db, 
-        receipt.shopName, 
-        receipt.taxIDShop, 
-        receipt.addressShop, 
-        db_receipt.id
-    )
-    db_cust = create_customer(db, receipt.customerName, receipt.addressCust, db_receipt.id)
-    create_item(db, receipt.items, db_receipt.id)
+    create_purchase(db, listItems = receipt.items, priceTotal = receipt.priceTotal, owner_receiptId = db_receipt.id)
 
     return {"status": "success"}
 
@@ -33,77 +38,64 @@ def create_shop(db: Session,
                 shopName: str, 
                 taxIDShop: str, 
                 addressShop: str,
-                owner_receiptId: int
-                ):
-    db_shop = get_shopName(db, shopName)
+                shopPhone: str):
+    db_shop = getOneShopName_byValue(db, 
+                                     shopName = shopName,
+                                     taxIDShop = taxIDShop,
+                                     addressShop = addressShop,
+                                     shopPhone = shopPhone)
     if db_shop is None:
         db_shop = models.Shop(
             shopName = shopName, 
             taxIDShop = taxIDShop,
-            owner_receiptId = owner_receiptId
+            addressShop = addressShop,
+            shopPhone = shopPhone
         )
         db.add(db_shop)
         db.commit()
         db.refresh(db_shop)
-
-    db_addr_shop = create_shopAddress(db, addressShop, db_shop.id)
-
     return db_shop
 
-def create_shopAddress(db: Session, addressShop: str, owner_shopId: int):
-    db_addr_shop = get_shopAddress(db, addressShop)
-    if db_addr_shop is None:
-        db_addr_shop = models.AddressShop(
-            addressShop = addressShop, 
-            owner_shopId = owner_shopId
-        )
-        db.add(db_addr_shop)
-        db.commit()
-        db.refresh(db_addr_shop)
-    return db_addr_shop
 
 def create_customer(db: Session, 
                     customerName: str, 
-                    addressCust: str, 
-                    owner_receiptId: int
-                    ):
-    db_cust = get_customerName(db, customerName)
+                    addressCust: str,
+                    taxIDCust: str):
+    db_cust = getOneCustomerName_byValue(db, 
+                                         customerName = customerName, 
+                                         addressCust = addressCust, 
+                                         taxIDCust = taxIDCust)
     if db_cust is None:
         db_cust = models.Customer(
             customerName = customerName, 
-            # taxIDCustomer = receipt.taxIDCustomer,
-            owner_receiptId = owner_receiptId
-        )
+            taxIDCust = taxIDCust,
+            addressCust = addressCust)
         db.add(db_cust)
         db.commit()
         db.refresh(db_cust)
 
-    db_addr_cust = create_customerAddress(db, addressCust, db_cust.id)
-    db.refresh(db_addr_cust)
-
     return db_cust
 
-def create_customerAddress(db: Session, addressCust: str, owner_custId: int):
-    db_addr_cust = get_customerAddress(db, addressCust)
-    if db_addr_cust is None:
-        db_addr_cust = models.AddressCustomer(
-            addressCust = addressCust, 
-            owner_custId = owner_custId
-        )
-        db.add(db_addr_cust)
-        db.commit()
-        db.refresh(db_addr_cust)
-    return db_addr_cust
+def create_purchase(db: Session, listItems: any, priceTotal: int, owner_receiptId: int):
+    db_purchase = models.Purchase(
+        priceTotal = priceTotal,
+        owner_receiptId = owner_receiptId
+    )
+    db.add(db_purchase)
+    db.commit()
+    db.refresh(db_purchase)
 
-def create_item(db, listItems: any, owner_receiptId: int):
+    create_item(db, listItems = listItems, owner_purchaseId = db_purchase.id)
+
+def create_item(db: Session, listItems: any, owner_purchaseId: int):
     objects = []
     for ele in listItems:
         db_items = models.Item(
             nameItem = ele.nameItem, 
             qty = ele.qty,
             pricePerQty = ele.pricePerQty,
-            priceItem = ele.priceItem,
-            owner_receiptId = owner_receiptId
+            priceItemTotal = ele.priceItemTotal,
+            owner_purchaseId = owner_purchaseId
         )
         objects.append(db_items)
     db.bulk_save_objects(objects)
@@ -111,22 +103,77 @@ def create_item(db, listItems: any, owner_receiptId: int):
 
 #################################### for get method #################################### 
 
-def get_shopName(db: Session, shopName: str):
+def getOneShopName_byValue(db: Session, 
+                           shopName: str, 
+                           taxIDShop: str, 
+                           addressShop: str,
+                           shopPhone: str):
     return db.query(models.Shop)\
-             .filter(models.Shop.shopName == shopName)\
+             .filter(models.Shop.shopName == shopName,
+                     models.Shop.taxIDShop == taxIDShop ,
+                     models.Shop.addressShop == addressShop,
+                     models.Shop.shopPhone == shopPhone)\
              .first()
 
-def get_customerName(db: Session, customerName: str):
+def getOneCustomerName_byValue(db: Session,
+                               customerName: str, 
+                               addressCust: str, 
+                               taxIDCust: str):
     return db.query(models.Customer)\
-             .filter(models.Customer.customerName == customerName)\
+             .filter(models.Customer.customerName == customerName,
+                     models.Customer.addressCust == addressCust,
+                     models.Customer.taxIDCust == taxIDCust)\
              .first()
 
-def get_shopAddress(db: Session, addressShop: str):
-    return db.query(models.AddressShop)\
-             .filter(models.AddressShop.addressShop == addressShop)\
-             .first()
+def getOneReceipt_byDBId_main(db: Session, id: int):
+   db_receipt = db.query(models.Receipt).filter(models.Receipt.id == id).first()
+   db_shop = getOneShop_byDBId(db, id = db_receipt.shopID)
+   db_customer = getOneCustomer_byDBId(db, id = db_receipt.customerID)
+   db_purchase = getOnePurchase_byDBId(db, id = db_receipt.id)
+   db_item = getItem_byDBId(db, id = db_purchase.id)
+   return {
+        'id': db_receipt.id,
+        'pathImage': db_receipt.pathImage,
+        'receiptID': db_receipt.receiptID,
+        'dateReceipt': db_receipt.dateReceipt,
+        'shopID': db_shop.id,
+        'shopName': db_shop.shopName,
+        'taxIDShop': db_shop.taxIDShop,
+        'shopPhone': db_shop.shopPhone,
+        'addressShop': db_shop.addressShop,
+        'customerID': db_customer.id,
+        'customerName': db_customer.customerName,
+        'taxIDCust': db_customer.taxIDCust,
+        'addressCust': db_customer.addressCust,
+        'purchase_id': db_purchase.id,
+        'priceTotal': db_purchase.priceTotal,
+        'list_item': db_item
+   }
 
-def get_customerAddress(db: Session, addressCust: str):
-    return db.query(models.AddressCustomer)\
-             .filter(models.AddressCustomer.addressCust == addressCust)\
-             .first()
+def getReceiptByPagination(db: Session, skip: int = 0, limit: int = 100):
+    db_receipt = db.query(models.Receipt).offset(skip).limit(limit).all()
+    return db_receipt
+
+def getOneShop_byDBId(db: Session, id: int):
+   db_shop = db.query(models.Shop).filter(models.Shop.id == id).first()
+   return db_shop
+
+def getOneCustomer_byDBId(db: Session, id: int):
+   db_customer = db.query(models.Customer).filter(models.Customer.id == id).first()
+   return db_customer
+
+def getOnePurchase_byDBId(db: Session, id: int):
+   db_purchase = db.query(models.Purchase).filter(models.Purchase.owner_receiptId == id).first()
+   return db_purchase
+
+def getItem_byDBId(db: Session, id: int):
+   db_item = db.query(models.Item).filter(models.Item.owner_purchaseId == id).all()
+   return db_item
+
+#################################### for delete method ####################################
+# def removeOneReceipt_byIndex():
+#    return Pass
+
+#################################### for patch method ####################################
+# def editOneReceipt_byIndex():
+#    return Pass

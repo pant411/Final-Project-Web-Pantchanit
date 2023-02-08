@@ -357,15 +357,15 @@ def extractAddress(lsttext: List,
 
   if line_addr_2 in range_p2: # กรณีที่ที่อยู่ของร้านค้าอยู่ด้านล่างสุดของใบเสร็จ
     return {
-      "addr-shop": addr_2,
+      "addressShop": addr_2,
       "line-addr-shop": line_addr_2,
-      "addr-customer": addr_1,
+      "addressCust": addr_1,
       "line-addr-customer": line_addr_1
     }
   return {
-      "addr-shop": addr_1,
+      "addressShop": addr_1,
       "line-addr-shop": line_addr_1,
-      "addr-customer": addr_2,
+      "addressCust": addr_2,
       "line-addr-customer": line_addr_2
   }
 

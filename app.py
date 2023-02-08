@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPExc
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from typing import List
 # from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
@@ -38,29 +39,31 @@ async def home(request: Request):
     # return render_template("home.html", list_data = list_data)
     return templates.TemplateResponse("home.html", {"request": request, "list_data": []})
 
-@app.post("/receipts/", response_model=schemas.ResponseCreateReceipt)
-async def create_receipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
+@app.post("/receipts/create/", response_model=schemas.ResponseCreateReceipt)
+async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
     return crud.create_receipt_main(db=db, receipt=receipt)
 
-@app.post("/uploadreceipt", response_class=HTMLResponse)
+@app.post("/receipts/analyze/", response_model=schemas.ResponseAnalyzeReceipt)
 async def uploadReceipt(file: UploadFile, request: Request):
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
     path_file = "img/" + file.filename
     data = runMain(image)
-    print(data)
-    await file.seek(0)
-    with open("static/"+path_file, "wb+") as file_object:
-        file_object.write(file.file.read())
-    # file.write("static/"+path_file) 
-    redirect_url = request.url_for('home')   
-    return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    data["pathImage"] = "/static/"+path_file
+    # print(data)
+    # await file.seek(0)
+    # with open("static/"+path_file, "wb+") as file_object:
+    #     file_object.write(file.file.read())
+    # redirect_url = request.url_for('home')   
+    # return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    return data
 
+@app.get("/receipts/getOneByID/{receipt_id}", response_model=schemas.ResponseGetOneReceipt)
+async def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
+    return crud.getOneReceipt_byDBId_main(db, receipt_id)
 
-@app.route("/editreceipt", methods = ["PATCH"])
-async def editReceipt():
-    if Request.method == "PATCH": 
-        body = Request.get_json()
-        print(body)
-        return "success"
+@app.get("/receipts/getByPagination", response_model=List[schemas.ResponseReceipt])
+async def getReceiptByPagination(receipt_id: int, db: Session = Depends(get_db)):
+    return crud.getReceiptByPagination(db, receipt_id)
+

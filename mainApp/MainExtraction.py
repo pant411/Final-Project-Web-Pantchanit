@@ -88,19 +88,24 @@ def extraction(text: str):
         shopPhone = listShopPhone[0]
 
     taxIDShop = ''
-    if len(listShopTaxID) != 0:
+    taxIDCust = ''
+    if len(listShopTaxID) >= 2:
+        taxIDShop = listShopTaxID[0]
+        taxIDCust = listShopTaxID[1]
+    elif len(listShopTaxID) == 1:
         taxIDShop = listShopTaxID[0]
 
-    customer = ''
+    customerName = ''
     if len(listCustomerShop) != 0:
-        customer = listCustomerShop[0]
+        customerName = listCustomerShop[0]
 
     return { 'shopName': shopName, 
              'shopPhone': shopPhone, 
              'taxIDShop': taxIDShop, 
              'dateReceipt': dateReceipt, 
              'receiptID': receiptID,
-             'customer': customer,
-             'address-shop': listAddress["addr-shop"],
-             'address-customer': listAddress["addr-customer"]
+             'customer': customerName,
+             'taxIDCust': taxIDCust,
+             'addressShop': listAddress["addressShop"],
+             'addressCust': listAddress["addressCust"]
         }
