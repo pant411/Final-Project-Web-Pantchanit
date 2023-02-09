@@ -1,4 +1,5 @@
 # built in module
+from typing import List
 from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_pagination import Page, paginate, add_pagination
@@ -40,22 +41,22 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    # list_data = find_all(collection="data")
-    # print(list_data)
-    # return render_template("home.html", list_data = list_data)
     return templates.TemplateResponse("home.html", {"request": request})
 
 @app.get("/listreceipts/", response_class=HTMLResponse)
-def getlistReceiptByPagination(request: Request):
-    return templates.TemplateResponse("listReceipt.html", {"request": request, "list_data": []})
+def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db)):
+    list_data = crud.getReceiptByAll(db)
+    return templates.TemplateResponse("listReceipt.html", {"request": request, "list_data": list_data})
 
 @app.get("/listshops/", response_class=HTMLResponse)
-def getlistShopByPagination(request: Request):
-    return templates.TemplateResponse("listShop.html", {"request": request, "list_data": []})
+def getlistShopByPagination(request: Request, db: Session = Depends(get_db)):
+    list_data = crud.getShopAll(db)
+    return templates.TemplateResponse("listShop.html", {"request": request, "list_data": list_data})
 
 @app.get("/listcustomers/", response_class=HTMLResponse)
-def getlistCustomerByPagination(request: Request):
-    return templates.TemplateResponse("listCustomer.html", {"request": request, "list_data": []})
+def getlistCustomerByPagination(request: Request, db: Session = Depends(get_db)):
+    list_data = crud.getCustomerAll(db)
+    return templates.TemplateResponse("listCustomer.html", {"request": request, "list_data": list_data})
 
 #################################### Receipt Module #################################### 
 

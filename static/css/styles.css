@@ -6,19 +6,30 @@ body * {
   padding: 0;
 }
 
+.my-container {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .nav-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 18px 4%;
+  background-color: #231651;
 }
 
 .nav-header li, a, button {
   font-size: "Montserrat", sans-serif;
   font-weight: 500;
   font-size: 18px;
-  color: #334443;
+  color: #fff;
   text-decoration: none;
+}
+
+.nav-header .nav_links > li:not(:last-child)::after{
+  border-right: 1px solid #000;
 }
 
 .nav-header .nav_links {
@@ -35,23 +46,26 @@ body * {
 }
 
 .nav-header .nav_links li a:hover {
-  color: #0088a9;
+  color: #D6FFF6;
 }
 
 .nav-header #receipt-name {
   font-size: "Montserrat", sans-serif;
   font-weight: 500;
   font-size: 24px;
-  color: #334443;
+  color: #fff;
 }
 
 /* --------------------- homepage ------------------- */
 
 .content-home {
-  justify-content: center;
-  align-items: center;
+  width:100%;
+  height:auto;
   border: 5px solid red;
-  max-height: 500px;
+  overflow-y: hidden;
 }
 
 /*---------------------- list receipts page ----------------------*/
+.text-center {
+  justify-content: center;
+}

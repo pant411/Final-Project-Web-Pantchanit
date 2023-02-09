@@ -3,32 +3,32 @@
 {% block title %} <title>รายการใบเสร็จ</title> {% endblock %}
 
 {% block content %}
-    <table id="myTable" class="display" style="width: 100%;">
+<section class="my-container">
+    <table id="myTable" class="display table table-striped" style="width: 100%;">
         <thead>
         <tr>
-            <th class="th-sm">ชื่อไฟล์</th>
-            <th class="th-sm">เลขที่ใบเสร็จรับเงิน</th>
-            <th class="th-sm">วันที่ออกใบเสร็จรับเงิน</th>
-            <th class="th-sm">ชื่อร้านค้า</th>
-            <th class="th-sm">ชื่อลูกค้า</th>
-            <th class="th-sm">Action</th>
+            <th class="th text-center">ชื่อไฟล์</th>
+            <th class="th text-center">เลขที่ใบเสร็จรับเงิน</th>
+            <th class="th text-center">วันที่ออกใบเสร็จรับเงิน</th>
+            <th class="th text-center">ชื่อร้านค้า</th>
+            <th class="th text-center">ชื่อลูกค้า</th>
         </tr>
         </thead>
         <tbody>
-            {% for ele in list_data: %}
-                <tr id={{ele.id}}>
-                    <td>{{ele.filename}}</td>
-                    <td>{{ele.receiptID}}</td>
-                    <td>{{ele.dateReceipt}}</td>
-                    <td>{{ele.shopName}}</td>
-                    <td>{{ele.shopPhone}}</td>
-                    <td>{{ele.customerName}}</td>
+            {% for ele in list_data %}
+                <tr id="{{ele.id}}">
+                    <td>{{ele["filename"]}}</td>
+                    <td>{{ele["receiptID"]}}</td>
+                    <td>{{ele["dateReceipt"]}}</td>
+                    <td>{{ele["shopName"]}}</td>
+                    <td>{{ele["customerName"]}}</td>
                 </tr>                
             {% endfor %}     
         </tbody>
     </table>
+</section>
+
                 
-    </div>
 {% endblock content %}
 
 {% block scripts %}

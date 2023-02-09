@@ -3,12 +3,13 @@
 {% block title %} <title>รายชื่อลูกค้า</title> {% endblock %}
 
 {% block content %}
-    <table id="myTable" class="display" style="width: 100%;">
+<section class="my-container">
+    <table id="myTable" class="display table table-striped" style="width: 100%;">
         <thead>
         <tr>
-            <th class="th-sm">ชื่อ</th>
-            <th class="th-sm">เลขประจำตัวผู้เสียภาษี</th>
-            <th class="th-sm">ที่อยู่</th>
+            <th class="th text-center">ชื่อ</th>
+            <th class="th text-center">เลขประจำตัวผู้เสียภาษี</th>
+            <th class="th text-center">ที่อยู่</th>
         </tr>
         </thead>
         <tbody>
@@ -21,8 +22,8 @@
             {% endfor %}     
         </tbody>
     </table>
-                
-    </div>
+</section>
+
 {% endblock content %}
 
 {% block scripts %}
