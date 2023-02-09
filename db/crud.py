@@ -5,21 +5,22 @@ from . import models, schemas
 
 #################################### for get method #################################### 
 
-def create_receipt_main(db: Session, receipt: schemas.ReceiptCreateMain):
+async def create_receipt_main(db: Session, receipt: schemas.ReceiptCreateMain):
     # create shop
-    db_shop = create_shop(
+    db_shop = await create_shop(
                 db, 
                 shopName = receipt.shopName, 
                 taxIDShop = receipt.taxIDShop, 
                 addressShop = receipt.addressShop,
                 shopPhone = receipt.shopPhone)
     # create customer
-    db_cust = create_customer(db,
+    db_cust = await create_customer(db,
                 customerName = receipt.customerName,
                 addressCust = receipt.addressCust,
                 taxIDCust = receipt.taxIDCust)
 
     db_receipt = models.Receipt(
+        filename = receipt.filename,
         pathImage = receipt.pathImage,
         receiptID = receipt.receiptID, 
         dateReceipt = receipt.dateReceipt,
@@ -30,11 +31,11 @@ def create_receipt_main(db: Session, receipt: schemas.ReceiptCreateMain):
     db.commit()
     db.refresh(db_receipt)
 
-    create_purchase(db, listItems = receipt.items, priceTotal = receipt.priceTotal, owner_receiptId = db_receipt.id)
+    await create_purchase(db, listItems = receipt.items, priceTotal = receipt.priceTotal, owner_receiptId = db_receipt.id)
 
     return {"status": "success"}
 
-def create_shop(db: Session, 
+async def create_shop(db: Session, 
                 shopName: str, 
                 taxIDShop: str, 
                 addressShop: str,
@@ -56,7 +57,7 @@ def create_shop(db: Session,
         db.refresh(db_shop)
     return db_shop
 
-def create_customer(db: Session, 
+async def create_customer(db: Session, 
                     customerName: str, 
                     addressCust: str,
                     taxIDCust: str):
@@ -75,7 +76,7 @@ def create_customer(db: Session,
 
     return db_cust
 
-def create_purchase(db: Session, listItems: any, priceTotal: int, owner_receiptId: int):
+async def create_purchase(db: Session, listItems: any, priceTotal: int, owner_receiptId: int):
     db_purchase = models.Purchase(
         priceTotal = priceTotal,
         owner_receiptId = owner_receiptId
@@ -84,9 +85,9 @@ def create_purchase(db: Session, listItems: any, priceTotal: int, owner_receiptI
     db.commit()
     db.refresh(db_purchase)
 
-    create_item(db, listItems = listItems, owner_purchaseId = db_purchase.id)
+    await create_item(db, listItems = listItems, owner_purchaseId = db_purchase.id)
 
-def create_item(db: Session, listItems: any, owner_purchaseId: int):
+async def create_item(db: Session, listItems: any, owner_purchaseId: int):
     objects = []
     for ele in listItems:
         db_items = models.Item(
@@ -132,6 +133,7 @@ def getOneReceipt_byDBId_main(db: Session, id: int):
    db_item = getItem_byDBId(db, id = db_purchase.id)
    return {
         'id': db_receipt.id,
+        'filename': db_receipt.filename,
         'pathImage': db_receipt.pathImage,
         'receiptID': db_receipt.receiptID,
         'dateReceipt': db_receipt.dateReceipt,
@@ -151,6 +153,7 @@ def getOneReceipt_byDBId_main(db: Session, id: int):
 
 def getReceiptByAll(db: Session):
     db_receipt = db.query(models.Receipt.id,
+                          models.Receipt.filename,
                           models.Receipt.pathImage,
                           models.Receipt.receiptID,
                           models.Receipt.dateReceipt,
@@ -189,7 +192,7 @@ def getOneReceiptByID(db: Session, id: int):
     return db.query(models.Receipt).filter(models.Receipt.id == id).first()
 
 #################################### for delete method ####################################
-def removeOneReceipt_byIndex(db: Session, id: int):
+async def removeOneReceipt_byIndex(db: Session, id: int):
     db_receipt = db.query(models.Receipt).filter_by(id=id).first()
     db.delete(db_receipt)
     db.commit()

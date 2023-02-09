@@ -15,6 +15,7 @@ class Receipt(Base):
     __tablename__ = "receipts"
 
     id = Column(Integer, primary_key=True, index=True) # PK
+    filename = Column(String(250), index=True)
     pathImage = Column(String(250), index=True)
     receiptID = Column(String(250), index=True)
     dateReceipt = Column(DateTime, index=True)

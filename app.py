@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_pagination import Page, paginate, add_pagination
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from typing import List
+from functools import wraps
 # from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
@@ -19,8 +19,7 @@ from db.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="My Final Project",
-              debug=True)
+app = FastAPI(title="My Final Project", debug=True)
 
 add_pagination(app)
 
@@ -36,43 +35,60 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
+
 #################################### Default Module #################################### 
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
+def home(request: Request):
     # list_data = find_all(collection="data")
     # print(list_data)
     # return render_template("home.html", list_data = list_data)
-    return templates.TemplateResponse("home.html", {"request": request, "list_data": []})
+    return templates.TemplateResponse("home.html", {"request": request})
+
+@app.get("/listreceipts/", response_class=HTMLResponse)
+def getlistReceiptByPagination(request: Request):
+    return templates.TemplateResponse("listReceipt.html", {"request": request, "list_data": []})
+
+@app.get("/listshops/", response_class=HTMLResponse)
+def getlistShopByPagination(request: Request):
+    return templates.TemplateResponse("listShop.html", {"request": request, "list_data": []})
+
+@app.get("/listcustomers/", response_class=HTMLResponse)
+def getlistCustomerByPagination(request: Request):
+    return templates.TemplateResponse("listCustomer.html", {"request": request, "list_data": []})
 
 #################################### Receipt Module #################################### 
 
 @app.post("/receipts/create/", tags = ["Receipts"], response_model=schemas.ResponseCreateReceipt)
 async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
-    return crud.create_receipt_main(db=db, receipt=receipt)
+    return await crud.create_receipt_main(db=db, receipt=receipt)
 
 @app.post("/receipts/analyze/", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
 async def analyzeReceipt(file: UploadFile, request: Request):
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
-    path_file = "img/" + file.filename
     data = runMain(image)
+    path_file = "img/" + file.filename
     data["pathImage"] = "/static/"+path_file
+    data["filename"] = file.filename
     # print(data)
     # await file.seek(0)
-    # with open("static/"+path_file, "wb+") as file_object:
-    #     file_object.write(file.file.read())
+    with open("static/"+path_file, "wb+") as file_object:
+        file_object.write(file.file.read())
     # redirect_url = request.url_for('home')   
     # return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     return data
 
 @app.get("/receipts/getOneByID/{receipt_id}", tags = ["Receipts"], response_model=schemas.ResponseGetOneReceipt)
-async def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
+def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
+    db_receipt = crud.getOneReceiptByID(db, id = receipt_id)
+    if db_receipt is None:
+        raise HTTPException(status_code=404, detail="Receipt not found with the given ID")
     return crud.getOneReceipt_byDBId_main(db, receipt_id)
 
 @app.get("/receipts/getByPagination/", tags = ["Receipts"], response_model=Page[schemas.ResponseReceiptAll])
-async def getReceiptByPagination(db: Session = Depends(get_db)):
+def getReceiptByPagination(db: Session = Depends(get_db)):
     return paginate(crud.getReceiptByAll(db))
 
 @app.delete('/receipts/deleteReceiptByID/{receipt_id}', tags = ["Receipts"], response_model=schemas.ResponseDeleteReceipt)
@@ -86,11 +102,11 @@ async def removeOneReceipt_byIndex(receipt_id: int, db: Session = Depends(get_db
 #################################### Shop Module #################################### 
 
 @app.get("/shops/getShopAll", tags = ["shops"], response_model=Page[schemas.ResponseShopAll])
-async def getShopAll(db: Session = Depends(get_db)):
+def getShopAll(db: Session = Depends(get_db)):
     return paginate(crud.getShopAll(db))
 
 #################################### Customer Module #################################### 
 
 @app.get("/customers/getCustomerAll", tags = ["customers"], response_model=Page[schemas.ResponseCustomerAll])
-async def getCustomerAll(db: Session = Depends(get_db)):
+def getCustomerAll(db: Session = Depends(get_db)):
     return paginate(crud.getCustomerAll(db))

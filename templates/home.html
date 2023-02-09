@@ -1,55 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for ('static', path='/css/style.css') }}" >
-</head>
-<body>
-    <div class="table-users">
-        <div class="header">รายการใบเสร็จรับเงิน</div>
-            <div class="fixTableHead">
-            <table cellspacing="0" >
-                <thead>
-                    <tr>
-                        <th>รูปภาพใบเสร็จรับเงิน</th>
-                        <th>ชื่อไฟล์</th>
-                        <th>เลขที่ใบเสร็จรับเงิน</th>
-                        <th>วันที่ออกใบเสร็จรับเงิน</th>
-                        <th>ชื่อร้านค้า</th>
-                        <th>เลขประจำตัวผู้เสียภาษีของร้านค้า</th>
-                        <th>เบอร์โทรศัพท์ของร้านค้า</th>
-                    </tr>                        
-                </thead>
+{% extends 'base.html' %}
 
-                <tbody  class="mytable">
-                    {% for ele in list_data: %}
-                        <tr id={{ele._id}}>
-                            <td><img title="image of receipt" src="{{ url_for('static', path=ele.pathImage) }}" /></td>
-                            <td>{{ele.filename}}</td>
-                            <td>{{ele.receiptID}}</td>
-                            <td>{{ele.dateReceipt}}</td>
-                            <td>{{ele.shopName}}</td>
-                            <td>{{ele.taxIDShop}}</td>
-                            <td>{{ele.shopPhone}}</td>
-                        </tr>                
-                    {% endfor %}                        
-                </tbody>
-            </table>                 
-            </div>
-            
-    </div>
+{% block title %} <title>หน้าหลัก</title> {% endblock %}
 
-    <form action="/uploadreceipt" method="POST" enctype="multipart/form-data">
-        <div class="form-group mt-3 bt-area ">
-            <label >เพิ่มรายการใบเสร็จรับเงิน</label>
-            <input title="upload image" class="form-control form-width justify-content-center" name="file" type="file" />
-            <input type="submit" class="btn btn-primary mr-2" />
-        </div>
-    </form>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+{% block content %}
+<div class="content-home">
+    <p>ท่านสามารถเพิ่มรายการด้วยการคลิกปุ่มด้านใต้</p>
+</div>
     
-</body>
-</html>
+{% endblock %}  

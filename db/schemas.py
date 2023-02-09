@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 from pydantic.schema import Optional
 
-class Item(BaseModel): # back to Receipt
+class Item(BaseModel): 
     nameItem: str
     qty: Optional[float]
     pricePerQty: Optional[float]
@@ -13,6 +13,7 @@ class Item(BaseModel): # back to Receipt
 
 class ReceiptCreateMain(BaseModel):
     # about receipt
+    filename: str
     pathImage: str
     receiptID: str
     dateReceipt: Optional[datetime]
@@ -82,6 +83,7 @@ class ResponseGetOneReceipt(BaseModel):
 
 class ResponseReceiptAll(BaseModel):
     id: int
+    filename: str
     pathImage: str
     receiptID: str
     dateReceipt: Optional[datetime]
@@ -99,6 +101,7 @@ class ResponseDeleteReceipt(ResponseCreateReceipt):
     pass
 
 class ResponseAnalyzeReceipt(BaseModel):
+    filename: str
     pathImage: str
     receiptID: str
     dateReceipt: datetime
