@@ -1,14 +1,11 @@
-# 
-FROM python:3.8
+FROM python:3.8-slim-buster
 
 RUN mkdir /myapp
 
 COPY . /myapp
-# 
 
 WORKDIR /myapp
 
-# 
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
@@ -24,5 +21,4 @@ RUN apt-get update && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r /myapp/library_list.txt         
 
-# 
 CMD ["bash", "run.sh"]

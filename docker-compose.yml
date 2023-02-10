@@ -1,0 +1,29 @@
+services:
+      
+  mysql-DB:
+    container_name: db-project
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:3306
+
+  myweb-Service:
+    container_name: myweb-project
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: web-project
+    env_file:
+      - .env
+    ports:
+      - '8001:8000'
+    links:
+      - mysql-DB
+    depends_on:
+      - mysql-DB

@@ -1,9 +1,18 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:secretpassword@127.0.0.1:3308/DB-Receipt"
+userDB = os.getenv("DB_USER")
+passwdDB = os.getenv("DB_PASSWORD")
+hostDB = os.getenv("DB_HOST")
+portDB = os.getenv("DB_PORT")
+nameDB = os.getenv("DB_NAME")
+serviceDB = os.getenv("DB_SERVICE")
+
+# SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:secretpassword@localhost:3608/DB-Receipt"
 # SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
+SQLALCHEMY_DATABASE_URL = f"{serviceDB}://{userDB}:{passwdDB}@{hostDB}:{portDB}/{nameDB}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
