@@ -1,10 +1,9 @@
 matplotlib
 numpy
-opencv
+opencv-contrib-python
 pandas
 pillow
 pytesseract
-python
 pythainlp
 deskew
 typing
@@ -17,3 +16,5 @@ fastapi-pagination
 python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
+Levenshtein
+python-Levenshtein

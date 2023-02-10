@@ -65,7 +65,7 @@ async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depend
     return await crud.create_receipt_main(db=db, receipt=receipt)
 
 @app.post("/receipts/analyze/", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
-async def analyzeReceipt(file: UploadFile, request: Request):
+async def analyzeReceipt(file: UploadFile):
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
