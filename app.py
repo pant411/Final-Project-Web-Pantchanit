@@ -1,11 +1,11 @@
 # built in module
 from typing import List
-from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException
+from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_pagination import Page, paginate, add_pagination
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from functools import wraps
+from fastapi.middleware.cors import CORSMiddleware
 # from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
@@ -24,13 +24,29 @@ app = FastAPI(title="My Final Project", debug=True)
 
 add_pagination(app)
 
-# Dependency
-def get_db():
-    db = SessionLocal()
+@app.middleware("http")
+async def db_session_middleware(request: Request, call_next):
+    response = Response("Internal server error", status_code=500)
     try:
-        yield db
+        request.state.db = SessionLocal()
+        response = await call_next(request)
     finally:
-        db.close()
+        request.state.db.close()
+    return response
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Dependency
+def get_db(request: Request):
+    return request.state.db
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -65,7 +81,7 @@ async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depend
     return await crud.create_receipt_main(db=db, receipt=receipt)
 
 @app.post("/receipts/analyze/", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
-async def analyzeReceipt(file: UploadFile):
+async def analyzeReceipt(file: UploadFile = File(...)):
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
@@ -74,7 +90,7 @@ async def analyzeReceipt(file: UploadFile):
     data["pathImage"] = "/static/"+path_file
     data["filename"] = file.filename
     # print(data)
-    # await file.seek(0)
+    await file.seek(0)
     with open("static/"+path_file, "wb+") as file_object:
         file_object.write(file.file.read())
     # redirect_url = request.url_for('home')   

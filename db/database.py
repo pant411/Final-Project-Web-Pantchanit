@@ -11,9 +11,8 @@ nameDB = os.getenv("DB_NAME")
 serviceDB = os.getenv("DB_SERVICE")
 
 # SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:secretpassword@localhost:3306/DB-Receipt"
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
 SQLALCHEMY_DATABASE_URL = f"{serviceDB}://{userDB}:{passwdDB}@{hostDB}:{portDB}/{nameDB}"
-print(SQLALCHEMY_DATABASE_URL)
+# print(SQLALCHEMY_DATABASE_URL)
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
