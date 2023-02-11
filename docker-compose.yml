@@ -1,9 +1,10 @@
 services:
       
-  mysql-DB:
+  db:
     container_name: db-project
     image: mysql:latest
-    command: --default-authentication-plugin=mysql_native_password
+    volumes: 
+      - mysql_volume:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -11,19 +12,31 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
-      - ${DB_PORT}:3306
+      - "3306:3306"
+    networks:
+       - fastapi_network
 
-  myweb-Service:
+  app:
     container_name: myweb-project
     build:
       context: .
       dockerfile: ./Dockerfile
     image: web-project
+    restart: always
+    tty: true
     env_file:
       - .env
     ports:
-      - '8001:8000'
-    links:
-      - mysql-DB
+      - 8000:8000
     depends_on:
-      - mysql-DB
+      - db
+    networks:
+      - fastapi_network
+
+volumes:
+  mysql_volume:
+    driver: local
+                      
+networks:
+  fastapi_network:
+    external: true

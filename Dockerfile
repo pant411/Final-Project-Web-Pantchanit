@@ -21,4 +21,6 @@ RUN apt-get update && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r /myapp/library_list.txt         
 
+EXPOSE 8000
+
 CMD ["bash", "run.sh"]
