@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %} <title>เพิ่มรายการใบเสร็จ</title> {% endblock %}
+
+{% block content %}
+<form action="/uploadreceipt" method="POST" enctype="multipart/form-data">
+    <div class="form-group mt-3 bt-area ">
+        <label >เพิ่มรายการใบเสร็จรับเงิน</label>
+        <input title="upload image" class="form-control form-width justify-content-center" name="file" type="file" />
+        <input type="submit" class="btn btn-primary mr-2" />
+    </div>
+</form>
+{% endblock content %}

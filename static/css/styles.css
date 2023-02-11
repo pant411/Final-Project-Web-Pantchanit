@@ -1,0 +1,71 @@
+@import url('https://fonts.gooleapis.com/css?family=Montserrat:500');
+
+body * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.my-container {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 4%;
+  background-color: #231651;
+}
+
+.nav-header li, a, button {
+  font-size: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav-header .nav_links > li:not(:last-child)::after{
+  border-right: 1px solid #000;
+}
+
+.nav-header .nav_links {
+  list-style: none;
+}
+
+.nav-header .nav_links li {
+  display: inline-block;
+  padding: 0px 20px;
+}
+
+.nav-header .nav_links li a {
+  transition: all 0.3s ease 0s;
+}
+
+.nav-header .nav_links li a:hover {
+  color: #D6FFF6;
+}
+
+.nav-header #receipt-name {
+  font-size: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  color: #fff;
+}
+
+/* --------------------- homepage ------------------- */
+
+.content-home {
+  width:100%;
+  height:auto;
+  border: 5px solid red;
+  overflow-y: hidden;
+}
+
+/*---------------------- list receipts page ----------------------*/
+.text-center {
+  justify-content: center;
+}

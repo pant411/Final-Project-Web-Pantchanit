@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %} <title>รายชื่อลูกค้า</title> {% endblock %}
+
+{% block content %}
+<section class="my-container">
+    <table id="myTable" class="display table table-striped" style="width: 100%;">
+        <thead>
+        <tr>
+            <th class="th text-center">ชื่อ</th>
+            <th class="th text-center">เลขประจำตัวผู้เสียภาษี</th>
+            <th class="th text-center">ที่อยู่</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for ele in list_data: %}
+                <tr id={{ele.id}}>
+                    <td>{{ele.customerName}}</td>
+                    <td>{{ele.taxIDCust}}</td>
+                    <td>{{ele.addressCust}}</td>
+                </tr>                
+            {% endfor %}     
+        </tbody>
+    </table>
+</section>
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="{{ url_for ('static', path='/js/datatable.js') }}"></script>
+{% endblock %}
