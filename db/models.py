@@ -44,6 +44,7 @@ class Item(Base): # back to Receipt
     id = Column(Integer, primary_key=True, index=True)
     nameItem = Column(String(250), index=True)
     qty = Column(FLOAT, index=True)
+    unitQty = Column(String(10), index=True)
     pricePerQty = Column(FLOAT, index=True)
     priceItemTotal = Column(FLOAT, index=True)
 

@@ -6,6 +6,7 @@ from pydantic.schema import Optional
 class Item(BaseModel): 
     nameItem: str
     qty: Optional[float]
+    unitQty: Optional[str]
     pricePerQty: Optional[float]
     priceItemTotal: float
     class Config:
@@ -54,6 +55,7 @@ class ResponseItem(BaseModel):
     id: int
     nameItem: str
     qty: Optional[float]
+    unitQty: Optional[str]
     pricePerQty: Optional[float]
     priceItemTotal: float
     owner_purchaseId: int
