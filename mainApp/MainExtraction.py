@@ -5,16 +5,16 @@ from ExtractionModule import findShopName,\
                              findDate,\
                              findReceiptID,\
                              findCustomerShop,\
-                             extractAddress\
-#                              findListOfItemWithQty,\
-#                              findListOfItem,\
+                             extractAddress,\
+                             findListOfItemWithQty,\
+                             findListOfItemWithoutQty\
 #                              findListOfItemWithoutQty
 # from pythainlp.tokenize import sent_tokenize
 # import json
 from Utils import candidateFromList, normalizeDate
 import re
 
-def extraction(text: str):
+def extraction(text: str, option: int):
     Lines = text.splitlines()
 
     item_txt1 = []
@@ -68,6 +68,13 @@ def extraction(text: str):
                     threshold = 0.72
                 )
     
+    listOfItem = []
+
+    if option == 0:
+        listOfItem = findListOfItemWithoutQty(lsttext = item_txt2)
+    elif option == 1:
+        listOfItem = findListOfItemWithQty(lsttext = item_txt2)
+
     # listListOfItem = findListOfItem(lsttext = item_txt2, threshold = 0.80)
 
     receiptID = ''
@@ -107,5 +114,6 @@ def extraction(text: str):
              'customer': customerName,
              'taxIDCust': taxIDCust,
              'addressShop': listAddress["addressShop"],
-             'addressCust': listAddress["addressCust"]
+             'addressCust': listAddress["addressCust"],
+             'list_item': listOfItem
         }

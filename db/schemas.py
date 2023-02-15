@@ -4,11 +4,12 @@ from pydantic import BaseModel, Field
 from pydantic.schema import Optional
 
 class Item(BaseModel): 
-    nameItem: str
+    # id: int
+    nameItem: Optional[str]
     qty: Optional[float]
     unitQty: Optional[str]
     pricePerQty: Optional[float]
-    priceItemTotal: float
+    priceItemTotal: Optional[float]
     class Config:
         orm_mode = True
 
@@ -79,7 +80,7 @@ class ResponseGetOneReceipt(BaseModel):
     addressCust: Optional[str]
     purchase_id: int
     priceTotal: float
-    list_item: List[ResponseItem] = []
+    list_item: List[Item] = []
     class Config:
         orm_mode = True
 
@@ -114,6 +115,7 @@ class ResponseAnalyzeReceipt(BaseModel):
     addressShop: str
     customer: str
     addressCust: str
+    list_item: List[Item] = []
     class Config:
         orm_mode = True
 

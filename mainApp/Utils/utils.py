@@ -147,5 +147,31 @@ def normalizeDate(txt: str):
           return datetime(year=(2500+split_date[2])-543, month=list_of_month[split_date[1]],\
                         day=split_date[0], hour=0, minute=0,\
                         second=0, microsecond=0)   
-  except ValueError:
+  except:
     return None
+
+def handlePriceAndQTY(txt: str):
+  try:
+    seacrh_Invalid_AbleSolve = re.search(",\d{2}$",txt)
+    if seacrh_Invalid_AbleSolve:
+      idx_invalid = seacrh_Invalid_AbleSolve.start()
+      txt = txt[:idx_invalid] + '.' + txt[idx_invalid+1:]
+      txt = re.sub(',', '', txt)
+    string = re.sub(',', '', txt)
+    if not(re.search(".",txt)):
+      return int(string) 
+    return float(string) 
+  except:
+    return None
+
+
+def cleanQTY(txt: str):
+  try:
+    string = re.sub(',', '', txt)
+    if not(re.search(".",txt)):
+      return int(string) 
+  
+    return float(string) 
+  except:
+    return None
+  

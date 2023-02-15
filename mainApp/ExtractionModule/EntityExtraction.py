@@ -4,6 +4,7 @@ from typing import Tuple, List, Dict
 import re
 # from fuzzywuzzy import process
 import Utils as ut
+from .unitPrice import UNITPRICE
 
 def findShopName(
     lsttext: List,
@@ -407,30 +408,81 @@ def analyzeItem(item: str,dict_data: Dict):
     print(pos_unit_item, token_txt[pos_unit_item-1])
 """
 
-def findPriceOther(name_item: str, price_item: str):
-  list_total = []
-  price_total = -1
+def findTotal(txt: str):
   max_match = 0
-  token_txt = sent_tokenize(name_item, engine='whitespace')
+  token_txt = sent_tokenize(txt, engine='whitespace')
   except_word = ["จำนวนเงินทั้งหมด", "จำนวนเงินเป็นตัวอักษร",\
     "รวมทั้งหมด", "total", "ยอดชำระรวม", "จำนวนเงินรวมภาษีมูลค่าเพิ่ม",\
-    "ภาษีมูลค่าเพิ่ม", "ยอดคงค้าง", "รวมหน้านี้", "รับชำระโดย", "รวมเงิน"]
+    "ภาษีมูลค่าเพิ่ม", "ยอดคงค้าง", "รวมหน้านี้", "รับชำระโดย", "รวมเงิน",\
+    "รวมราคาทั้งสิ้น", "TOTAL", "AMOUNT", "จำนวนเงินรวมทังสิน", "ราคาสุทธิ"]
   for ele_token in token_txt:
     max_res_sim, _ = ut.similarityListWord(ele_token,except_word)
     if max_res_sim > max_match:
       max_match = max_res_sim
   if max_match > 0.80: 
-    price_total = price_item
-    return {
-      'name-item': name_item,
-      'price-item': price_item      
-    }
+    return txt
   return None    
+
+def extractPriceItemWithQty(txt: str):
+  pattern_price =  r"((([1-9]\d{0,2})(,?\d{3})+)[.\,]\d\d?)|(([1-9]\d{0,2})[.\,]\d\d?)|\d+"
+  # pattern_qty =  r"((([1-9]\d{0,2})(,?\d{3})+)[.\,]\d\d?)|(([1-9]\d{0,2})[.\,]\d\d?)|\d+"
+  pattern_unit_qty = r"X\d+(.\d+)?[A-Z]+"
+  token_txt = sent_tokenize(txt, engine='whitespace')
+  len_token_txt = len(token_txt) 
+  idx_price = []
+  idx_qty = []
+  unitQty = ''
+  item = ''
+  qty_item = ''
+  price_per_item = ''
+  price_total_item = ''
+  break_item = False
+  for idx in range(len_token_txt-1,-1,-1):
+    search_price = re.search(pattern_price,token_txt[idx])
+    # search_qty = re.search(pattern_qty,token_txt[idx])
+    max_sim_unit, idxUnitQty = ut.similarityListWord(token_txt[idx],UNITPRICE)
+    if search_price and len(idx_price) < 2 and token_txt[idx] != 0:
+      idx_price.append(idx)
+    elif max_sim_unit >= 0.78 and len(idx_price) == 2:
+      if token_txt[idx-1].isnumeric:
+        idx_qty.append(idx-1)
+      elif re.search("\d", token_txt[idx]):
+        idx_qty.append(idx)
+        qty_item = re.sub("[^0-9]", "", token_txt[idx])
+      unitQty = UNITPRICE[idxUnitQty]
+    elif re.search(pattern_unit_qty,token_txt[idx]):
+      idx_qty.append(idx-1)
+      unitQty = token_txt[idx]      
+    elif len(idx_qty) == 1:
+      break
+
+  if len(idx_price) == 2:
+    price_per_item = token_txt[idx_price[1]]
+    price_total_item = token_txt[idx_price[0]]
+  elif len(idx_price) == 1:
+    price_total_item = token_txt[idx_price[0]]
+  for idx in range(len_token_txt):
+    if idx not in idx_price and idx not in idx_qty and not(break_item):
+      item = item + token_txt[idx] + ' '
+    elif idx in idx_qty:
+      qty_item = token_txt[idx]
+      break_item = True
+  # print(item)
+  # print(qty_item)
+  # print(price_per_item)
+  # print(price_total_item)
+  return {
+    'nameItem': item,
+    'qty': ut.handlePriceAndQTY(qty_item),
+    'unitQty': unitQty,
+    'pricePerQty': ut.handlePriceAndQTY(price_per_item),
+    'priceItemTotal': ut.handlePriceAndQTY(price_total_item),
+  }
   
 def findListOfItemWithQty(lsttext: List) -> List:
   # ((([1-9]\d{0,2})(,?\d{3})+)|([1-9]\d{0,2}))\.\d\d?
   listOfItem = []
-  pattern1 =  r"((([1-9]\d{0,2})(,?\d{3})+)[.,\,]\d\d?)|(([1-9]\d{0,2})[.,\,]\d\d?)" 
+  pattern1 =  r"((([1-9]\d{0,2})(,?\d{3})+)[.\,]\d\d?)|(([1-9]\d{0,2})[.\,]\d\d?)" 
   # pattern2 = r"(([1-9]\d{0,2})[.,\,]\d\d?)"
 
   len_lsttext = len(lsttext)
@@ -443,7 +495,11 @@ def findListOfItemWithQty(lsttext: List) -> List:
       # print(re.findall(pattern1,lsttext[idx]['txt']))
       # analyzeItem(lsttext[idx]['txt'],dict_data)
       text_item = re.sub("^[a-zA-Z๐-๙]+\s", "", lsttext[idx]['txt'])
-      listOfItem.append(text_item)
+      isTotal = findTotal(text_item)
+      print
+      if isTotal == None: 
+        extract_item = extractPriceItemWithQty(text_item)
+        listOfItem.append(extract_item)
     # elif search_price2:
     #   print(search_price2)
     #   # print(lsttext[idx]['txt'])
@@ -453,7 +509,7 @@ def findListOfItemWithQty(lsttext: List) -> List:
 def findListOfItemWithoutQty(lsttext: List) -> List:
   # ((([1-9]\d{0,2})(,?\d{3})+)|([1-9]\d{0,2}))\.\d\d?
   listOfItem = []
-  pattern1 =  r"((([1-9]\d{0,2})(,?\d{3})+)[.,\,]\d\d?)|(([1-9]\d{0,2})[.,\,]\d\d?)" 
+  pattern1 =  r"((([1-9]\d{0,2})(,?\d{3})+)[.\,]\d\d?)|(([1-9]\d{0,2})[.\,]\d\d?)" 
   # pattern2 = r"(([1-9]\d{0,2})[.,\,]\d\d?)"
   len_lsttext = len(lsttext)
   for idx in range(len_lsttext):
@@ -467,14 +523,15 @@ def findListOfItemWithoutQty(lsttext: List) -> List:
         lsttext[idx]['txt'][:range_price[0]-1])
       price_item = lsttext[idx]['txt'][range_price[0]:range_price[1]+1]
       price_item = re.sub("[,\s]","",price_item)
-      PriceTotal = findPriceOther(name_item, price_item)
+      isTotal = findTotal(name_item)
+      # print(isTotal)
       if len(name_item) <= 5: continue
-      if PriceTotal == None:
+      if isTotal == None:
         # print(search_price1.span())
         listOfItem.append({
-          'name-item': name_item,
-          'price-item': price_item
+          'nameItem': name_item,
+          'priceItemTotal': ut.handlePriceAndQTY(price_item)
         })
-      else:
-        print(f"total is {PriceTotal}")
+      # else:
+      #   print(f"total is {price_item}")
   return listOfItem

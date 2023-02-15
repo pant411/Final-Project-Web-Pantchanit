@@ -41,7 +41,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Dependency
@@ -58,6 +58,10 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
+
+@app.get("/addreceipt/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("add.html", {"request": request})
 
 @app.get("/listreceipts/", response_class=HTMLResponse)
 def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db)):
@@ -80,12 +84,12 @@ def getlistCustomerByPagination(request: Request, db: Session = Depends(get_db))
 async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
     return await crud.create_receipt_main(db=db, receipt=receipt)
 
-@app.post("/receipts/analyze/", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
-async def analyzeReceipt(file: UploadFile = File(...)):
+@app.post("/receipts/analyze/{option}", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
+async def analyzeReceipt(option: int, file: UploadFile = File(...)):
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
-    data = runMain(image)
+    data = runMain(image, option)
     path_file = "img/" + file.filename
     data["pathImage"] = "/static/"+path_file
     data["filename"] = file.filename
