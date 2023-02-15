@@ -12,6 +12,10 @@ body * {
   margin: 0 auto;
 }
 
+.my-content {
+  margin-top: 20px;
+}
+
 .nav-header {
   display: flex;
   justify-content: space-between;
@@ -66,6 +70,28 @@ body * {
 }
 
 /*---------------------- list receipts page ----------------------*/
-.text-center {
+.text-center-item {
+  display: flex;
+  align-items: center;
   justify-content: center;
+}
+
+/*-------------- upload image file ------------*/
+.upload-section {
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-box {
+  width: 550px;
+}
+
+.flex { 
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Optional */
+}
+
+.buttonHolder{ 
+  text-align: center; 
 }

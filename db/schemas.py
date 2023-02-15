@@ -15,12 +15,12 @@ class Item(BaseModel):
 
 class ReceiptCreateMain(BaseModel):
     # about receipt
-    filename: str
-    pathImage: str
-    receiptID: str
+    filename: Optional[str]
+    pathImage: Optional[str]
+    receiptID: Optional[str]
     dateReceipt: Optional[datetime]
     # about shop
-    shopName: str
+    shopName: Optional[str]
     taxIDShop: Optional[str]
     addressShop: Optional[str]
     shopPhone: Optional[str]
@@ -30,7 +30,7 @@ class ReceiptCreateMain(BaseModel):
     addressCust: Optional[str]
     # about item
     items: List[Item] = []
-    priceTotal: float
+    # priceTotal: float
     class Config:
         orm_mode = True
 
@@ -104,17 +104,17 @@ class ResponseDeleteReceipt(ResponseCreateReceipt):
     pass
 
 class ResponseAnalyzeReceipt(BaseModel):
-    filename: str
-    pathImage: str
-    receiptID: str
-    dateReceipt: datetime
-    shopName: str
-    shopPhone: str
-    taxIDShop: str
-    taxIDCust: str
-    addressShop: str
-    customer: str
-    addressCust: str
+    filename: Optional[str]
+    pathImage: Optional[str]
+    receiptID: Optional[str]
+    dateReceipt: Optional[datetime]
+    shopName: Optional[str]
+    shopPhone: Optional[str]
+    taxIDShop: Optional[str]
+    taxIDCust: Optional[str]
+    addressShop: Optional[str]
+    customer: Optional[str]
+    addressCust: Optional[str]
     list_item: List[Item] = []
     class Config:
         orm_mode = True

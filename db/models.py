@@ -33,7 +33,7 @@ class Purchase(Base):
     __tablename__ = "purchases"
     id = Column(Integer, primary_key=True, index=True)
     items = relationship("Item", back_populates="owner_purchase", cascade="all, delete") # FK
-    priceTotal = Column(FLOAT, index=True)
+    # priceTotal = Column(FLOAT, index=True)
 
     owner_receiptId = Column(Integer, ForeignKey("receipts.id"))
     owner_receipt = relationship("Receipt", back_populates="purchase", cascade="all, delete")

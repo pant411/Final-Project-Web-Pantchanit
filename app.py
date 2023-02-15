@@ -1,6 +1,6 @@
 # built in module
 from typing import List
-from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response
+from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_pagination import Page, paginate, add_pagination
 from fastapi.staticfiles import StaticFiles
@@ -84,8 +84,8 @@ def getlistCustomerByPagination(request: Request, db: Session = Depends(get_db))
 async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
     return await crud.create_receipt_main(db=db, receipt=receipt)
 
-@app.post("/receipts/analyze/{option}", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
-async def analyzeReceipt(option: int, file: UploadFile = File(...)):
+@app.post("/receipts/submit/", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
+async def submitReceipt(option: int = Form(...), file: UploadFile = File(...), db: Session = Depends(get_db)):
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
@@ -93,7 +93,8 @@ async def analyzeReceipt(option: int, file: UploadFile = File(...)):
     path_file = "img/" + file.filename
     data["pathImage"] = "/static/"+path_file
     data["filename"] = file.filename
-    # print(data)
+    print(data)
+    await crud.create_receipt_main(db=db, receipt=data, option=option)
     await file.seek(0)
     with open("static/"+path_file, "wb+") as file_object:
         file_object.write(file.file.read())

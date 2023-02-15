@@ -1,29 +1,30 @@
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Union
 
 from . import models, schemas
 
 #################################### for get method #################################### 
 
-async def create_receipt_main(db: Session, receipt: schemas.ReceiptCreateMain):
+async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateMain, dict], option: int):
     # create shop
+    print(receipt)
     db_shop = await create_shop(
                 db, 
-                shopName = receipt.shopName, 
-                taxIDShop = receipt.taxIDShop, 
-                addressShop = receipt.addressShop,
-                shopPhone = receipt.shopPhone)
+                shopName = receipt["shopName"], 
+                taxIDShop = receipt["taxIDShop"], 
+                addressShop = receipt["addressShop"],
+                shopPhone = receipt["shopPhone"])
     # create customer
     db_cust = await create_customer(db,
-                customerName = receipt.customerName,
-                addressCust = receipt.addressCust,
-                taxIDCust = receipt.taxIDCust)
+                customerName = receipt["customerName"],
+                addressCust = receipt["addressCust"],
+                taxIDCust = receipt["taxIDCust"])
 
     db_receipt = models.Receipt(
-        filename = receipt.filename,
-        pathImage = receipt.pathImage,
-        receiptID = receipt.receiptID, 
-        dateReceipt = receipt.dateReceipt,
+        filename = receipt["filename"],
+        pathImage = receipt["pathImage"],
+        receiptID = receipt["receiptID"], 
+        dateReceipt = receipt["dateReceipt"],
         shopID = db_shop.id,
         customerID = db_cust.id
     )
@@ -31,7 +32,7 @@ async def create_receipt_main(db: Session, receipt: schemas.ReceiptCreateMain):
     db.commit()
     db.refresh(db_receipt)
 
-    await create_purchase(db, listItems = receipt.items, priceTotal = receipt.priceTotal, owner_receiptId = db_receipt.id)
+    await create_purchase(db, listItems = receipt["items"], owner_receiptId = db_receipt.id, option = option)
 
     return {"status": "success"}
 
@@ -76,27 +77,35 @@ async def create_customer(db: Session,
 
     return db_cust
 
-async def create_purchase(db: Session, listItems: any, priceTotal: int, owner_receiptId: int):
+async def create_purchase(db: Session, listItems: any, owner_receiptId: int, option: int):
     db_purchase = models.Purchase(
-        priceTotal = priceTotal,
+        # priceTotal = priceTotal,
         owner_receiptId = owner_receiptId
     )
     db.add(db_purchase)
     db.commit()
     db.refresh(db_purchase)
 
-    await create_item(db, listItems = listItems, owner_purchaseId = db_purchase.id)
+    await create_item(db, listItems = listItems, owner_purchaseId = db_purchase.id, option = option)
 
-async def create_item(db: Session, listItems: any, owner_purchaseId: int):
+async def create_item(db: Session, listItems: any, owner_purchaseId: int, option: int):
     objects = []
     for ele in listItems:
-        db_items = models.Item(
-            nameItem = ele.nameItem, 
-            qty = ele.qty,
-            pricePerQty = ele.pricePerQty,
-            priceItemTotal = ele.priceItemTotal,
-            owner_purchaseId = owner_purchaseId
-        )
+        if option == 0:
+            db_items = models.Item(
+                nameItem = ele["nameItem"], 
+                priceItemTotal = ele["priceItemTotal"],
+                owner_purchaseId = owner_purchaseId
+            )
+        elif option == 1:
+            db_items = models.Item(
+                nameItem = ele["nameItem"], 
+                qty = ele["qty"],
+                unitQty = ele["unitQty"],
+                pricePerQty = ele["pricePerQty"],
+                priceItemTotal = ele["priceItemTotal"],
+                owner_purchaseId = owner_purchaseId
+            )        
         objects.append(db_items)
     db.bulk_save_objects(objects)
     db.commit()
@@ -147,7 +156,7 @@ def getOneReceipt_byDBId_main(db: Session, id: int):
         'taxIDCust': db_customer.taxIDCust,
         'addressCust': db_customer.addressCust,
         'purchase_id': db_purchase.id,
-        'priceTotal': db_purchase.priceTotal,
+        # 'priceTotal': db_purchase.priceTotal,
         'list_item': db_item
    }
 

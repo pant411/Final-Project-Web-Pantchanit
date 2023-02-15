@@ -111,9 +111,9 @@ def extraction(text: str, option: int):
              'taxIDShop': taxIDShop, 
              'dateReceipt': dateReceipt, 
              'receiptID': receiptID,
-             'customer': customerName,
+             'customerName': customerName,
              'taxIDCust': taxIDCust,
              'addressShop': listAddress["addressShop"],
              'addressCust': listAddress["addressCust"],
-             'list_item': listOfItem
+             'items': listOfItem
         }

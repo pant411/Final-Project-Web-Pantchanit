@@ -3,11 +3,14 @@
 {% block title %} <title>เพิ่มรายการใบเสร็จ</title> {% endblock %}
 
 {% block content %}
-<form action="/uploadreceipt" method="POST" enctype="multipart/form-data">
-    <div class="form-group mt-3 bt-area ">
-        <label >เพิ่มรายการใบเสร็จรับเงิน</label>
-        <input title="upload image" class="form-control form-width justify-content-center" name="file" type="file" />
-        <input type="submit" class="btn btn-primary mr-2" />
-    </div>
-</form>
+<div class="container-lg my-content">
+    <label>เพิ่มรายการใบเสร็จรับเงิน</label>
+    <form class="flex" action="/uploadreceipt" method="POST" enctype="multipart/form-data"></form>
+        <div class="form-group mb-3 buttonHolder"></div>
+            <input title="upload image" class="form-control" name="file" type="file" accept="image/*" />
+            <input type="submit" class="btn btn-primary mr-2 text-center" />
+        </div>
+    </form>
+</div>
+
 {% endblock content %}
