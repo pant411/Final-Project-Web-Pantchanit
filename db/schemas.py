@@ -47,11 +47,6 @@ class ResponseCustomer(BaseModel):
     taxIDCust: str
     addressCust: str
 
-class ResponsePurchase(BaseModel):
-    id: int
-    priceTotal: float
-    owner_receiptId: int
-
 class ResponseItem(BaseModel):
     id: int
     nameItem: str
@@ -59,7 +54,7 @@ class ResponseItem(BaseModel):
     unitQty: Optional[str]
     pricePerQty: Optional[float]
     priceItemTotal: float
-    owner_purchaseId: int
+    owner_receiptId: int
     class Config:
         orm_mode = True
 
@@ -78,7 +73,7 @@ class ResponseGetOneReceipt(BaseModel):
     customerName: Optional[str]
     taxIDCust: Optional[str]
     addressCust: Optional[str]
-    purchase_id: int
+    # purchase_id: int
     priceTotal: float
     list_item: List[Item] = []
     class Config:

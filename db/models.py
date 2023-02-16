@@ -19,7 +19,7 @@ class Receipt(Base):
     pathImage = Column(String(250), index=True)
     receiptID = Column(String(250), index=True)
     dateReceipt = Column(DateTime, index=True)
-    purchase = relationship("Purchase", back_populates="owner_receipt", cascade="all, delete") # FK
+    items = relationship("Item", back_populates="owner_receipt", cascade="all, delete") # FK
     shopID = Column(Integer, index=True)
     customerID =Column(Integer, index=True)
     
@@ -29,14 +29,6 @@ class Receipt(Base):
         server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
         server_onupdate=FetchedValue())
     
-class Purchase(Base):
-    __tablename__ = "purchases"
-    id = Column(Integer, primary_key=True, index=True)
-    items = relationship("Item", back_populates="owner_purchase", cascade="all, delete") # FK
-    # priceTotal = Column(FLOAT, index=True)
-
-    owner_receiptId = Column(Integer, ForeignKey("receipts.id"))
-    owner_receipt = relationship("Receipt", back_populates="purchase", cascade="all, delete")
 
 class Item(Base): # back to Receipt
     __tablename__ = "items"
@@ -48,8 +40,8 @@ class Item(Base): # back to Receipt
     pricePerQty = Column(FLOAT, index=True)
     priceItemTotal = Column(FLOAT, index=True)
 
-    owner_purchaseId = Column(Integer, ForeignKey("purchases.id"))
-    owner_purchase = relationship("Purchase", back_populates="items", cascade="all, delete")
+    owner_receiptId = Column(Integer, ForeignKey("receipts.id"))
+    owner_receipt = relationship("Receipt", back_populates="items", cascade="all, delete")
 
 class Shop(Base): # back to Receipt
     __tablename__ = "shops"

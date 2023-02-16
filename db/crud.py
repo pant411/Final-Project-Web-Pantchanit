@@ -32,7 +32,7 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
     db.commit()
     db.refresh(db_receipt)
 
-    await create_purchase(db, listItems = receipt["items"], owner_receiptId = db_receipt.id, option = option)
+    await create_item(db, listItems = receipt["items"], owner_receiptId = db_receipt.id, option = option)
 
     return {"status": "success"}
 
@@ -77,25 +77,14 @@ async def create_customer(db: Session,
 
     return db_cust
 
-async def create_purchase(db: Session, listItems: any, owner_receiptId: int, option: int):
-    db_purchase = models.Purchase(
-        # priceTotal = priceTotal,
-        owner_receiptId = owner_receiptId
-    )
-    db.add(db_purchase)
-    db.commit()
-    db.refresh(db_purchase)
-
-    await create_item(db, listItems = listItems, owner_purchaseId = db_purchase.id, option = option)
-
-async def create_item(db: Session, listItems: any, owner_purchaseId: int, option: int):
+async def create_item(db: Session, listItems: any, owner_receiptId: int, option: int):
     objects = []
     for ele in listItems:
         if option == 0:
             db_items = models.Item(
                 nameItem = ele["nameItem"], 
                 priceItemTotal = ele["priceItemTotal"],
-                owner_purchaseId = owner_purchaseId
+                owner_receiptId = owner_receiptId
             )
         elif option == 1:
             db_items = models.Item(
@@ -104,7 +93,7 @@ async def create_item(db: Session, listItems: any, owner_purchaseId: int, option
                 unitQty = ele["unitQty"],
                 pricePerQty = ele["pricePerQty"],
                 priceItemTotal = ele["priceItemTotal"],
-                owner_purchaseId = owner_purchaseId
+                owner_receiptId = owner_receiptId
             )        
         objects.append(db_items)
     db.bulk_save_objects(objects)
@@ -138,8 +127,7 @@ def getOneReceipt_byDBId_main(db: Session, id: int):
    db_receipt = db.query(models.Receipt).filter(models.Receipt.id == id).first()
    db_shop = getOneShop_byDBId(db, id = db_receipt.shopID)
    db_customer = getOneCustomer_byDBId(db, id = db_receipt.customerID)
-   db_purchase = getOnePurchase_byDBId(db, id = db_receipt.id)
-   db_item = getItem_byDBId(db, id = db_purchase.id)
+   db_item = getItem_byDBId(db, id = db_receipt.id)
    return {
         'id': db_receipt.id,
         'filename': db_receipt.filename,
@@ -155,7 +143,6 @@ def getOneReceipt_byDBId_main(db: Session, id: int):
         'customerName': db_customer.customerName,
         'taxIDCust': db_customer.taxIDCust,
         'addressCust': db_customer.addressCust,
-        'purchase_id': db_purchase.id,
         # 'priceTotal': db_purchase.priceTotal,
         'list_item': db_item
    }
@@ -181,12 +168,8 @@ def getOneCustomer_byDBId(db: Session, id: int):
    db_customer = db.query(models.Customer).filter(models.Customer.id == id).first()
    return db_customer
 
-def getOnePurchase_byDBId(db: Session, id: int):
-   db_purchase = db.query(models.Purchase).filter(models.Purchase.owner_receiptId == id).first()
-   return db_purchase
-
 def getItem_byDBId(db: Session, id: int):
-   db_item = db.query(models.Item).filter(models.Item.owner_purchaseId == id).all()
+   db_item = db.query(models.Item).filter(models.Item.owner_receiptId == id).all()
    return db_item
 
 def getShopAll(db: Session):
