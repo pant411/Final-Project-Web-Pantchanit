@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %} <title>รายละเอียดของใบเสร็จรับเงิน</title> {% endblock %}
+
+{% block content %}
+<div class="container-fluid my-content content-receipt">
+    <div class="image-receipt-section">
+        <img src="{{ url_for('static', path=receipt_data.pathImage) }}" id="image-receipt"> 
+    </div>
+    <div class="detail-receipt-section">
+        <!-- Tab links -->
+        <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'Detail')" id="defaultOpen">รายละเอียดของใบเสร็จรับเงิน</button>
+            <button class="tablinks" onclick="openCity(event, 'Item')">รายการสินค้าหรือบริการของใบเสร็จรับเงิน</button>
+        </div>
+        
+        <!-- Tab content -->
+        <div id="Detail" class="tabcontent">
+            <h4>ชื่อไฟล์: {{receipt_data.filename}}</h4>
+            <h4>เลขที่ใบเสร็จรับเงิน: {{receipt_data.receiptID}}</h4>
+            <h4>วันที่ออกใบเสร็จรับเงิน: {{receipt_data.dateReceipt}}</h4>
+            <h4>ข้อมูลของร้านค้า</h4>
+            <p>ชื่อ: {{receipt_data.shopName}}</p>
+            <p>ที่อยู่: {{receipt_data.addressShop}}</p>
+            <p>เบอร์โทรศัพท์: {{receipt_data.shopPhone}}</p>
+            <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDShop}}</p>
+            <h4>ข้อมูลของลูกค้า</h4>
+            <p>ชื่อ: {{receipt_data.customerName}}</p>
+            <p>ที่อยู่: {{receipt_data.addressCust}}</p>
+            <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDCust}}</p>
+        </div>
+        
+        <div id="Item" class="tabcontent">
+            <table id="myTable" class="display table table-striped" style="width: 100%;">
+                {% if receipt_data.type_receipt == 1 %}
+                    <thead>
+                    <tr>
+                        <th class="th text-center">รายการสินค้าหรือบริการ</th>
+                        <th class="th text-center">ปริมาณสินค้าหรือบริการ</th>
+                        <th class="th text-center">หน่วยของสินค้าหรือบริการ</th>
+                        <th class="th text-center">ราคาสินค้าหรือบริการ(ต่อหน่วย)</th>
+                        <th class="th text-center">ราคาสินค้าหรือบริการ</th>
+                    </tr>
+                    </thead>
+                    <tbody class="receipt-detail">
+                        {% for ele in items %}
+                            <tr id="{{ele.id}}">
+                                <td>{{ele.nameItem}}</td>
+                                <td>{{ele.qty}}</td>
+                                <td>{{ele.unitQty}}</td>
+                                <td>{{ele.pricePerQty}}</td>
+                                <td>{{ele.priceItemTotal}}</td>
+                            </tr>                
+                        {% endfor %}     
+                    </tbody>
+                {% elif receipt_data.type_receipt == 0 %}
+                    <thead>
+                        <tr>
+                            <th class="th text-center">รายการสินค้าหรือบริการ</th>
+                            <th class="th text-center">ราคาสินค้าหรือบริการ</th>
+                        </tr>
+                        </thead>
+                        <tbody class="receipt-detail">
+                            {% for ele in items %}
+                                <tr id="{{ele.id}}">
+                                    <td>{{ele.nameItem}}</td>
+                                    <td>{{ele.priceItemTotal}}</td>
+                                </tr>                
+                            {% endfor %}     
+                        </tbody>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+</div>
+
+            
+{% endblock content %}
+
+{% block scripts %}
+<script src="{{ url_for ('static', path='/js/tab.js') }}"></script>
+<script src="{{ url_for ('static', path='/js/datatable-receipt-detail.js') }}"></script>
+{% endblock %}

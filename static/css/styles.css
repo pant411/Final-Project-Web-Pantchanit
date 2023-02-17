@@ -21,7 +21,7 @@ body * {
   justify-content: space-between;
   align-items: center;
   padding: 18px 4%;
-  background-color: #231651;
+  background-color: #0F4C81;
 }
 
 .nav-header li, a, button {
@@ -56,8 +56,8 @@ body * {
 .nav-header #receipt-name {
   font-size: "Montserrat", sans-serif;
   font-weight: 500;
-  font-size: 24px;
-  color: #fff;
+  font-size: 25px;
+  color: #f2ec38;
 }
 
 /* --------------------- homepage ------------------- */
@@ -75,6 +75,81 @@ body * {
   align-items: center;
   justify-content: center;
 }
+
+.receipt-detail a:link {
+  color: #000;
+}
+
+.receipt-detail a:visited {
+  color: #000;
+}
+
+.receipt-detail a:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
+/*---------- receipts details page -----------*/
+.content-receipt .image-receipt-section #image-receipt {
+  max-width: 450px;
+  display: flex;
+  align-items: center;
+}
+
+.content-receipt {
+  display: flex;
+}
+
+.content-receipt .image-receipt-section {
+  /*border: 2px solid red;*/
+  align-items: center;
+  justify-content: center;
+}
+
+.content-receipt .detail-receipt-section {
+  margin-left: 20px;
+  width: 1800px;
+  /*border: 2px solid red;*/
+}
+
+/* Style the tab */
+.content-receipt .detail-receipt-section .tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.content-receipt .detail-receipt-section .tab button {
+  background-color: inherit;
+  color: #000;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.content-receipt .detail-receipt-section .tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.content-receipt .detail-receipt-section .tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.content-receipt .detail-receipt-section .tabcontent {
+  height: 720px;
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
 
 /*-------------- upload image file ------------*/
 .upload-section {

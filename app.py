@@ -60,22 +60,29 @@ def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 @app.get("/addreceipt/", response_class=HTMLResponse)
-def home(request: Request):
+def addreceipt(request: Request):
     return templates.TemplateResponse("add.html", {"request": request})
 
+@app.get("/receiptdetail/{receipt_id}", response_class=HTMLResponse)
+async def receiptdetail(receipt_id:int, request: Request, db: Session = Depends(get_db)):
+    receipt_data = await crud.getOneReceipt_byDBId_main(db, receipt_id)
+    db_item = await crud.getItem_byDBId(db, owner_receiptId = receipt_id)
+    print(receipt_data)
+    return templates.TemplateResponse("receiptdetail.html", {"request": request, "receipt_data": receipt_data, "items": db_item})
+
 @app.get("/listreceipts/", response_class=HTMLResponse)
-def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db)):
-    list_data = crud.getReceiptByAll(db)
+async def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db)):
+    list_data = await crud.getReceiptByAll(db)
     return templates.TemplateResponse("listReceipt.html", {"request": request, "list_data": list_data})
 
 @app.get("/listshops/", response_class=HTMLResponse)
-def getlistShopByPagination(request: Request, db: Session = Depends(get_db)):
-    list_data = crud.getShopAll(db)
+async def getlistShopByPagination(request: Request, db: Session = Depends(get_db)):
+    list_data = await crud.getShopAll(db)
     return templates.TemplateResponse("listShop.html", {"request": request, "list_data": list_data})
 
 @app.get("/listcustomers/", response_class=HTMLResponse)
-def getlistCustomerByPagination(request: Request, db: Session = Depends(get_db)):
-    list_data = crud.getCustomerAll(db)
+async def getlistCustomerByPagination(request: Request, db: Session = Depends(get_db)):
+    list_data = await crud.getCustomerAll(db)
     return templates.TemplateResponse("listCustomer.html", {"request": request, "list_data": list_data})
 
 #################################### Receipt Module #################################### 
@@ -84,17 +91,18 @@ def getlistCustomerByPagination(request: Request, db: Session = Depends(get_db))
 async def createReceipt(receipt: schemas.ReceiptCreateMain, db: Session = Depends(get_db)):
     return await crud.create_receipt_main(db=db, receipt=receipt)
 
-@app.post("/receipts/submit/", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
-async def submitReceipt(option: int = Form(...), file: UploadFile = File(...), db: Session = Depends(get_db)):
+@app.post("/receipts/submit", tags = ["Receipts"], response_model=schemas.ResponseAnalyzeReceipt)
+async def submitReceipt(type_receipt: int = Form(...), file: UploadFile = File(...), db: Session = Depends(get_db)):
+    print("tuuu",type_receipt)
     image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
             cv2.IMREAD_UNCHANGED)
     # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
-    data = runMain(image, option)
+    data = runMain(image, type_receipt)
     path_file = "img/" + file.filename
-    data["pathImage"] = "/static/"+path_file
+    data["pathImage"] = path_file
     data["filename"] = file.filename
-    print(data)
-    await crud.create_receipt_main(db=db, receipt=data, option=option)
+    # print(data)
+    await crud.create_receipt_main(db=db, receipt=data, type_receipt=type_receipt)
     await file.seek(0)
     with open("static/"+path_file, "wb+") as file_object:
         file_object.write(file.file.read())
@@ -103,32 +111,36 @@ async def submitReceipt(option: int = Form(...), file: UploadFile = File(...), d
     return data
 
 @app.get("/receipts/getOneByID/{receipt_id}", tags = ["Receipts"], response_model=schemas.ResponseGetOneReceipt)
-def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
+async def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
     db_receipt = crud.getOneReceiptByID(db, id = receipt_id)
     if db_receipt is None:
         raise HTTPException(status_code=404, detail="Receipt not found with the given ID")
-    return crud.getOneReceipt_byDBId_main(db, receipt_id)
+    return await crud.getOneReceipt_byDBId_main(db, receipt_id)
 
 @app.get("/receipts/getByPagination/", tags = ["Receipts"], response_model=Page[schemas.ResponseReceiptAll])
-def getReceiptByPagination(db: Session = Depends(get_db)):
-    return paginate(crud.getReceiptByAll(db))
+async def getReceiptByPagination(db: Session = Depends(get_db)):
+    return await paginate(crud.getReceiptByAll(db))
 
 @app.delete('/receipts/deleteReceiptByID/{receipt_id}', tags = ["Receipts"], response_model=schemas.ResponseDeleteReceipt)
 async def removeOneReceipt_byIndex(receipt_id: int, db: Session = Depends(get_db)):
-    db_receipt = crud.getOneReceiptByID(db, id = receipt_id)
+    db_receipt = await crud.getOneReceiptByID(db, id = receipt_id)
     if db_receipt is None:
         raise HTTPException(status_code=404, detail="Receipt not found with the given ID")
-    crud.removeOneReceipt_byIndex(db, id = receipt_id)
+    await crud.removeOneReceipt_byIndex(db, id = receipt_id)
     return {"status": "success"}
+
+@app.get("/receipts/getItemAll/{receipt_id}", tags = ["Receipts"])
+async def getItemAll(receipt_id: int, db: Session = Depends(get_db)):
+    return await crud.getItem_byDBId(db, owner_receiptId=receipt_id)
 
 #################################### Shop Module #################################### 
 
 @app.get("/shops/getShopAll", tags = ["shops"], response_model=Page[schemas.ResponseShopAll])
-def getShopAll(db: Session = Depends(get_db)):
-    return paginate(crud.getShopAll(db))
+async def getShopAll(db: Session = Depends(get_db)):
+    return await paginate(crud.getShopAll(db))
 
 #################################### Customer Module #################################### 
 
 @app.get("/customers/getCustomerAll", tags = ["customers"], response_model=Page[schemas.ResponseCustomerAll])
-def getCustomerAll(db: Session = Depends(get_db)):
-    return paginate(crud.getCustomerAll(db))
+async def getCustomerAll(db: Session = Depends(get_db)):
+    return await paginate(crud.getCustomerAll(db))

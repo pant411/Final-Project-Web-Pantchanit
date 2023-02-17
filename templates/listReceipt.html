@@ -3,7 +3,7 @@
 {% block title %} <title>รายการใบเสร็จ</title> {% endblock %}
 
 {% block content %}
-<div class="container-lg my-content">
+<div class="container-xxl my-content">
     <table id="myTable" class="display table table-striped" style="width: 100%;">
         <thead>
         <tr>
@@ -14,10 +14,10 @@
             <th class="th text-center">ชื่อลูกค้า</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="receipt-detail">
             {% for ele in list_data %}
                 <tr id="{{ele.id}}">
-                    <td>{{ele["filename"]}}</td>
+                    <td><a href="{{'/receiptdetail/%s'%ele.id }}">{{ele["filename"]}}</a></td>
                     <td>{{ele["receiptID"]}}</td>
                     <td>{{ele["dateReceipt"]}}</td>
                     <td>{{ele["shopName"]}}</td>

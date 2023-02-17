@@ -21,7 +21,8 @@ class Receipt(Base):
     dateReceipt = Column(DateTime, index=True)
     items = relationship("Item", back_populates="owner_receipt", cascade="all, delete") # FK
     shopID = Column(Integer, index=True)
-    customerID =Column(Integer, index=True)
+    customerID = Column(Integer, index=True)
+    type_receipt = Column(Integer, index=True)
     
     Created_At = Column(TIMESTAMP,
         server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
