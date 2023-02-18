@@ -7,14 +7,25 @@ body * {
   padding: 0;
 }
 
-h1, h2, h3, p, th, td, table, thead, tbody, div {
-  font-family: 'Athiti', sans-serif;
-
+body, html {
+  width: 100vw;
+  height: 100vh;  
+  overflow: hidden; /* Hide scrollbars */
 }
+
+h1, h2, h3, th, td, table, thead, tbody, div {
+  font-family: 'Athiti', sans-serif;
+}
+
+p {
+  font-family: 'Athiti', sans-serif;
+  font-size: 20px;
+}
+
 
 .my-container {
   max-width: 1440px;
-  width: 100%;
+  /*width: 100%;*/
   margin: 0 auto;
 }
 
@@ -69,7 +80,7 @@ h1, h2, h3, p, th, td, table, thead, tbody, div {
 /* --------------------- homepage ------------------- */
 
 .content-home {
-  width:100%;
+  /*width:100%;*/
   height:auto;
   border: 5px solid red;
   overflow-y: hidden;
@@ -97,7 +108,7 @@ h1, h2, h3, p, th, td, table, thead, tbody, div {
 
 /*---------- receipts details page -----------*/
 .content-receipt .image-receipt-section #image-receipt {
-  max-width: 420px;
+  max-width: 548px;
   /*display: flex;*/
   align-items: center;
   border: 2px solid #ccc;
@@ -117,6 +128,7 @@ h1, h2, h3, p, th, td, table, thead, tbody, div {
 .content-receipt .detail-receipt-section {
   margin-left: 20px;
   width: 1800px;
+  height: 1500px;
   /*border: 2px solid red;*/
 }
 
@@ -221,4 +233,13 @@ h1, h2, h3, p, th, td, table, thead, tbody, div {
   font-size: 32px;
   padding: 24px;
   color: #FFF;
+}
+
+/*-------- upload receipt page --------*/
+.upload-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*height: 100vh;*/
+
 }

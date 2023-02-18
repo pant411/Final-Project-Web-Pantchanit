@@ -69,7 +69,7 @@ async def receiptdetail(receipt_id: int, request: Request,
                         db: Session = Depends(get_db)):
     receipt_data = await crud.getOneReceipt_byDBId_main(db, receipt_id)
     db_item = await crud.getItem_byDBId(db, owner_receiptId = receipt_id)
-    # print(receipt_data)
+    print(receipt_data)
     return templates.TemplateResponse("receiptdetail.html", {
         "request": request, 
         "receipt_data": receipt_data, 
@@ -134,7 +134,7 @@ async def submitReceipt(type_receipt: int = Form(...),
     path_file = "img/" + file.filename
     data["pathImage"] = path_file
     data["filename"] = file.filename
-    print(data["dateReceipt"])
+    # print(data["dateReceipt"])
     # print(data)
     await crud.create_receipt_main(db=db, receipt=data, type_receipt=type_receipt)
     await file.seek(0)
@@ -142,6 +142,20 @@ async def submitReceipt(type_receipt: int = Form(...),
         file_object.write(file.file.read())
     # redirect_url = request.url_for('home')   
     # return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    return data
+
+
+@app.post("/receipts/testsubmit", tags = ["Receipts"])
+async def submitReceipt2(type_receipt: int = Form(...), 
+                        file: UploadFile = File(...)):
+    print("tuuu",type_receipt)
+    image = cv2.imdecode(np.fromstring(file.file.read(), np.uint8),\
+            cv2.IMREAD_UNCHANGED)
+    # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
+    data = runMain(image, type_receipt)
+    path_file = "img/" + file.filename
+    data["pathImage"] = path_file
+    data["filename"] = file.filename
     return data
 
 @app.get("/receipts/getOneByID/{receipt_id}", 

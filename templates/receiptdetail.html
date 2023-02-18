@@ -18,7 +18,11 @@
         <div id="Detail" class="tabcontent">
             <h4>ชื่อไฟล์: {{receipt_data.filename}}</h4>
             <h4>เลขที่ใบเสร็จรับเงิน: {{receipt_data.receiptID}}</h4>
-            <h4>วันที่ออกใบเสร็จรับเงิน: {{receipt_data.dateReceipt}}</h4>
+            {% if receipt_data.dateReceipt != none %}
+            <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%Y-%m-%d')}}</h4>
+            {% else %}
+            <h4>วันที่ออกใบเสร็จรับเงิน: </h4>
+            {% endif %}
             <h4>ข้อมูลของร้านค้า</h4>
             <p>ชื่อ: {{receipt_data.shopName}}</p>
             <p>ที่อยู่: {{receipt_data.addressShop}}</p>
@@ -31,45 +35,49 @@
         </div>
         
         <div id="Item" class="tabcontent">
-            <table id="myTable" class="display table table-striped" style="width: 100%;">
                 {% if receipt_data.type_receipt == 1 %}
+                <table id="myTable" class="display table table-striped" style="width: 100%;">
                     <thead>
                     <tr>
-                        <th class="th text-center">รายการ</th>
-                        <th class="th text-center">ปริมาณ</th>
-                        <th class="th text-center">หน่วย</th>
-                        <th class="th text-center">ราคาต่อหน่วย</th>
-                        <th class="th text-center">ราคารวม</th>
+                        <th class="th text-center" style="width: 60%;">รายการ</th>
+                        <th class="th text-center" style="width: 10%;">ปริมาณ</th>
+                        <th class="th text-center" style="width: 10%;">หน่วย</th>
+                        <th class="th text-center" style="width: 10%;">ราคาต่อหน่วย</th>
+                        <th class="th text-center" style="width: 10%;">ราคารวม</th>
                     </tr>
                     </thead>
                     <tbody class="receipt-detail">
                         {% for ele in items %}
                             <tr id="{{ele.id}}">
-                                <td>{{ele.nameItem}}</td>
-                                <td>{{ele.qty}}</td>
-                                <td>{{ele.unitQty}}</td>
-                                <td>{{ele.pricePerQty}}</td>
-                                <td>{{ele.priceItemTotal}}</td>
+                                <td style="width: 60%;">{{ele.nameItem}}</td>
+                                <td class="text-center" style="width: 10%;">{{ele.qty}}</td>
+                                <td class="text-center" style="width: 10%;">{{ele.unitQty}}</td>
+                                <td class="text-center" style="width: 10%;">{{ele.pricePerQty}}</td>
+                                <td class="text-center" style="width: 10%;">{{ele.priceItemTotal}}</td>
                             </tr>                
                         {% endfor %}     
                     </tbody>
+                </table>
                 {% elif receipt_data.type_receipt == 0 %}
+                <table id="myTable" class="display table table-striped" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th class="th text-center">รายการ</th>
-                            <th class="th text-center">ราคารวม</th>
+                            <th class="th text-center" style="width: 80%;">รายการ</th>
+                            <th class="th text-center" style="width: 20%;">ราคารวม</th>
                         </tr>
                         </thead>
                         <tbody class="receipt-detail">
                             {% for ele in items %}
                                 <tr id="{{ele.id}}">
-                                    <td>{{ele.nameItem}}</td>
-                                    <td>{{ele.priceItemTotal}}</td>
+                                    <td style="width: 80%;">{{ele.nameItem}}</td>
+                                    <td class="text-center" style="width: 20%;">{{ele.priceItemTotal}}</td>
                                 </tr>                
                             {% endfor %}     
-                        </tbody>
+                        </tbody>                    
+                </table>
+
                 {% endif %}
-            </table>
+            
         </div>
         <div class="condition-receipt">
             <button type="button" class="btn btn-warning">ลบ</button>  

@@ -18,3 +18,4 @@ python-jose[cryptography]
 passlib[bcrypt]
 Levenshtein
 python-Levenshtein
+python-dotenv

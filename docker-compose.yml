@@ -5,7 +5,7 @@ services:
     image: mysql:latest
     volumes: 
       - mysql_volume:/var/lib/mysql
-    # restart: always
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -22,7 +22,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     image: web-project
-    # restart: always
+    restart: always
     tty: true
     env_file:
       - .env

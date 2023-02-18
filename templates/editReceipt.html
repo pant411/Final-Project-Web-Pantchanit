@@ -16,59 +16,60 @@
         <form action="/receipts/create" method="post" enctype="multipart/form-data" >
             <!-- Tab content -->
             <div id="Detail" class="tabcontent">
-                <div class="form-group row">
-                    <label >เลขที่</label>
-                    <div class="col-sm-10">
-                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.receiptID}}">
+                <div class="row">    
+                    <div class="form-group col-4">
+                        <label for="input-receipt-id">หมายเลขใบเสร็จรับเงิน</label>
+                        <input class="form-control form-control-sm" id="input-receipt-id" type="text" value="{{receipt_data.receiptID}}">
+                    </div>
+                    <div class="form-group col-2">
+                        <label for="input-receipt-date">วันที่ออกใบเสร็จรับเงิน</label>
+                        {% if receipt_data.dateReceipt == none %}
+                            <input class="form-control form-control-sm" id="input-receipt-date" type="date" value="">                        
+                        {% else %}
+                            <input class="form-control form-control-sm" id="input-receipt-date" type="date" value="{{(receipt_data.dateReceipt).strftime('%Y-%m-%d')}}">
+                        {% endif %}
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label >วันที่ออกใบเสร็จรับเงิน</label>
-                    <div class="col-sm-10">
-                        <input class="form-control form-control-sm" id="colFormLabelSm" type="date" value="{{receipt_data.dateReceipt.strftime('%d-%m-%Y')}}">
+                <h5>ข้อมูลของร้านค้า:</h5>
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label >ชื่อ</label>
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.shopName}}">                        
+                    </div>
+                    <div class="form-group col-2">
+                        <label >เบอร์โทรศัพท์</label>
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.shopPhone}}">                       
                     </div>
                 </div>
-                <h2>ข้อมูลของร้านค้า</h2>
-                <div class="form-group row">
-                    <label >ชื่อ</label>
-                    <div class="col-sm-10">
-                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.shopName}}">
+                <div class="row"> 
+                    <div class="col-sm-6">
+                        <label >ที่อยู่</label>
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.addressShop}}">                         
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label >ที่อยู่</label>
-                    <div class="col-sm-10">
-                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.addressShop}}">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label >เบอร์โทรศัพท์</label>
-                    <div class="col-sm-10">
-                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.shopPhone}}">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label >เลขประจำตัวผู้เสียภาษี</label>
-                    <div class="col-sm-10">
+
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label >เลขประจำตัวผู้เสียภาษี</label>
                         <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.taxIDShop}}">
                     </div>
                 </div>
-                <h2>ข้อมูลของลูกค้า</h2>
-                <div class="form-group row">
-                    <label >ชื่อ</label>
-                    <div class="col-sm-10">
+                <h5>ข้อมูลของลูกค้า:</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <label >ชื่อ</label>
                         <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.customerName}}">
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label >ที่อยู่</label>
-                    <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-6">
+                        <label >ที่อยู่</label>
                         <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.addressCust}}">
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label >เลขประจำตัวผู้เสียภาษี</label>
-                    <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-4">
+                        <label >เลขประจำตัวผู้เสียภาษี</label>
                         <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.taxIDCust}}">
                     </div>
                 </div>

@@ -3,7 +3,7 @@
 {% block title %} <title>รายการใบเสร็จ</title> {% endblock %}
 
 {% block content %}
-<div class="container-xxl my-content">
+<div class="container-fluid my-content">
     <table id="myTable" class="display table table-striped" style="width: 100%;">
         <thead>
         <tr>
@@ -19,7 +19,11 @@
                 <tr id="{{ele.id}}">
                     <td><a href="{{'/receiptdetail/%s'%ele.id }}">{{ele["filename"]}}</a></td>
                     <td>{{ele["receiptID"]}}</td>
-                    <td>{{ele["dateReceipt"]}}</td>
+                    {% if ele["dateReceipt"] != none %}
+                        <td>{{ele["dateReceipt"].strftime('%Y-%m-%d')}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
                     <td>{{ele["shopName"]}}</td>
                     <td>{{ele["customerName"]}}</td>
                 </tr>                

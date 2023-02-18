@@ -3,10 +3,8 @@
 {% block title %} <title>เพิ่มรายการใบเสร็จ</title> {% endblock %}
 
 {% block content %}
-<div class="container-lg my-content">
-    <label>เพิ่มรายการใบเสร็จรับเงิน</label>
+<div class="container-lg my-content upload-page">
     <form class="flex" action="/receipts/submit" method="post" enctype="multipart/form-data">
-        
         <div class="form-group mb-3 buttonHolder">
             <input title="upload image" class="form-control" name="file" type="file" accept="image/*">
             <div class="form-check">
@@ -19,8 +17,6 @@
             </div>      
             <input type="submit" class="btn btn-primary mr-2 text-center">  
         </div>
-
-            
     </form>
 </div>
 
