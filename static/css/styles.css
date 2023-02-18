@@ -1,9 +1,15 @@
 @import url('https://fonts.gooleapis.com/css?family=Montserrat:500');
+@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Niramit:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 body * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+h1, h2, h3, p, th, td, table, thead, tbody, div {
+  font-family: 'Athiti', sans-serif;
+
 }
 
 .my-container {
@@ -20,12 +26,12 @@ body * {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 4%;
-  background-color: #0F4C81;
+  padding: 16px 2.5%;
+  background-color: #52A7E0;
 }
 
-.nav-header li, a, button {
-  font-size: "Montserrat", sans-serif;
+.nav-header > li, a, button {
+  font-family: 'Niramit', sans-serif;
   font-weight: 500;
   font-size: 18px;
   color: #fff;
@@ -50,13 +56,13 @@ body * {
 }
 
 .nav-header .nav_links li a:hover {
-  color: #D6FFF6;
+  color: #1b445e;
 }
 
 .nav-header #receipt-name {
-  font-size: "Montserrat", sans-serif;
+  font-family: 'Niramit', sans-serif;
   font-weight: 500;
-  font-size: 25px;
+  font-size: 28px;
   color: #f2ec38;
 }
 
@@ -91,13 +97,15 @@ body * {
 
 /*---------- receipts details page -----------*/
 .content-receipt .image-receipt-section #image-receipt {
-  max-width: 450px;
-  display: flex;
+  max-width: 420px;
+  /*display: flex;*/
   align-items: center;
+  border: 2px solid #ccc;
 }
 
 .content-receipt {
   display: flex;
+  /*height: 100vh;*/
 }
 
 .content-receipt .image-receipt-section {
@@ -143,13 +151,17 @@ body * {
 
 /* Style the tab content */
 .content-receipt .detail-receipt-section .tabcontent {
-  height: 720px;
+  /*height: 720px;*/
   display: none;
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
 }
 
+.condition-receipt {
+  /*display: flex;*/
+  bottom: 30px;
+}
 
 /*-------------- upload image file ------------*/
 .upload-section {
@@ -169,4 +181,44 @@ body * {
 
 .buttonHolder{ 
   text-align: center; 
+}
+
+/*------------ Homepage ------------*/
+.homepage-style {
+  display: flex; 
+  flex-direction: column;
+  background-color: #52A7E0;
+  height: 100vh;
+  justify-content: center; /* horizontal centering */
+  align-items: center; /* vertical centering */
+}
+
+.homepage-style #receipt-homepage-heading {
+  font-family: 'Niramit', sans-serif;
+  font-weight: 600;
+  font-size: 72px;
+  color: #f2ec38;
+  text-align: center;
+  padding: 28px;
+  /*border: 2px solid red;*/
+}
+
+.homepage-style .button-homepage {
+  flex-direction: row;
+  padding: 12px;
+  justify-content: space-between;
+}
+
+.homepage-style .button-homepage a button {
+  font-family: 'Athiti', sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+}
+
+.homepage-style #receipt-homepage-describe {
+  font-family: 'Athiti', sans-serif;
+  font-weight: 200;
+  font-size: 32px;
+  padding: 24px;
+  color: #FFF;
 }

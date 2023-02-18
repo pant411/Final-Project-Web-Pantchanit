@@ -1,10 +1,30 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="{{ url_for ('static', path='/css/styles.css') }}" >
+</head>
+<body>
+       
+    <div class="homepage-style">
+        <h1 id="receipt-homepage-heading">ฐานข้อมูลใบเสร็จรับเงิน</h1>
+        <p id="receipt-homepage-describe">ท่านสามารถเพิ่มรายการใบเสร็จรับเงินโดยการอัพโหลดรูปภาพโดยการคลิกด้านล่างข้อความนี้</p>
+        <div class="button-homepage">
+            <a href="/addreceipt">
+                <button type="button" class="btn btn-success">เพิ่มใบเสร็จรับเงิน</button>
+            </a>
+            <a href="/listreceipts">
+                <button type="button" class="btn btn-warning">ดูรายการใบเสร็จรับเงินทั้งหมด</button>            
+            </a>
+        </div>
 
-{% block title %} <title>หน้าหลัก</title> {% endblock %}
+    </div>    
 
-{% block content %}
-<div class="container-lg my-content">
-    <p>ท่านสามารถเพิ่มรายการด้วยการคลิกปุ่มด้านใต้</p>
-</div>
-    
-{% endblock %}  
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
+</body>
+</html> 

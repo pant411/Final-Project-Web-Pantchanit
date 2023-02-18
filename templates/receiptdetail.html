@@ -10,8 +10,8 @@
     <div class="detail-receipt-section">
         <!-- Tab links -->
         <div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'Detail')" id="defaultOpen">รายละเอียดของใบเสร็จรับเงิน</button>
-            <button class="tablinks" onclick="openCity(event, 'Item')">รายการสินค้าหรือบริการของใบเสร็จรับเงิน</button>
+            <button class="tablinks" onclick="openCity(event, 'Detail')" id="defaultOpen">รายละเอียดทั่วไป</button>
+            <button class="tablinks" onclick="openCity(event, 'Item')">รายการสินค้าหรือบริการ</button>
         </div>
         
         <!-- Tab content -->
@@ -35,11 +35,11 @@
                 {% if receipt_data.type_receipt == 1 %}
                     <thead>
                     <tr>
-                        <th class="th text-center">รายการสินค้าหรือบริการ</th>
-                        <th class="th text-center">ปริมาณสินค้าหรือบริการ</th>
-                        <th class="th text-center">หน่วยของสินค้าหรือบริการ</th>
-                        <th class="th text-center">ราคาสินค้าหรือบริการ(ต่อหน่วย)</th>
-                        <th class="th text-center">ราคาสินค้าหรือบริการ</th>
+                        <th class="th text-center">รายการ</th>
+                        <th class="th text-center">ปริมาณ</th>
+                        <th class="th text-center">หน่วย</th>
+                        <th class="th text-center">ราคาต่อหน่วย</th>
+                        <th class="th text-center">ราคารวม</th>
                     </tr>
                     </thead>
                     <tbody class="receipt-detail">
@@ -56,8 +56,8 @@
                 {% elif receipt_data.type_receipt == 0 %}
                     <thead>
                         <tr>
-                            <th class="th text-center">รายการสินค้าหรือบริการ</th>
-                            <th class="th text-center">ราคาสินค้าหรือบริการ</th>
+                            <th class="th text-center">รายการ</th>
+                            <th class="th text-center">ราคารวม</th>
                         </tr>
                         </thead>
                         <tbody class="receipt-detail">
@@ -71,7 +71,13 @@
                 {% endif %}
             </table>
         </div>
+        <div class="condition-receipt">
+            <button type="button" class="btn btn-warning">ลบ</button>  
+            <a href="{{'/editreceipt/%s'%receipt_data.id }}"><button type="button" class="btn btn-info">แก้ไข</button></a>
+        </div>        
     </div>
+
+
 </div>
 
             

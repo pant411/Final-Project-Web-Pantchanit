@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %} <title>รายละเอียดของใบเสร็จรับเงิน</title> {% endblock %}
+
+{% block content %}
+<div class="container-fluid my-content content-receipt">
+    <div class="image-receipt-section">
+        <img src="{{ url_for('static', path='img/20220916_083808208_iOS.jpg') }}" id="image-receipt"> 
+    </div>
+    <div class="detail-receipt-section">
+        <!-- Tab links -->
+        <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'Detail')" id="defaultOpen">รายละเอียดทั่วไป</button>
+            <button class="tablinks" onclick="openCity(event, 'Item')">รายการสินค้าหรือบริการ</button>
+        </div>
+        <form action="/receipts/create" method="post" enctype="multipart/form-data" >
+            <!-- Tab content -->
+            <div id="Detail" class="tabcontent">
+                <div class="form-group row">
+                    <label >เลขที่</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label >วันที่ออกใบเสร็จรับเงิน</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <h2>ข้อมูลของร้านค้า</h2>
+                <div class="form-group row">
+                    <label >ชื่อ</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label >ที่อยู่</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label >เบอร์โทรศัพท์</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label >เลขประจำตัวผู้เสียภาษี</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <h2>ข้อมูลของลูกค้า</h2>
+                <div class="form-group row">
+                    <label >ชื่อ</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label >ที่อยู่</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label >เลขประจำตัวผู้เสียภาษี</label>
+                    <div class="col-sm-10">
+                        <input class="form-control form-control-sm" id="colFormLabelSm" type="text">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="Item" class="tabcontent">
+
+            </div> 
+            <input type="submit" class="btn btn-primary mr-2 text-center">  
+           
+        </form>
+
+    </div>
+</div>       
+{% endblock content %}
+
+{% block scripts %}
+<script src="{{ url_for ('static', path='/js/tab.js') }}"></script>
+{% endblock %}

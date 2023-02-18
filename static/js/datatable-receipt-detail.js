@@ -4,8 +4,9 @@ $(document).ready(function () {
             scrollY: '60vh',
             scrollCollapse: true,
             paging: true,
-            pageLength: 14,
-            lengthChange: false
+            pageLength: 5,
+            lengthChange: false,
+            ordering: false
         }
     );
 });
