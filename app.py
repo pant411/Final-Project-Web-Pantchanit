@@ -189,6 +189,22 @@ async def removeOneReceipt_byIndex(receipt_id: int, db: Session = Depends(get_db
 async def getItemAll(receipt_id: int, db: Session = Depends(get_db)):
     return await crud.getItem_byDBId(db, owner_receiptId=receipt_id)
 
+@app.patch("/receipts/editoneitem/{receipt_id}/{item_id}", tags = ["Receipts"])
+async def editOneItem(receipt_id: int, item_id: int, data_item: schemas.EditItem, db: Session = Depends(get_db)):
+    # db_item = await crud.getOneItem_byDBId(db, owner_receiptId=receipt_id, item_id=item_id)
+    db_item_query = db.query(models.Item).filter_by(
+        owner_receiptId = receipt_id,
+        id = item_id)
+    db_item = db_item_query.first()
+    if db_item is None:
+        raise HTTPException(status_code=404, 
+                            detail="Receipt and Item not found with the given ID")  
+    update_data = data_item.dict(exclude_unset=True) 
+    db_item_query.filter(models.Item.id == item_id).update(update_data, synchronize_session=False)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
 #################################### Shop Module #################################### 
 
 @app.get("/shops/getShopAll", 

@@ -13,6 +13,16 @@ class Item(BaseModel):
     class Config:
         orm_mode = True
 
+class EditItem(BaseModel): 
+    # id: int
+    nameItem: Optional[str]
+    qty: Optional[float]
+    unitQty: Optional[str]
+    pricePerQty: Optional[float]
+    priceItemTotal: Optional[float]
+    class Config:
+        orm_mode = True
+
 class ReceiptCreateMain(BaseModel):
     # about receipt
     filename: Optional[str]

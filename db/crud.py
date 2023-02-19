@@ -175,6 +175,18 @@ async def getItem_byDBId(db: Session, owner_receiptId: int):
    db_item = db.query(models.Item).filter_by(owner_receiptId = owner_receiptId).all()
    return db_item
 
+async def getOneItem_byDBId(db: Session, owner_receiptId: int, item_id: int):
+   db_item = db.query(models.Item).filter_by(
+        owner_receiptId = owner_receiptId,
+        id = item_id).first()
+   return db_item
+
+async def editOneItem_byDBId(db: Session, owner_receiptId: int, item_id: int):
+   db_item = db.query(models.Item).filter_by(
+        owner_receiptId = owner_receiptId,
+        id = item_id).first()
+   return db_item
+
 async def getShopAll(db: Session):
     db_shop = db.query(models.Shop).all()
     return db_shop
