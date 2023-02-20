@@ -13,9 +13,10 @@
             <button class="tablinks" onclick="openCity(event, 'Detail')" id="defaultOpen">รายละเอียดทั่วไป</button>
             <button class="tablinks" onclick="openCity(event, 'Item')">รายการสินค้าหรือบริการ</button>
         </div>
-        <form action="/receipts/create" method="post" enctype="multipart/form-data" >
+        
             <!-- Tab content -->
             <div id="Detail" class="tabcontent">
+            <form action="/receipts/create" method="post" enctype="multipart/form-data" >    
                 <div class="row">    
                     <div class="form-group col-8">
                         <label for="input-receipt-id">หมายเลขใบเสร็จรับเงิน</label>
@@ -73,15 +74,62 @@
                         <input class="form-control form-control-sm" id="colFormLabelSm" type="text" value="{{receipt_data.taxIDCust}}">
                     </div>
                 </div>
+                <input type="submit" class="btn btn-primary mr-2 text-center">  
+           
+            </form>
             </div>
             
             <div id="Item" class="tabcontent">
-
+                {% if receipt_data.type_receipt == 1 %}
+                    {% for ele in items %}
+                        <div class="row" id="{{ele.id}}">
+                            <div class="form-group col-5">
+                                <label for="input-receipt-id">รายการ</label>
+                                <input class="form-control form-control-sm" type="text" value="{{ele.nameItem}}">
+                            </div>
+                            <div class="form-group col-1">
+                                <label for="input-receipt-date">จำนวน</label>
+                                <input class="form-control form-control-sm" type="text" value="{{ele.qty}}">                        
+                            </div>
+                            <div class="form-group col-1">
+                                <label for="input-receipt-date">หน่วย</label>
+                                <input class="form-control form-control-sm" type="text" value="{{ele.unitQty}}">                        
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="input-receipt-date">ราคาต่อหน่วย</label>
+                                <input class="form-control form-control-sm" type="text" value="{{ele.pricePerQty}}">                        
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="input-receipt-date">ราคาทั้งหมด</label>
+                                <input class="form-control form-control-sm" type="text" value="{{ele.priceItemTotal}}">                        
+                            </div>
+                            <div class="col-1" id="icon-receipt">
+                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-edit"></i>
+                            </div>            
+                        </div>
+                    {% endfor %}
+                    <i class="fas fa-plus" id="add-item"></i>
+                {% elif receipt_data.type_receipt == 0 %}
+                    {% for ele in items %}
+                        <div class="row" id="{{ele.id}}">
+                            <div class="form-group col-7">
+                                <label for="input-receipt-id">รายการ</label>
+                                <input class="form-control form-control-sm" type="text" value="{{ele.nameItem}}">
+                            </div>
+                            <div class="form-group col-3">
+                                <label for="input-receipt-id">ราคาทั้งหมด</label>
+                                <input class="form-control form-control-sm" type="text" value="{{ele.priceItemTotal}}">
+                            </div>
+                            <div class="col-1" id="icon-receipt">
+                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-edit"></i>
+                            </div>                         
+                        </div>
+                    {% endfor %}
+                    <i class="fas fa-plus" id="add-item"></i>
+                {% endif %}
             </div> 
-            <input type="submit" class="btn btn-primary mr-2 text-center">  
-           
-        </form>
-
     </div>
 </div>       
 {% endblock content %}

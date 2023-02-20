@@ -163,7 +163,7 @@ p {
 
 /* Style the tab content */
 .content-receipt .detail-receipt-section .tabcontent {
-  /*height: 720px;*/
+  height: 72vh;
   display: none;
   padding: 6px 12px;
   border: 1px solid #ccc;
@@ -171,8 +171,10 @@ p {
 }
 
 .condition-receipt {
-  /*display: flex;*/
-  bottom: 30px;
+  display: flex;
+  gap: 10px;
+  right: 5px;
+  margin-top: 15px;
 }
 
 /*-------------- upload image file ------------*/
@@ -242,4 +244,22 @@ p {
   align-items: center;
   /*height: 100vh;*/
 
+}
+
+#Item {
+  overflow: scroll;
+}
+
+#icon-receipt {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+#add-item {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-size: 25px;
 }

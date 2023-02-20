@@ -33,9 +33,9 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
     db.commit()
     db.refresh(db_receipt)
 
-    await create_item(db, listItems = receipt["items"], owner_receiptId = db_receipt.id, type_receipt = type_receipt)
+    db_item = await create_item(db, listItems = receipt["items"], owner_receiptId = db_receipt.id, type_receipt = type_receipt)
 
-    return {"status": "success"}
+    return db_receipt
 
 async def create_shop(db: Session, 
                 shopName: str, 
