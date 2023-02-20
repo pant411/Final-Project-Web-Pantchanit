@@ -20,7 +20,7 @@
                     <td><a href="{{'/receiptdetail/%s'%ele.id }}">{{ele["filename"]}}</a></td>
                     <td>{{ele["receiptID"]}}</td>
                     {% if ele["dateReceipt"] != none %}
-                        <td>{{ele["dateReceipt"].strftime('%Y-%m-%d')}}</td>
+                        <td>{{ele["dateReceipt"].strftime('%d-%m-%Y')}}</td>
                     {% else %}
                         <td></td>
                     {% endif %}

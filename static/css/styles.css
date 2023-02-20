@@ -108,7 +108,7 @@ p {
 
 /*---------- receipts details page -----------*/
 .content-receipt .image-receipt-section #image-receipt {
-  max-width: 548px;
+  max-width: 400px;
   /*display: flex;*/
   align-items: center;
   border: 2px solid #ccc;
@@ -163,7 +163,7 @@ p {
 
 /* Style the tab content */
 .content-receipt .detail-receipt-section .tabcontent {
-  height: 72vh;
+  height: 70vh;
   display: none;
   padding: 6px 12px;
   border: 1px solid #ccc;
@@ -174,7 +174,7 @@ p {
   display: flex;
   gap: 10px;
   right: 5px;
-  margin-top: 15px;
+  margin-top: 12px;
 }
 
 /*-------------- upload image file ------------*/
@@ -242,12 +242,11 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  /*height: 100vh;*/
-
+  height: 100vh;
 }
 
 #Item {
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 #icon-receipt {
@@ -262,4 +261,17 @@ p {
   margin-top: 30px;
   margin-bottom: 30px;
   font-size: 25px;
+}
+
+#about-shop, #about-cust {
+  margin-top: 18px;
+  text-decoration: underline;
+}
+
+#input-shop, #input-cust {
+  text-decoration: underline;
+}
+
+#submit-edit {
+  margin-top: 10px;
 }

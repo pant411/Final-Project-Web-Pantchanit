@@ -140,9 +140,9 @@ async def submitReceipt(request: Request,
     data["pathImage"] = path_file
     data["filename"] = file.filename
     # print(data["dateReceipt"])
-    # print(data)
+    print(data)
     db_receipt = await crud.create_receipt_main(db=db, receipt=data, type_receipt=type_receipt)
-    print(db_receipt)
+    # print(db_receipt)
     await file.seek(0)
     with open("static/"+path_file, "wb+") as file_object:
         file_object.write(content_receipt)

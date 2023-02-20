@@ -16,26 +16,26 @@
         
         <!-- Tab content -->
         <div id="Detail" class="tabcontent">
-            <h4>ชื่อไฟล์: {{receipt_data.filename}}</h4>
-            <h4>เลขที่ใบเสร็จรับเงิน: {{receipt_data.receiptID}}</h4>
+            <h4>ไฟล์รูปภาพใบเสร็จ: {{receipt_data.filename}}</h4>
+            <h4>หมายเลข: {{receipt_data.receiptID}}</h4>
             {% if receipt_data.dateReceipt != none %}
-            <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%Y-%m-%d')}}</h4>
+            <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%d-%m-%Y')}}</h4>
             {% else %}
             <h4>วันที่ออกใบเสร็จรับเงิน: </h4>
             {% endif %}
-            <h4>ข้อมูลของร้านค้า</h4>
+            <h4 id="about-shop">ข้อมูลของร้านค้า</h4>
             <p>ชื่อ: {{receipt_data.shopName}}</p>
             <p>ที่อยู่: {{receipt_data.addressShop}}</p>
             <p>เบอร์โทรศัพท์: {{receipt_data.shopPhone}}</p>
             <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDShop}}</p>
-            <h4>ข้อมูลของลูกค้า</h4>
+            <h4 id="about-cust">ข้อมูลของลูกค้า</h4>
             <p>ชื่อ: {{receipt_data.customerName}}</p>
             <p>ที่อยู่: {{receipt_data.addressCust}}</p>
             <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDCust}}</p>
         </div>
         
         <div id="Item" class="tabcontent">
-                {% if receipt_data.type_receipt == 1 %}
+            {% if receipt_data.type_receipt == 1 %}
                 <table id="myTable" class="display table table-striped" style="width: 100%;">
                     <thead>
                     <tr>
@@ -58,7 +58,7 @@
                         {% endfor %}     
                     </tbody>
                 </table>
-                {% elif receipt_data.type_receipt == 0 %}
+            {% elif receipt_data.type_receipt == 0 %}
                 <table id="myTable" class="display table table-striped" style="width: 100%;">
                     <thead>
                         <tr>
@@ -76,7 +76,7 @@
                         </tbody>                    
                 </table>
 
-                {% endif %}
+            {% endif %}
             
         </div>
         <div class="condition-receipt">
