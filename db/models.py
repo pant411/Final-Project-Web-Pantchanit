@@ -20,8 +20,14 @@ class Receipt(Base):
     receiptID = Column(String(250), index=True)
     dateReceipt = Column(DateTime, index=True)
     items = relationship("Item", back_populates="owner_receipt", cascade="all, delete") # FK
-    shopID = Column(Integer, index=True)
-    customerID = Column(Integer, index=True)
+    shopName = Column(String(250), index=True)
+    taxIDShop = Column(String(30), index=True)
+    shopPhone = Column(String(30), index=True)
+    addressShop = Column(String(250), index=True)   
+
+    customerName = Column(String(250), index=True)
+    taxIDCust = Column(String(30), index=True)
+    addressCust = Column(String(250), index=True)
     type_receipt = Column(Integer, index=True)
     
     Created_At = Column(TIMESTAMP,
@@ -44,6 +50,7 @@ class Item(Base): # back to Receipt
     owner_receiptId = Column(Integer, ForeignKey("receipts.id"))
     owner_receipt = relationship("Receipt", back_populates="items", cascade="all, delete")
 
+"""
 class Shop(Base): # back to Receipt
     __tablename__ = "shops"
 
@@ -60,4 +67,6 @@ class Customer(Base): # back to Receipt
     customerName = Column(String(250), index=True)
     taxIDCust = Column(String(30), index=True)
     addressCust = Column(String(250), index=True)
+"""
+
     

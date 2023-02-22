@@ -82,21 +82,6 @@ async def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db))
         "request": request, 
         "list_data": list_data})
 
-@app.get("/listshops", response_class=HTMLResponse)
-async def getlistShopByPagination(request: Request, db: Session = Depends(get_db)):
-    list_data = await crud.getShopAll(db)
-    return templates.TemplateResponse("listShop.html", {
-        "request": request, 
-        "list_data": list_data})
-
-@app.get("/listcustomers", response_class=HTMLResponse)
-async def getlistCustomerByPagination(request: Request, 
-                                      db: Session = Depends(get_db)):
-    list_data = await crud.getCustomerAll(db)
-    return templates.TemplateResponse("listCustomer.html", {
-        "request": request, 
-        "list_data": list_data})
-
 @app.get("/checkreceipt/{receipt_id}", response_class=HTMLResponse)
 async def checkreceipt(receipt_id: int, request: Request, db: Session = Depends(get_db)):
     receipt_data = await crud.getOneReceipt_byDBId_main(db, receipt_id)
@@ -242,19 +227,3 @@ async def editOneReceipt(receipt_id: int,
     db.commit()
     db.refresh(db_receipt)
     return db_receipt
-
-#################################### Shop Module #################################### 
-
-@app.get("/shops/getShopAll", 
-         tags = ["shops"], 
-         response_model=Page[schemas.ResponseShopAll])
-async def getShopAll(db: Session = Depends(get_db)):
-    return await paginate(crud.getShopAll(db))
-
-#################################### Customer Module #################################### 
-
-@app.get("/customers/getCustomerAll", 
-         tags = ["customers"], 
-         response_model=Page[schemas.ResponseCustomerAll])
-async def getCustomerAll(db: Session = Depends(get_db)):
-    return await paginate(crud.getCustomerAll(db))

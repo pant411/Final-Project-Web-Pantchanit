@@ -25,18 +25,18 @@ class EditItem(BaseModel):
 
 class ResponseEditReceipt(BaseModel): 
     # about receipt
-    id: int
+    # id: int
     receiptID: Optional[str]
     dateReceipt: Optional[datetime]
     # about shop
-    # shopName: Optional[str]
-    # taxIDShop: Optional[str]
-    # addressShop: Optional[str]
-    # shopPhone: Optional[str]
+    shopName: Optional[str]
+    taxIDShop: Optional[str]
+    addressShop: Optional[str]
+    shopPhone: Optional[str]
     # about customer
-    # customerName: Optional[str]
-    # taxIDCust: Optional[str]
-    # addressCust: Optional[str]
+    customerName: Optional[str]
+    taxIDCust: Optional[str]
+    addressCust: Optional[str]
     class Config:
         orm_mode = True
 
@@ -45,6 +45,15 @@ class EditReceipt(BaseModel):
     # id: int
     receiptID: Optional[str]
     dateReceipt: Optional[datetime]
+    # about shop
+    shopName: Optional[str]
+    taxIDShop: Optional[str]
+    addressShop: Optional[str]
+    shopPhone: Optional[str]
+    # about customer
+    customerName: Optional[str]
+    taxIDCust: Optional[str]
+    addressCust: Optional[str]
     class Config:
         orm_mode = True
 

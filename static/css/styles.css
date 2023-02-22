@@ -275,3 +275,7 @@ p {
 #submit-edit {
   margin-top: 10px;
 }
+
+#myTable-detail-1, #myTable-detail-2 {
+  table-layout: fixed
+}

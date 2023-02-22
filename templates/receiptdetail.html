@@ -36,44 +36,44 @@
         
         <div id="Item" class="tabcontent">
             {% if receipt_data.type_receipt == 1 %}
-                <table id="myTable" class="display table table-striped" style="width: 100%;">
+                <table id="myTable-detail-1" class="table table-striped" >
                     <thead>
-                    <tr>
-                        <th class="th text-center" style="width: 60%;">รายการ</th>
-                        <th class="th text-center" style="width: 10%;">ปริมาณ</th>
-                        <th class="th text-center" style="width: 10%;">หน่วย</th>
-                        <th class="th text-center" style="width: 10%;">ราคาต่อหน่วย</th>
-                        <th class="th text-center" style="width: 10%;">ราคารวม</th>
-                    </tr>
+                        <tr>
+                            <th class="text-center">รายการ</th>
+                            <th class="text-center">ปริมาณ</th>
+                            <th class="text-center">หน่วย</th>
+                            <th class="text-center">ราคาต่อหน่วย</th>
+                            <th class="text-center">ราคารวม</th>
+                        </tr>
                     </thead>
                     <tbody class="receipt-detail">
                         {% for ele in items %}
                             <tr id="{{ele.id}}">
-                                <td style="width: 60%;">{{ele.nameItem}}</td>
-                                <td class="text-center" style="width: 10%;">{{ele.qty}}</td>
-                                <td class="text-center" style="width: 10%;">{{ele.unitQty}}</td>
-                                <td class="text-center" style="width: 10%;">{{ele.pricePerQty}}</td>
-                                <td class="text-center" style="width: 10%;">{{ele.priceItemTotal}}</td>
+                                <td>{{ele.nameItem}}</td>
+                                <td class="text-center">{{ele.qty}}</td>
+                                <td class="text-center">{{ele.unitQty}}</td>
+                                <td class="text-center">{{ele.pricePerQty}}</td>
+                                <td class="text-center">{{ele.priceItemTotal}}</td>
                             </tr>                
                         {% endfor %}     
                     </tbody>
                 </table>
             {% elif receipt_data.type_receipt == 0 %}
-                <table id="myTable" class="display table table-striped" style="width: 100%;">
+                <table id="myTable-detail-2" class=" table table-striped">
                     <thead>
                         <tr>
-                            <th class="th text-center" style="width: 80%;">รายการ</th>
-                            <th class="th text-center" style="width: 20%;">ราคารวม</th>
+                            <th class="text-center">รายการ</th>
+                            <th class="text-center">ราคารวม</th>
                         </tr>
-                        </thead>
-                        <tbody class="receipt-detail">
-                            {% for ele in items %}
-                                <tr id="{{ele.id}}">
-                                    <td style="width: 80%;">{{ele.nameItem}}</td>
-                                    <td class="text-center" style="width: 20%;">{{ele.priceItemTotal}}</td>
-                                </tr>                
-                            {% endfor %}     
-                        </tbody>                    
+                    </thead>
+                    <tbody class="receipt-detail">
+                        {% for ele in items %}
+                            <tr id="{{ele.id}}">
+                                <td>{{ele.nameItem}}</td>
+                                <td class="text-center">{{ele.priceItemTotal}}</td>
+                            </tr>                
+                        {% endfor %}     
+                    </tbody>                    
                 </table>
 
             {% endif %}

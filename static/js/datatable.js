@@ -5,5 +5,5 @@ $(document).ready(function () {
             scrollCollapse: true,
             paging: true,
         }
-    );
+    ).adjust();
 });
