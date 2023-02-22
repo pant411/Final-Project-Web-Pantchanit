@@ -37,16 +37,46 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
 
     return db_receipt
 
+
+
 async def create_shop(db: Session, 
-                shopName: str, 
-                taxIDShop: str, 
-                addressShop: str,
-                shopPhone: str):
-    db_shop = await getOneShopName_byValue(db, 
-                                     shopName = shopName,
-                                     taxIDShop = taxIDShop,
-                                     addressShop = addressShop,
-                                     shopPhone = shopPhone)
+                    shopName: str, 
+                    taxIDShop: str, 
+                    addressShop: str,
+                    shopPhone: str):
+    db_shop = await getOneShopName_byValue(
+                        db, 
+                        shopName = shopName,
+                        taxIDShop = taxIDShop,
+                        addressShop = addressShop,
+                        shopPhone = shopPhone)
+    if db_shop is None:
+        db_shop = models.Shop(
+            shopName = shopName, 
+            taxIDShop = taxIDShop,
+            addressShop = addressShop,
+            shopPhone = shopPhone
+        )
+        db.add(db_shop)
+        db.commit()
+        db.refresh(db_shop)
+    return db_shop
+
+async def edit_receipt(db: Session):
+    
+    pass
+
+async def edit_shop(db: Session, 
+                    shopName: str, 
+                    taxIDShop: str, 
+                    addressShop: str,
+                    shopPhone: str):
+    db_shop = await getOneShopName_byValue(
+                        db, 
+                        shopName = shopName,
+                        taxIDShop = taxIDShop,
+                        addressShop = addressShop,
+                        shopPhone = shopPhone)
     if db_shop is None:
         db_shop = models.Shop(
             shopName = shopName, 
@@ -60,6 +90,25 @@ async def create_shop(db: Session,
     return db_shop
 
 async def create_customer(db: Session, 
+                    customerName: str, 
+                    addressCust: str,
+                    taxIDCust: str):
+    db_cust = await getOneCustomerName_byValue(db, 
+                                         customerName = customerName, 
+                                         addressCust = addressCust, 
+                                         taxIDCust = taxIDCust)
+    if db_cust is None:
+        db_cust = models.Customer(
+            customerName = customerName, 
+            taxIDCust = taxIDCust,
+            addressCust = addressCust)
+        db.add(db_cust)
+        db.commit()
+        db.refresh(db_cust)
+
+    return db_cust
+
+async def edit_customer(db: Session, 
                     customerName: str, 
                     addressCust: str,
                     taxIDCust: str):

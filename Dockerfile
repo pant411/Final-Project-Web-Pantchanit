@@ -6,6 +6,8 @@ COPY . /myapp
 
 WORKDIR /myapp
 
+ENV PYTHONUNBUFFERED True
+
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
@@ -21,8 +23,8 @@ RUN apt-get update && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r /myapp/library_list.txt         
 
-EXPOSE 8000
+EXPOSE 8080
 
-# CMD ["bash", "run.sh"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD exec gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 app:app
