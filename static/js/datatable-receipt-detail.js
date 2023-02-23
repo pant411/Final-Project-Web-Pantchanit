@@ -1,11 +1,12 @@
 $(document).ready(function () {
+
     $("#myTable-detail-1").DataTable(
         {
-            scrollY: '60vh',
+            scrollY: '55vh',
             scrollCollapse: true,
             paging: true,
-            pageLength: 5,
-            lengthChange: false,
+            /*pageLength: 6,
+            lengthChange: false,*/
             ordering: false,
             columns: [
                 { width: '60%' },
@@ -15,22 +16,26 @@ $(document).ready(function () {
                 { width: '10%' }
             ]
         }
-    ).columns.adjust().draw()
+    ).columns.adjust()
 
     $("#myTable-detail-2").DataTable(
         {
-            scrollY: '60vh',
+            scrollY: '55vh',
             scrollCollapse: true,
             paging: true,
-            pageLength: 5,
-            lengthChange: false,
+            /*pageLength: 6,
+            lengthChange: false,*/
             ordering: false,
             columns: [
                 { width: '80%' },
                 { width: '20%' }
             ],
-
         }
-    ).columns.adjust().draw()
+    ).columns.adjust()
 
+    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function(e){
+        $($.fn.dataTable.tables(true)).DataTable().columns.adjust()
+        .responsive.recalc();
+     });
+    
 });

@@ -5,93 +5,118 @@
 {% block content %}
 <div class="container-fluid my-content content-receipt">
     <div class="image-receipt-section">
-        <img src="{{ url_for('static', path=receipt_data.pathImage) }}" id="image-receipt"> 
-    </div>
-    <div class="detail-receipt-section">
-        <!-- Tab links -->
-        <div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'Detail')" id="defaultOpen">รายละเอียดทั่วไป</button>
-            <button class="tablinks" onclick="openCity(event, 'Item')">รายการสินค้าหรือบริการ</button>
-        </div>
-        
-        <!-- Tab content -->
-        <div id="Detail" class="tabcontent">
-            <h4>ไฟล์รูปภาพใบเสร็จ: {{receipt_data.filename}}</h4>
-            <h4>หมายเลข: {{receipt_data.receiptID}}</h4>
-            {% if receipt_data.dateReceipt != none %}
-            <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%d-%m-%Y')}}</h4>
-            {% else %}
-            <h4>วันที่ออกใบเสร็จรับเงิน: </h4>
-            {% endif %}
-            <h4 id="about-shop">ข้อมูลของร้านค้า</h4>
-            <p>ชื่อ: {{receipt_data.shopName}}</p>
-            <p>ที่อยู่: {{receipt_data.addressShop}}</p>
-            <p>เบอร์โทรศัพท์: {{receipt_data.shopPhone}}</p>
-            <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDShop}}</p>
-            <h4 id="about-cust">ข้อมูลของลูกค้า</h4>
-            <p>ชื่อ: {{receipt_data.customerName}}</p>
-            <p>ที่อยู่: {{receipt_data.addressCust}}</p>
-            <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDCust}}</p>
-        </div>
-        
-        <div id="Item" class="tabcontent">
-            {% if receipt_data.type_receipt == 1 %}
-                <table id="myTable-detail-1" class="table table-striped" >
-                    <thead>
-                        <tr>
-                            <th class="text-center">รายการ</th>
-                            <th class="text-center">ปริมาณ</th>
-                            <th class="text-center">หน่วย</th>
-                            <th class="text-center">ราคาต่อหน่วย</th>
-                            <th class="text-center">ราคารวม</th>
-                        </tr>
-                    </thead>
-                    <tbody class="receipt-detail">
-                        {% for ele in items %}
-                            <tr id="{{ele.id}}">
-                                <td>{{ele.nameItem}}</td>
-                                <td class="text-center">{{ele.qty}}</td>
-                                <td class="text-center">{{ele.unitQty}}</td>
-                                <td class="text-center">{{ele.pricePerQty}}</td>
-                                <td class="text-center">{{ele.priceItemTotal}}</td>
-                            </tr>                
-                        {% endfor %}     
-                    </tbody>
-                </table>
-            {% elif receipt_data.type_receipt == 0 %}
-                <table id="myTable-detail-2" class=" table table-striped">
-                    <thead>
-                        <tr>
-                            <th class="text-center">รายการ</th>
-                            <th class="text-center">ราคารวม</th>
-                        </tr>
-                    </thead>
-                    <tbody class="receipt-detail">
-                        {% for ele in items %}
-                            <tr id="{{ele.id}}">
-                                <td>{{ele.nameItem}}</td>
-                                <td class="text-center">{{ele.priceItemTotal}}</td>
-                            </tr>                
-                        {% endfor %}     
-                    </tbody>                    
-                </table>
-
-            {% endif %}
-            
+        <h5 id="filename-receipt">{{receipt_data.filename}}</h5>
+        <div class="content-image-receipt-section">
+            <img src="{{ url_for('static', path=receipt_data.pathImage) }}" id="image-receipt"> 
         </div>
         <div class="condition-receipt">
-            <button type="button" class="btn btn-warning">ลบ</button>  
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModalRemove">ลบ</button> 
             <a href="{{'/editreceipt/%s'%receipt_data.id }}"><button type="button" class="btn btn-info">แก้ไข</button></a>
-        </div>        
+        </div>    
+    </div>
+    <div class="detail-receipt-section">
+        <div class="block-detail-receipt-section">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pills-detail-tab" data-bs-toggle="tab" data-bs-target="#pills-detail" type="button" role="tab" aria-selected="true">รายละเอียดทั่วไป</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-item-tab" data-bs-toggle="tab" data-bs-target="#pills-item" type="button" role="tab" aria-selected="false">รายการสินค้าหรือบริการ</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-detail" role="tabpanel" aria-labelledby="pills-detail-tab">
+                    
+                    <h4>หมายเลข: {{receipt_data.receiptID}}</h4>
+                    {% if receipt_data.dateReceipt != none %}
+                    <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%d-%m-%Y')}}</h4>
+                    {% else %}
+                    <h4>วันที่ออกใบเสร็จรับเงิน: </h4>
+                    {% endif %}
+                    <h4 id="about-shop">ข้อมูลของร้านค้า</h4>
+                    <p>ชื่อ: {{receipt_data.shopName}}</p>
+                    <p>ที่อยู่: {{receipt_data.addressShop}}</p>
+                    <p>เบอร์โทรศัพท์: {{receipt_data.shopPhone}}</p>
+                    <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDShop}}</p>
+                    <h4 id="about-cust">ข้อมูลของลูกค้า</h4>
+                    <p>ชื่อ: {{receipt_data.customerName}}</p>
+                    <p>ที่อยู่: {{receipt_data.addressCust}}</p>
+                    <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDCust}}</p>
+                </div>
+
+                <div class="tab-pane fade" id="pills-item" role="tabpanel" aria-labelledby="pills-item-tab">
+                    {% if receipt_data.type_receipt == 1 %}
+                        <table id="myTable-detail-1" class="table table-striped" style="width: 100% !important">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">รายการ</th>
+                                    <th class="text-center">ปริมาณ</th>
+                                    <th class="text-center">หน่วย</th>
+                                    <th class="text-center">ราคาต่อหน่วย</th>
+                                    <th class="text-center">ราคารวม</th>
+                                </tr>
+                            </thead>
+                            <tbody class="receipt-detail">
+                                {% for ele in items %}
+                                    <tr id="{{ele.id}}">
+                                        <td>{{ele.nameItem}}</td>
+                                        <td class="text-center">{{ele.qty}}</td>
+                                        <td class="text-center">{{ele.unitQty}}</td>
+                                        <td class="text-center">{{ele.pricePerQty}}</td>
+                                        <td class="text-center">{{ele.priceItemTotal}}</td>
+                                    </tr>                
+                                {% endfor %}     
+                            </tbody>
+                        </table>
+                    {% elif receipt_data.type_receipt == 0 %}
+                        <table id="myTable-detail-2" class=" table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">รายการ</th>
+                                    <th class="text-center">ราคารวม</th>
+                                </tr>
+                            </thead>
+                            <tbody class="receipt-detail">
+                                {% for ele in items %}
+                                    <tr id="{{ele.id}}">
+                                        <td>{{ele.nameItem}}</td>
+                                        <td class="text-center">{{ele.priceItemTotal}}</td>
+                                    </tr>                
+                                {% endfor %}     
+                            </tbody>                    
+                        </table>
+
+                    {% endif %}
+                </div>
+            </div>       
+   
+        </div>
     </div>
 
+    <!-- Modal Remove -->
+    <div class="modal fade" id="ModalRemove" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Warming</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                        <div class="modal-body">
+                            คุณต้องการลบข้อมูลใบเสร็จรับเงิน ?
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary">ตกลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
-
-            
+    
 {% endblock content %}
 
 {% block scripts %}
-<script src="{{ url_for ('static', path='/js/tab.js') }}"></script>
 <script src="{{ url_for ('static', path='/js/datatable-receipt-detail.js') }}"></script>
 {% endblock %}

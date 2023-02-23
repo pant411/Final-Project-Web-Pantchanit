@@ -107,11 +107,29 @@ p {
 }
 
 /*---------- receipts details page -----------*/
-.content-receipt .image-receipt-section #image-receipt {
+.content-receipt .image-receipt-section .content-image-receipt-section #image-receipt {
   max-width: 400px;
   /*display: flex;*/
   align-items: center;
   border: 2px solid #ccc;
+  justify-content: center;
+}
+
+.content-receipt .image-receipt-section #filename-receipt {
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2vh;
+}
+
+.content-receipt .image-receipt-section .condition-receipt {
+  display: inline-flex;
+  gap: 10px;
+  right: 5px;
+  margin-top: 1.5vh;
+}
+
+.content-receipt .image-receipt-section {
+  height: 80vh;
 }
 
 .content-receipt {
@@ -126,55 +144,24 @@ p {
 }
 
 .content-receipt .detail-receipt-section {
+  display: block;
   margin-left: 20px;
-  width: 1800px;
-  height: 1500px;
-  /*border: 2px solid red;*/
+  width: 80%;
+  height: 82vh;
 }
 
-/* Style the tab */
-.content-receipt .detail-receipt-section .tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
+.content-receipt .detail-receipt-section .tab-content {
+  overflow: scroll;
 }
 
-/* Style the buttons that are used to open the tab content */
-.content-receipt .detail-receipt-section .tab button {
-  background-color: inherit;
-  color: #000;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
+.content-receipt .detail-receipt-section .block-detail-receipt-section {
+  height: 82vh;
+  border: 1.5px solid #ccc;
+  overflow-y: scroll;
 }
 
-/* Change background color of buttons on hover */
-.content-receipt .detail-receipt-section .tab button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.content-receipt .detail-receipt-section .tab button.active {
-  background-color: #ccc;
-}
-
-/* Style the tab content */
-.content-receipt .detail-receipt-section .tabcontent {
-  height: 70vh;
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-}
-
-.condition-receipt {
-  display: flex;
-  gap: 10px;
-  right: 5px;
-  margin-top: 12px;
+.content-receipt .detail-receipt-section .block-detail-receipt-section .tab-content{
+  padding: 18px;
 }
 
 /*-------------- upload image file ------------*/
@@ -279,3 +266,5 @@ p {
 #myTable-detail-1, #myTable-detail-2 {
   table-layout: fixed
 }
+
+

@@ -86,7 +86,7 @@ async def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db))
 async def checkreceipt(receipt_id: int, request: Request, db: Session = Depends(get_db)):
     receipt_data = await crud.getOneReceipt_byDBId_main(db, receipt_id)
     db_item = await crud.getItem_byDBId(db, owner_receiptId = receipt_id)
-    return templates.TemplateResponse("checkReceipt.html", {
+    return templates.TemplateResponse("EditAndCheckReceipt.html", {
         "request": request,
         "receipt_data": receipt_data, 
         "items": db_item})
@@ -97,7 +97,7 @@ async def editreceipt(receipt_id: int,
                       db: Session = Depends(get_db)):
     receipt_data = await crud.getOneReceipt_byDBId_main(db, receipt_id)
     db_item = await crud.getItem_byDBId(db, owner_receiptId = receipt_id)
-    return templates.TemplateResponse("editReceipt.html", {
+    return templates.TemplateResponse("EditAndCheckReceipt.html", {
         "request": request, 
         "receipt_data": receipt_data, 
         "items": db_item})
