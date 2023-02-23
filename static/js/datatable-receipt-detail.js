@@ -5,8 +5,8 @@ $(document).ready(function () {
             scrollY: '55vh',
             scrollCollapse: true,
             paging: true,
-            /*pageLength: 6,
-            lengthChange: false,*/
+            pageLength: 8,
+            lengthChange: false,
             ordering: false,
             columns: [
                 { width: '60%' },
@@ -23,8 +23,8 @@ $(document).ready(function () {
             scrollY: '55vh',
             scrollCollapse: true,
             paging: true,
-            /*pageLength: 6,
-            lengthChange: false,*/
+            pageLength: 8,
+            lengthChange: false,
             ordering: false,
             columns: [
                 { width: '80%' },

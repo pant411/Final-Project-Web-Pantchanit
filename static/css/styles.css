@@ -108,10 +108,10 @@ p {
 
 /*---------- receipts details page -----------*/
 .content-receipt .image-receipt-section .content-image-receipt-section #image-receipt {
-  max-width: 400px;
+  max-width: 375px;
   /*display: flex;*/
   align-items: center;
-  border: 2px solid #ccc;
+  /*border: 2px solid #ccc;*/
   justify-content: center;
 }
 
@@ -150,18 +150,18 @@ p {
   height: 82vh;
 }
 
-.content-receipt .detail-receipt-section .tab-content {
-  overflow: scroll;
-}
-
 .content-receipt .detail-receipt-section .block-detail-receipt-section {
   height: 82vh;
-  border: 1.5px solid #ccc;
+  /*border: 1.5px solid #ccc;*/
   overflow-y: scroll;
 }
 
 .content-receipt .detail-receipt-section .block-detail-receipt-section .tab-content{
   padding: 18px;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  border-left: 1px solid #dee2e6;
+  height: 72vh;
 }
 
 /*-------------- upload image file ------------*/
@@ -232,10 +232,6 @@ p {
   height: 100vh;
 }
 
-#Item {
-  overflow-y: scroll;
-}
-
 #icon-receipt {
   display: flex;
   gap: 15px;
@@ -266,5 +262,3 @@ p {
 #myTable-detail-1, #myTable-detail-2 {
   table-layout: fixed
 }
-
-

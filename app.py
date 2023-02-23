@@ -1,5 +1,5 @@
 # built in module
-from typing import List
+from typing import List, Union
 from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi_pagination import Page, paginate, add_pagination
@@ -89,7 +89,8 @@ async def checkreceipt(receipt_id: int, request: Request, db: Session = Depends(
     return templates.TemplateResponse("EditAndCheckReceipt.html", {
         "request": request,
         "receipt_data": receipt_data, 
-        "items": db_item})
+        "items": db_item,
+        "status": "process"})
 
 @app.get("/editreceipt/{receipt_id}", response_class=HTMLResponse)
 async def editreceipt(receipt_id: int,
@@ -100,7 +101,8 @@ async def editreceipt(receipt_id: int,
     return templates.TemplateResponse("EditAndCheckReceipt.html", {
         "request": request, 
         "receipt_data": receipt_data, 
-        "items": db_item})
+        "items": db_item,
+        "status": "process"})
 
 #################################### Receipt Module #################################### 
 
@@ -136,7 +138,6 @@ async def submitReceipt(request: Request,
     redirect_url = request.url_for('checkreceipt', **{"receipt_id": db_receipt.id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     # return data
-
 
 @app.post("/receipts/submitreceipt", tags = ["Receipts"])
 async def submitReceipt2(request: Request,
@@ -210,20 +211,44 @@ async def editOneItem(receipt_id: int,
     db.refresh(db_item)
     return db_item
 
-@app.patch("/receipts/editonereceipt/{receipt_id}", 
+@app.post("/receipts/editonereceipt/{receipt_id}", 
            tags = ["Receipts"], 
            response_model=schemas.ResponseEditReceipt)
-async def editOneReceipt(receipt_id: int, 
-                         data_receipt: schemas.EditReceipt, 
+async def editOneReceipt(request: Request,
+                         receipt_id: int,
+                         receiptID: Union[str, None] = Form(...),
+                         dateReceipt: Union[str, None] = Form(...),
+                         shopName: Union[str, None] = Form(...),
+                         shopPhone: Union[str, None] = Form(...),
+                         addressShop: Union[str, None] = Form(...),
+                         taxIDShop: Union[str, None] = Form(...),
+                         customerName: Union[str, None] = Form(...),
+                         addressCust: Union[str, None] = Form(...),
+                         taxIDCust: Union[str, None] = Form(...),
                          db: Session = Depends(get_db)):
+    print(receiptID)
     db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
     db_receipt = db_receipt_query.first()
     if db_receipt is None:
         raise HTTPException(status_code=404, 
                             detail="Receipt not found with the given ID") 
-    update_data = data_receipt.dict(exclude_unset=True)
+    update_data = {
+        "receiptID": receiptID,
+        "dateReceipt": dateReceipt,
+        "shopName": shopName,
+        "shopPhone": shopPhone,
+        "addressShop": addressShop,
+        "taxIDShop": taxIDShop,
+        "customerName": customerName,
+        "addressCust": addressCust,
+        "taxIDCust": taxIDCust,
+    }
+    print(update_data)
+    # update_data = data_receipt.dict(exclude_unset=True)
     db_receipt_query.filter(models.Receipt.id == receipt_id)\
                     .update(update_data, synchronize_session=False)
     db.commit()
     db.refresh(db_receipt)
-    return db_receipt
+    # return db_receipt
+    redirect_url = request.url_for('editreceipt', **{"receipt_id": receipt_id})   
+    return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
