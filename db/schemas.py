@@ -14,7 +14,7 @@ class Item(BaseModel):
         orm_mode = True
 
 class EditItem(BaseModel): 
-    # id: int
+    id: Optional[int]
     nameItem: Optional[str]
     qty: Optional[float]
     unitQty: Optional[str]
@@ -175,5 +175,10 @@ class ResponseCustomerAll(BaseModel):
     customerName: Optional[str]
     taxIDCust: Optional[str]
     addressCust: Optional[str]
+    class Config:
+        orm_mode = True
+
+class DeleteManyItem(BaseModel):
+    listDelete: List[int]
     class Config:
         orm_mode = True

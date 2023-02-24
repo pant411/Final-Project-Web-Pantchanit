@@ -56,6 +56,28 @@ async def create_item(db: Session, listItems: any, owner_receiptId: int, type_re
     db.bulk_save_objects(objects)
     db.commit()
 
+async def create_one_item(db: Session, item: any, owner_receiptId: int, type_receipt: int):
+    db_item = None
+    print(item)
+    if type_receipt == 0:
+        db_item = models.Item(
+            nameItem = item["nameItem"], 
+            priceItemTotal = item["priceItemTotal"],
+            owner_receiptId = owner_receiptId
+        )
+    elif type_receipt == 1:
+        db_item = models.Item(
+            nameItem = item["nameItem"], 
+            qty = item["qty"],
+            unitQty = item["unitQty"],
+            pricePerQty = item["pricePerQty"],
+            priceItemTotal = item["priceItemTotal"],
+            owner_receiptId = owner_receiptId
+        )        
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+
 #################################### for get method #################################### 
 
 async def getOneReceipt_byDBId_main(db: Session, id: int):
