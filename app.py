@@ -135,13 +135,12 @@ async def submitReceipt(request: Request,
     await file.seek(0)
     with open("static/"+path_file, "wb+") as file_object:
         file_object.write(content_receipt)
-    redirect_url = request.url_for('checkreceipt', **{"receipt_id": db_receipt.id})   
+    redirect_url = request.url_for('editreceipt', **{"receipt_id": db_receipt.id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
     # return data
 
 @app.post("/receipts/submitreceipt", tags = ["Receipts"])
-async def submitReceipt2(request: Request,
-                         type_receipt: int = Form(...), 
+async def submitReceipt2(type_receipt: int = Form(...), 
                          file: UploadFile = File(...)):
     # print("tuuu",type_receipt)
     content_receipt = file.file.read()
@@ -174,18 +173,28 @@ async def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
 async def getReceiptByPagination(db: Session = Depends(get_db)):
     return await paginate(crud.getReceiptByAll(db))
 
-@app.get('/receipts/deleteReceiptByID/{receipt_id}', 
+@app.delete('/receipts/deleteReceiptByID/{receipt_id}', 
             tags = ["Receipts"])
-async def removeOneReceipt_byIndex(request: Request,
-                                   receipt_id: int, 
+async def removeOneReceipt_byIndex(receipt_id: int, 
                                    db: Session = Depends(get_db)):
     db_receipt = await crud.getOneReceiptByID(db, id = receipt_id)
     if db_receipt is None:
         raise HTTPException(status_code=404, 
                             detail="Receipt not found with the given ID")
     await crud.removeOneReceipt_byIndex(db, id = receipt_id)
-    redirect_url = app.url_path_for('listreceipts')   
-    return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    return {"success": True}
+
+@app.delete('/receipts/deleteitem/{receipt_id}/{item_id}', 
+            tags = ["Receipts"])
+async def removeOneItemByIndex(receipt_id: int, 
+                               item_id: int, 
+                               db: Session = Depends(get_db)):
+    db_item = await crud.getOneItem_byDBId(db, owner_receiptId = receipt_id, item_id=item_id)
+    if db_item is None:
+        raise HTTPException(status_code=404, 
+                            detail="Receipt not found with the given ID")
+    await crud.removeOneItemByIndex(db, id = item_id, owner_receiptId=receipt_id)
+    return {"success": True}
 
 @app.get("/receipts/getItemAll/{receipt_id}", tags = ["Receipts"])
 async def getItemAll(receipt_id: int, db: Session = Depends(get_db)):
@@ -226,7 +235,7 @@ async def editOneReceipt(request: Request,
                          addressCust: Union[str, None] = Form(...),
                          taxIDCust: Union[str, None] = Form(...),
                          db: Session = Depends(get_db)):
-    print(receiptID)
+    # print(receiptID)
     db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
     db_receipt = db_receipt_query.first()
     if db_receipt is None:
@@ -243,7 +252,7 @@ async def editOneReceipt(request: Request,
         "addressCust": addressCust,
         "taxIDCust": taxIDCust,
     }
-    print(update_data)
+    # print(update_data)
     # update_data = data_receipt.dict(exclude_unset=True)
     db_receipt_query.filter(models.Receipt.id == receipt_id)\
                     .update(update_data, synchronize_session=False)

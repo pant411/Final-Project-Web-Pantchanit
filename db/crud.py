@@ -101,6 +101,11 @@ async def removeOneReceipt_byIndex(db: Session, id: int):
     db.delete(db_receipt)
     db.commit()
 
+async def removeOneItemByIndex(db: Session, id: int, owner_receiptId: int):
+    db_item = db.query(models.Item).filter_by(id=id, owner_receiptId=owner_receiptId).first()
+    db.delete(db_item)
+    db.commit()
+
 #################################### for patch method ####################################
 # def editOneReceipt_byIndex():
 #    return None

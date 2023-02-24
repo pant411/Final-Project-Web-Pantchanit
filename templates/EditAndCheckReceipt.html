@@ -26,14 +26,18 @@
                         <div class="row">    
                             <div class="form-group col-8">
                                 <label for="input-receipt-id">หมายเลขใบเสร็จรับเงิน</label>
+                                {% if receipt_data.receiptID == None %}
+                                <input class="form-control form-control-sm" id="input-receipt-id" type="text" name="receiptID">
+                                {% else %}
                                 <input class="form-control form-control-sm" id="input-receipt-id" type="text" name="receiptID" value="{{receipt_data.receiptID}}">
+                                {% endif %}
                             </div>
                             <div class="form-group col-4">
                                 <label for="input-receipt-date">วันที่ออกใบเสร็จรับเงิน</label>
-                                {% if receipt_data.dateReceipt == none %}
-                                    <input class="form-control form-control-sm" id="input-receipt-date" name="dateReceipt" type="date" value="">                        
+                                {% if receipt_data.dateReceipt == None %}
+                                <input class="form-control form-control-sm" id="input-receipt-date" name="dateReceipt" type="date">                        
                                 {% else %}
-                                    <input class="form-control form-control-sm" id="input-receipt-date" type="date" name="dateReceipt" value="{{(receipt_data.dateReceipt).strftime('%Y-%m-%d')}}">
+                                <input class="form-control form-control-sm" id="input-receipt-date" type="date" name="dateReceipt" value="{{(receipt_data.dateReceipt).strftime('%Y-%m-%d')}}">
                                 {% endif %}
                             </div>
                         </div>
@@ -41,142 +45,166 @@
                         <div class="row">
                             <div class="form-group col-8">
                                 <label >ชื่อ</label>
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopName" value="{{receipt_data.shopName}}">                        
+                                {% if receipt_data.shopName == None %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopName"> 
+                                {% else %} 
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopName" value="{{receipt_data.shopName}}"> 
+                                {% endif %}
                             </div>
                             <div class="form-group col-4">
                                 <label >เบอร์โทรศัพท์</label>
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopPhone" value="{{receipt_data.shopPhone}}">                       
+                                {% if receipt_data.shopPhone == None %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopPhone">                       
+                                {% else %} 
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopPhone" value="{{receipt_data.shopPhone}}">
+                                {% endif %}
                             </div>
                         </div>
                         <div class="row"> 
                             <div class="col-sm-12">
                                 <label >ที่อยู่</label>
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressShop" value="{{receipt_data.addressShop}}">                         
+                                {% if receipt_data.addressShop == None %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressShop">                         
+                                {% else %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressShop" value="{{receipt_data.addressShop}}">
+                                {% endif %}
                             </div>
                         </div>
     
                         <div class="row">
                             <div class="form-group col-12">
                                 <label >เลขประจำตัวผู้เสียภาษี</label>
+                                {% if receipt_data.taxIDShop == None %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDShop">
+                                {% else %}
                                 <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDShop" value="{{receipt_data.taxIDShop}}">
+                                {% endif %}
                             </div>
                         </div>
                         <h5 id="input-cust">ข้อมูลของลูกค้า</h5>
                         <div class="row">
                             <div class="col-12">
                                 <label >ชื่อ</label>
+                                {% if receipt_data.customerName == None %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="customerName">
+                                {% else %}
                                 <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="customerName" value="{{receipt_data.customerName}}">
+                                {% endif %}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <label >ที่อยู่</label>
+                                {% if receipt_data.addressCust == None %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressCust">
+                                {% else %}
                                 <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressCust" value="{{receipt_data.addressCust}}">
+                                {% endif %}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <label >เลขประจำตัวผู้เสียภาษี</label>
+                                {% if receipt_data.taxIDCust == None %}
+                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDCust">
+                                {% else %}
                                 <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDCust" value="{{receipt_data.taxIDCust}}">
+                                {% endif %}
                             </div>
                         </div>
-                        <input type="submit" class="btn btn-primary mr-2 text-center" id="submit-edit" data-bs-toggle="modal" data-bs-target="#ModalEdit">  
+                        <input type="submit" class="btn btn-primary mr-2 text-center" id="submit-edit">  
                         
                     </form>                                                                 
                 </div>
 
                 <div class="tab-pane fade" id="pills-item" role="tabpanel" aria-labelledby="pills-item-tab">
-                    {% if receipt_data.type_receipt == 1 %}
-                        {% for ele in items %}
+                    <div id="list-item-receipt-section">
+                        {% if receipt_data.type_receipt == 1 %}
+                            {% for ele in items %}
+                                <div class="row" id="{{ele.id}}">
+                                    <div class="form-group col-5">
+                                        <label for="input-receipt-nameItem">รายการ</label>
+                                        {% if ele.nameItem == None %}
+                                        <input class="form-control form-control-sm" type="text" id="input-receipt-nameItem">
+                                        {% else %}
+                                        <input class="form-control form-control-sm" type="text" value="{{ele.nameItem}}" id="input-receipt-nameItem">
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group col-1">
+                                        <label for="input-receipt-qty">จำนวน</label>
+                                        {% if ele.qty == None %}
+                                        <input class="form-control form-control-sm" type="text" id="input-receipt-qty">   
+                                        {% else %}
+                                        <input class="form-control form-control-sm" type="text" value="{{ele.qty}}" id="input-receipt-qty">   
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group col-1">
+                                        <label for="input-receipt-unitQty">หน่วย</label>
+                                        {% if ele.unitQty == None %}
+                                        <input class="form-control form-control-sm" type="text" id="input-receipt-unitQty">    
+                                        {% else %}
+                                        <input class="form-control form-control-sm" type="text" value="{{ele.unitQty}}" id="input-receipt-unitQty">  
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label for="input-receipt-pricePerQty">ราคาต่อหน่วย</label>
+                                        {% if ele.pricePerQty == None %}
+                                        <input class="form-control form-control-sm" type="text" id="input-receipt-pricePerQty">
+                                        {% else %}
+                                        <input class="form-control form-control-sm" type="text" value="{{ele.pricePerQty}}" id="input-receipt-pricePerQty">
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label for="input-receipt-priceItemTotal">ราคาทั้งหมด</label>
+                                        {% if ele.priceItemTotal == None %}
+                                        <input class="form-control form-control-sm" type="text" id="input-receipt-priceItemTotal">                        
+                                        {% else %}
+                                        <input class="form-control form-control-sm" type="text" value="{{ele.priceItemTotal}}" id="input-receipt-priceItemTotal">
+                                        {% endif %}
+                                    </div>   
+                                    <div class="col-1" id="icon-receipt">
+                                        <i class="fas fa-trash" id="icon-remove-item" onclick="removeListItem(this)"></i>
+                                    </div>       
+                                </div>
+                            {% endfor %}
+                        {% elif receipt_data.type_receipt == 0 %}
+                            {% for ele in items %}
                             <div class="row" id="{{ele.id}}">
-                                <div class="form-group col-5">
-                                    <label for="input-receipt-id">รายการ</label>
-                                    <input class="form-control form-control-sm" type="text" value="{{ele.nameItem}}">
+                                <div class="form-group col-7">
+                                    <label for="input-receipt-nameItem">รายการ</label>
+                                    {% if ele.nameItem == None %}
+                                    <input class="form-control form-control-sm" type="text" id="input-receipt-nameItem">
+                                    {% else %}
+                                    <input class="form-control form-control-sm" type="text" value="{{ele.nameItem}}" id="input-receipt-nameItem">
+                                    {% endif %}
                                 </div>
-                                <div class="form-group col-1">
-                                    <label for="input-receipt-date">จำนวน</label>
-                                    <input class="form-control form-control-sm" type="text" value="{{ele.qty}}">                        
-                                </div>
-                                <div class="form-group col-1">
-                                    <label for="input-receipt-date">หน่วย</label>
-                                    <input class="form-control form-control-sm" type="text" value="{{ele.unitQty}}">                        
-                                </div>
-                                <div class="form-group col-2">
-                                    <label for="input-receipt-date">ราคาต่อหน่วย</label>
-                                    <input class="form-control form-control-sm" type="text" value="{{ele.pricePerQty}}">                        
-                                </div>
-                                <div class="form-group col-2">
-                                    <label for="input-receipt-date">ราคาทั้งหมด</label>
-                                    <input class="form-control form-control-sm" type="text" value="{{ele.priceItemTotal}}">                        
-                                </div>
+                                <div class="form-group col-3">
+                                    <label for="input-receipt-priceItemTotal">ราคาทั้งหมด</label>
+                                    {% if ele.priceItemTotal == None %}
+                                    <input class="form-control form-control-sm" type="text" id="input-receipt-priceItemTotal">
+                                    {% else %}
+                                    <input class="form-control form-control-sm" type="text" value="{{ele.priceItemTotal}}" id="input-receipt-priceItemTotal">
+                                    {% endif %}
+                                </div>    
                                 <div class="col-1" id="icon-receipt">
-                                    <i class="fas fa-trash"></i>
-                                    <i class="fas fa-edit"></i>
-                                </div>            
+                                    <i class="fas fa-trash" id="icon-remove-item" onclick="removeListItem(this)"></i>
+                                </div>                     
                             </div>
-                        {% endfor %}
-                        <div class="row" >
-                            <div class="form-group col-5">
-                                <label for="input-receipt-id">รายการ</label>
-                                <input class="form-control form-control-sm" type="text" >
-                            </div>
-                            <div class="form-group col-1">
-                                <label for="input-receipt-date">จำนวน</label>
-                                <input class="form-control form-control-sm" type="text" >                        
-                            </div>
-                            <div class="form-group col-1">
-                                <label for="input-receipt-date">หน่วย</label>
-                                <input class="form-control form-control-sm" type="text" >                        
-                            </div>
-                            <div class="form-group col-2">
-                                <label for="input-receipt-date">ราคาต่อหน่วย</label>
-                                <input class="form-control form-control-sm" type="text" >                        
-                            </div>
-                            <div class="form-group col-2">
-                                <label for="input-receipt-date">ราคาทั้งหมด</label>
-                                <input class="form-control form-control-sm" type="text" >                        
-                            </div>           
-                        </div>
-                    <i class="fas fa-plus" id="add-item"></i>
-                {% elif receipt_data.type_receipt == 0 %}
-                    {% for ele in items %}
-                        <div class="row" id="{{ele.id}}">
-                            <div class="form-group col-7">
-                                <label for="input-receipt-id">รายการ</label>
-                                <input class="form-control form-control-sm" type="text" value="{{ele.nameItem}}">
-                            </div>
-                            <div class="form-group col-3">
-                                <label for="input-receipt-id">ราคาทั้งหมด</label>
-                                <input class="form-control form-control-sm" type="text" value="{{ele.priceItemTotal}}">
-                            </div>
-                            <div class="col-1" id="icon-receipt">
-                                <i class="fas fa-trash"></i>
-                                <i class="fas fa-edit"></i>
-                            </div>                         
-                        </div>
-                    {% endfor %}
-                    <div class="row" >
-                        <div class="form-group col-7">
-                            <label for="input-receipt-id">รายการ</label>
-                            <input class="form-control form-control-sm" type="text" >
-                        </div>
-                        <div class="form-group col-3">
-                            <label for="input-receipt-id">ราคาทั้งหมด</label>
-                            <input class="form-control form-control-sm" type="text" >
-                        </div>                        
+                            {% endfor %}   
+                        {% endif %}             
                     </div>
-                    <i class="fas fa-plus" id="add-item"></i>
-                {% endif %}
+                    <i class="fas fa-plus" id="icon-add-item" onclick="addListItem('{{receipt_data.type_receipt}}')" ></i>     
+                    <button type="button" class="btn btn-warning">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" onclick="submitUpdateListItem('{{receipt_data.type_receipt}}')">แก้ไขรายการสินค้า/บริการ</button>
                 </div>
             </div>       
-   
         </div>
     </div>
-
 </div>
     
 {% endblock content %}
 
 {% block scripts %}
 <script src="{{ url_for ('static', path='/js/datatable-receipt-detail.js') }}"></script>
+<script src="{{ url_for ('static', path='/js/EditAndCheckReceipt.js') }}"></script>
 {% endblock %}

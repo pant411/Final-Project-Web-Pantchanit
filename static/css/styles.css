@@ -153,7 +153,6 @@ p {
 .content-receipt .detail-receipt-section .block-detail-receipt-section {
   height: 82vh;
   /*border: 1.5px solid #ccc;*/
-  overflow-y: scroll;
 }
 
 .content-receipt .detail-receipt-section .block-detail-receipt-section .tab-content{
@@ -162,6 +161,7 @@ p {
   border-bottom: 1px solid #dee2e6;
   border-left: 1px solid #dee2e6;
   height: 72vh;
+  overflow-y: scroll;
 }
 
 /*-------------- upload image file ------------*/
@@ -238,14 +238,6 @@ p {
   margin-top: 30px;
 }
 
-#add-item {
-  display: flex;
-  justify-content: center;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  font-size: 25px;
-}
-
 #about-shop, #about-cust {
   margin-top: 18px;
   text-decoration: underline;
@@ -261,4 +253,18 @@ p {
 
 #myTable-detail-1, #myTable-detail-2 {
   table-layout: fixed
+}
+
+#icon-add-item {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-size: 25px;
+}
+
+#icon-update-item:hover, 
+#icon-remove-item:hover, 
+#icon-add-item:hover  {
+  cursor: pointer;
 }

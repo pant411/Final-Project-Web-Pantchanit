@@ -19,7 +19,7 @@ class Receipt(Base):
     pathImage = Column(String(250), index=True)
     receiptID = Column(String(250), index=True)
     dateReceipt = Column(DateTime, index=True)
-    items = relationship("Item", back_populates="owner_receipt", cascade="all, delete") # FK
+    items = relationship("Item", back_populates="owner_receipt") # FK
     shopName = Column(String(250), index=True)
     taxIDShop = Column(String(30), index=True)
     shopPhone = Column(String(30), index=True)
@@ -48,7 +48,7 @@ class Item(Base): # back to Receipt
     priceItemTotal = Column(FLOAT, index=True)
 
     owner_receiptId = Column(Integer, ForeignKey("receipts.id"))
-    owner_receipt = relationship("Receipt", back_populates="items", cascade="all, delete")
+    owner_receipt = relationship("Receipt", back_populates="items")
 
 """
 class Shop(Base): # back to Receipt
