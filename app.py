@@ -12,6 +12,8 @@ import cv2
 import numpy as np
 from datetime import datetime
 
+from ExtractionFromImageService import main
+
 # my module
 from mainModule import runMain # main application of project
 
@@ -119,11 +121,8 @@ async def submitReceipt(request: Request,
                         file: UploadFile = File(...), 
                         db: Session = Depends(get_db)):
     # print("tuuu",type_receipt)
-    content_receipt = file.file.read()
-    image = cv2.imdecode(np.fromstring(content_receipt, np.uint8),\
-            cv2.IMREAD_UNCHANGED)
-    # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
-    data = runMain(image, type_receipt)
+    content_receipt = file.file.read()           
+    data = main(type_receipt, content_receipt)
     path_file = "img/" + file.filename
     data["pathImage"] = path_file
     data["filename"] = file.filename
@@ -138,25 +137,6 @@ async def submitReceipt(request: Request,
         file_object.write(content_receipt)
     redirect_url = request.url_for('editreceipt', **{"receipt_id": db_receipt.id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-    # return data
-
-@app.post("/receipts/submitreceipt", tags = ["Receipts"])
-async def submitReceipt2(type_receipt: int = Form(...), 
-                         file: UploadFile = File(...)):
-    # print("tuuu",type_receipt)
-    content_receipt = file.file.read()
-    print(content_receipt)
-    image = cv2.imdecode(np.fromstring(content_receipt, np.uint8),\
-            cv2.IMREAD_UNCHANGED)
-    # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
-    data = runMain(image, type_receipt)
-    path_file = "img/" + file.filename
-    data["pathImage"] = path_file
-    data["filename"] = file.filename
-    # data["receipt-content"] = content_receipt
-    # redirect_url = request.url_for('checkreceipt')   
-    # return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-    return data
 
 @app.get("/receipts/getOneByID/{receipt_id}", 
          tags = ["Receipts"], 
@@ -277,33 +257,34 @@ async def editManyItem(receipt_id: int,
            response_model=schemas.ResponseEditReceipt)
 async def editOneReceipt(request: Request,
                          receipt_id: int,
-                         receiptID: Union[str, None] = Form(...),
-                         dateReceipt: Union[str, None] = Form(...),
-                         shopName: Union[str, None] = Form(...),
-                         shopPhone: Union[str, None] = Form(...),
-                         addressShop: Union[str, None] = Form(...),
-                         taxIDShop: Union[str, None] = Form(...),
-                         customerName: Union[str, None] = Form(...),
-                         addressCust: Union[str, None] = Form(...),
-                         taxIDCust: Union[str, None] = Form(...),
+                         receiptID: Union[str, None] = Form(default=None),
+                         dateReceipt: Union[str, None] = Form(default=None),
+                         shopName: Union[str, None] = Form(default=None),
+                         shopPhone: Union[str, None] = Form(default=None),
+                         addressShop: Union[str, None] = Form(default=None),
+                         taxIDShop: Union[str, None] = Form(default=None),
+                         customerName: Union[str, None] = Form(default=None),
+                         addressCust: Union[str, None] = Form(default=None),
+                         taxIDCust: Union[str, None] = Form(default=None),
                          db: Session = Depends(get_db)):
-    # print(receiptID)
+    print(receiptID)
     db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
     db_receipt = db_receipt_query.first()
     if db_receipt is None:
         raise HTTPException(status_code=404, 
                             detail="Receipt not found with the given ID") 
-    update_data = {
-        "receiptID": receiptID,
-        "dateReceipt": dateReceipt,
-        "shopName": shopName,
-        "shopPhone": shopPhone,
-        "addressShop": addressShop,
-        "taxIDShop": taxIDShop,
-        "customerName": customerName,
-        "addressCust": addressCust,
-        "taxIDCust": taxIDCust,
-    }
+    
+    update_data = {}
+    if receiptID: update_data["receiptID"] = receiptID
+    if dateReceipt: update_data["dateReceipt"] = dateReceipt
+    if shopName: update_data["shopName"] = shopName
+    if shopPhone: update_data["shopPhone"] = shopPhone
+    if addressShop: update_data["addressShop"] = addressShop
+    if taxIDShop: update_data["taxIDShop"] = taxIDShop
+    if customerName: update_data["customerName"] = customerName
+    if addressCust: update_data["addressCust"] = addressCust
+    if taxIDCust: update_data["taxIDCust"] = taxIDCust
+
     # print(update_data)
     # update_data = data_receipt.dict(exclude_unset=True)
     db_receipt_query.filter(models.Receipt.id == receipt_id)\
