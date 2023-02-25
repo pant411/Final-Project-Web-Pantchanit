@@ -21,3 +21,4 @@ python-Levenshtein
 python-dotenv
 gunicorn
 cloud-sql-python-connector[pymysql]
+google-cloud-storage

@@ -28,3 +28,5 @@ EXPOSE 8080
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
 
 # CMD exec gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 app:app
+
+# CMD gunicorn --bind :$PORT app:app

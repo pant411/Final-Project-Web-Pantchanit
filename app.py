@@ -6,6 +6,7 @@ from fastapi_pagination import Page, paginate, add_pagination
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
 # from werkzeug.utils import secure_filename
 import cv2
 import numpy as np
@@ -49,7 +50,7 @@ app.add_middleware(
 def get_db(request: Request):
     return request.state.db
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=Path(__file__).parent.absolute() / "static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
