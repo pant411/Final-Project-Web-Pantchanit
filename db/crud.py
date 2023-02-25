@@ -31,9 +31,6 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
 
     return db_receipt
 
-async def edit_receipt(db: Session):
-    pass
-
 async def create_item(db: Session, listItems: any, owner_receiptId: int, type_receipt: int):
     objects = []
     for ele in listItems:
@@ -127,7 +124,3 @@ async def removeOneItemByIndex(db: Session, id: int, owner_receiptId: int):
     db_item = db.query(models.Item).filter_by(id=id, owner_receiptId=owner_receiptId).first()
     db.delete(db_item)
     db.commit()
-
-#################################### for patch method ####################################
-# def editOneReceipt_byIndex():
-#    return None

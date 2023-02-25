@@ -170,7 +170,10 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
   console.log(receipt_id);
   await fetch('/receipts/editmanyitem/' + receipt_id + '/' + type_receipt, {
     method: 'PATCH',
-    body: JSON.stringify(ListItemUpdate),
+    body: JSON.stringify({
+      editItem: ListItemUpdate,
+      deleteItem: ListRemove
+    }),
     headers: {
       'Content-type': 'application/json; charset=UTF-8',
     },

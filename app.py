@@ -232,10 +232,10 @@ async def editOneItem(receipt_id: int,
 @app.patch("/receipts/editmanyitem/{receipt_id}/{type_receipt}", tags = ["Receipts"])
 async def editManyItem(receipt_id: int,
                        type_receipt: int,
-                       data_item: List[schemas.EditItem], 
+                       data_item: schemas.SubmitEditItem, 
                        db: Session = Depends(get_db)):
-    # print(data_item)
-    for ele in data_item:
+    print(data_item)
+    for ele in data_item.editItem:
         db_item_query = db.query(models.Item).filter_by(
             owner_receiptId = receipt_id,
             id = ele.id)
@@ -265,6 +265,10 @@ async def editManyItem(receipt_id: int,
                          .update(update_data, synchronize_session=False)
             db.commit()
             db.refresh(db_item)
+
+    for ele in data_item.deleteItem:
+        await crud.removeOneItemByIndex(db, id = ele, owner_receiptId=receipt_id)
+    
     return {"success": True}
 
 @app.post("/receipts/editonereceipt/{receipt_id}", 

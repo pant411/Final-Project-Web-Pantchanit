@@ -23,6 +23,12 @@ class EditItem(BaseModel):
     class Config:
         orm_mode = True
 
+class SubmitEditItem(BaseModel):
+    editItem: List[EditItem]
+    deleteItem: List[int]
+    class Config:
+        orm_mode = True    
+
 class ResponseEditReceipt(BaseModel): 
     # about receipt
     # id: int
