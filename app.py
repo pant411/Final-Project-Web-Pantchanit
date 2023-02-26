@@ -1,21 +1,13 @@
 # built in module
-from typing import List, Union
+from typing import Union
 from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi_pagination import Page, paginate, add_pagination
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 # from werkzeug.utils import secure_filename
-import cv2
-import numpy as np
-from datetime import datetime
-
 from ExtractionFromImageService import main
-
-# my module
-from mainModule import runMain # main application of project
 
 from sqlalchemy.orm import Session
 
@@ -25,8 +17,6 @@ from db.database import SessionLocal, engine
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="My Final Project", debug=True)
-
-add_pagination(app)
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -148,12 +138,6 @@ async def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
                             detail="Receipt not found with the given ID")
     return await crud.getOneReceipt_byDBId_main(db, receipt_id)
 
-@app.get("/receipts/getByPagination/", 
-         tags = ["Receipts"], 
-         response_model=Page[schemas.ResponseReceiptAll])
-async def getReceiptByPagination(db: Session = Depends(get_db)):
-    return await paginate(crud.getReceiptByAll(db))
-
 @app.delete('/receipts/deleteReceiptByID/{receipt_id}', 
             tags = ["Receipts"])
 async def removeOneReceipt_byIndex(receipt_id: int, 
@@ -210,48 +194,6 @@ async def editOneItem(receipt_id: int,
     db.refresh(db_item)
     return db_item
 
-@app.patch("/receipts/editmanyitem/{receipt_id}/{type_receipt}", tags = ["Receipts"])
-async def editManyItem(receipt_id: int,
-                       type_receipt: int,
-                       data_item: schemas.SubmitEditItem, 
-                       db: Session = Depends(get_db)):
-    print(data_item)
-    for ele in data_item.editItem:
-        db_item_query = db.query(models.Item).filter_by(
-            owner_receiptId = receipt_id,
-            id = ele.id)
-        db_item = db_item_query.first()
-        if db_item is None :
-            print("add!!!!")
-            addItem = {}
-            if type_receipt == 0:
-                addItem = {
-                    "nameItem": ele.nameItem,
-                    "priceItemTotal": ele.priceItemTotal,
-                    "owner_receiptId": receipt_id
-                }
-            elif type_receipt == 1:
-                addItem = {
-                    "nameItem": ele.nameItem,
-                    "qty": ele.qty,
-                    "unitQty": ele.unitQty,
-                    "pricePerQty": ele.pricePerQty,
-                    "priceItemTotal": ele.priceItemTotal,
-                    "owner_receiptId": receipt_id
-                }                
-            await crud.create_one_item(db, addItem, receipt_id, type_receipt)
-        else:
-            update_data = ele.dict(exclude_unset=True) 
-            db_item_query.filter(models.Item.id == ele.id)\
-                         .update(update_data, synchronize_session=False)
-            db.commit()
-            db.refresh(db_item)
-
-    for ele in data_item.deleteItem:
-        await crud.removeOneItemByIndex(db, id = ele, owner_receiptId=receipt_id)
-    
-    return {"success": True}
-
 @app.post("/receipts/editonereceipt/{receipt_id}", 
            tags = ["Receipts"], 
            response_model=schemas.ResponseEditReceipt)
@@ -294,3 +236,56 @@ async def editOneReceipt(request: Request,
     # return db_receipt
     redirect_url = request.url_for('editreceipt', **{"receipt_id": receipt_id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+@app.patch("/receipts/editreceiptall/{receipt_id}/{type_receipt}", tags = ["Receipts"])
+async def editReceiptAll(receipt_id: int,
+                       type_receipt: int,
+                       payload: schemas.SubmitEditItem, 
+                       db: Session = Depends(get_db)):
+    print(payload)
+    db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
+    db_receipt = db_receipt_query.first()
+    if db_receipt is None:
+        raise HTTPException(status_code=404, 
+                            detail="Receipt not found with the given ID") 
+    update_data = (payload.dataReceipt).dict(exclude_unset=True)
+    db_receipt_query.filter(models.Receipt.id == receipt_id)\
+                    .update(update_data, synchronize_session=False)
+    db.commit()
+    db.refresh(db_receipt)
+
+    for ele in payload.editItem:
+        db_item_query = db.query(models.Item).filter_by(
+            owner_receiptId = receipt_id,
+            id = ele.id)
+        db_item = db_item_query.first()
+        if db_item is None :
+            print("add!!!!")
+            addItem = {}
+            if type_receipt == 0:
+                addItem = {
+                    "nameItem": ele.nameItem,
+                    "priceItemTotal": ele.priceItemTotal,
+                    "owner_receiptId": receipt_id
+                }
+            elif type_receipt == 1:
+                addItem = {
+                    "nameItem": ele.nameItem,
+                    "qty": ele.qty,
+                    "unitQty": ele.unitQty,
+                    "pricePerQty": ele.pricePerQty,
+                    "priceItemTotal": ele.priceItemTotal,
+                    "owner_receiptId": receipt_id
+                }                
+            await crud.create_one_item(db, addItem, receipt_id, type_receipt)
+        else:
+            update_data = ele.dict(exclude_unset=True) 
+            db_item_query.filter(models.Item.id == ele.id)\
+                         .update(update_data, synchronize_session=False)
+            db.commit()
+            db.refresh(db_item)
+
+    for ele in payload.deleteItem:
+        await crud.removeOneItemByIndex(db, id = ele, owner_receiptId=receipt_id)
+    
+    return {"success": True}

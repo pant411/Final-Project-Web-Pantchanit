@@ -23,12 +23,6 @@ class EditItem(BaseModel):
     class Config:
         orm_mode = True
 
-class SubmitEditItem(BaseModel):
-    editItem: List[EditItem]
-    deleteItem: List[int]
-    class Config:
-        orm_mode = True    
-
 class ResponseEditReceipt(BaseModel): 
     # about receipt
     # id: int
@@ -45,6 +39,30 @@ class ResponseEditReceipt(BaseModel):
     addressCust: Optional[str]
     class Config:
         orm_mode = True
+
+class RequestEditReceipt(BaseModel): 
+    # about receipt
+    # id: int
+    receiptID: Optional[str]
+    dateReceipt: Optional[str]
+    # about shop
+    shopName: Optional[str]
+    taxIDShop: Optional[str]
+    addressShop: Optional[str]
+    shopPhone: Optional[str]
+    # about customer
+    customerName: Optional[str]
+    taxIDCust: Optional[str]
+    addressCust: Optional[str]
+    class Config:
+        orm_mode = True
+
+class SubmitEditItem(BaseModel):
+    editItem: List[EditItem]
+    deleteItem: List[int]
+    dataReceipt: RequestEditReceipt
+    class Config:
+        orm_mode = True    
 
 class EditReceipt(BaseModel): 
     # about receipt

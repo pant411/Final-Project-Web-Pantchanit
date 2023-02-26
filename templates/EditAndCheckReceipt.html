@@ -22,7 +22,7 @@
         <div class="block-detail-receipt-section">
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-detail" role="tabpanel" aria-labelledby="pills-detail-tab">
-                    <form action="{{'/receipts/editonereceipt/%s'%receipt_data.id }}" method="post" enctype="multipart/form-data" >    
+                    <!--form action="{{'/receipts/editonereceipt/%s'%receipt_data.id }}" method="post" enctype="multipart/form-data" -->    
                         <div class="row">    
                             <div class="form-group col-8">
                                 <label for="input-receipt-id">หมายเลขใบเสร็จรับเงิน</label>
@@ -46,17 +46,17 @@
                             <div class="form-group col-8">
                                 <label >ชื่อ</label>
                                 {% if receipt_data.shopName == None %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopName"> 
+                                <input class="form-control form-control-sm" id="input-receipt-shopname" type="text" name="shopName"> 
                                 {% else %} 
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopName" value="{{receipt_data.shopName}}"> 
+                                <input class="form-control form-control-sm" id="input-receipt-shopname" type="text" name="shopName" value="{{receipt_data.shopName}}"> 
                                 {% endif %}
                             </div>
                             <div class="form-group col-4">
                                 <label >เบอร์โทรศัพท์</label>
                                 {% if receipt_data.shopPhone == None %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopPhone">                       
+                                <input class="form-control form-control-sm" id="input-receipt-shopphone" type="text" name="shopPhone">                       
                                 {% else %} 
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="shopPhone" value="{{receipt_data.shopPhone}}">
+                                <input class="form-control form-control-sm" id="input-receipt-shopphone" type="text" name="shopPhone" value="{{receipt_data.shopPhone}}">
                                 {% endif %}
                             </div>
                         </div>
@@ -64,9 +64,9 @@
                             <div class="col-sm-12">
                                 <label >ที่อยู่</label>
                                 {% if receipt_data.addressShop == None %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressShop">                         
+                                <input class="form-control form-control-sm" id="input-receipt-addressshop" type="text" name="addressShop">                         
                                 {% else %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressShop" value="{{receipt_data.addressShop}}">
+                                <input class="form-control form-control-sm" id="input-receipt-addressshop" type="text" name="addressShop" value="{{receipt_data.addressShop}}">
                                 {% endif %}
                             </div>
                         </div>
@@ -75,9 +75,9 @@
                             <div class="form-group col-12">
                                 <label >เลขประจำตัวผู้เสียภาษี</label>
                                 {% if receipt_data.taxIDShop == None %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDShop">
+                                <input class="form-control form-control-sm" id="input-receipt-taxIDShop" type="text" name="taxIDShop">
                                 {% else %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDShop" value="{{receipt_data.taxIDShop}}">
+                                <input class="form-control form-control-sm" id="input-receipt-taxIDShop" type="text" name="taxIDShop" value="{{receipt_data.taxIDShop}}">
                                 {% endif %}
                             </div>
                         </div>
@@ -86,9 +86,9 @@
                             <div class="col-12">
                                 <label >ชื่อ</label>
                                 {% if receipt_data.customerName == None %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="customerName">
+                                <input class="form-control form-control-sm" id="input-receipt-customerName" type="text" name="customerName">
                                 {% else %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="customerName" value="{{receipt_data.customerName}}">
+                                <input class="form-control form-control-sm" id="input-receipt-customerName" type="text" name="customerName" value="{{receipt_data.customerName}}">
                                 {% endif %}
                             </div>
                         </div>
@@ -96,9 +96,9 @@
                             <div class="col-12">
                                 <label >ที่อยู่</label>
                                 {% if receipt_data.addressCust == None %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressCust">
+                                <input class="form-control form-control-sm" id="input-receipt-addressCust" type="text" name="addressCust">
                                 {% else %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="addressCust" value="{{receipt_data.addressCust}}">
+                                <input class="form-control form-control-sm" id="input-receipt-addressCust" type="text" name="addressCust" value="{{receipt_data.addressCust}}">
                                 {% endif %}
                             </div>
                         </div>
@@ -106,13 +106,13 @@
                             <div class="col-12">
                                 <label >เลขประจำตัวผู้เสียภาษี</label>
                                 {% if receipt_data.taxIDCust == None %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDCust">
+                                <input class="form-control form-control-sm" id="input-receipt-taxIDCust" type="text" name="taxIDCust">
                                 {% else %}
-                                <input class="form-control form-control-sm" id="colFormLabelSm" type="text" name="taxIDCust" value="{{receipt_data.taxIDCust}}">
+                                <input class="form-control form-control-sm" id="input-receipt-taxIDCust" type="text" name="taxIDCust" value="{{receipt_data.taxIDCust}}">
                                 {% endif %}
                             </div>
                         </div>
-                        <input type="submit" class="btn btn-primary mr-2 text-center" id="submit-edit">  
+                        <!--input type="submit" class="btn btn-primary mr-2 text-center" id="submit-edit"-->  
                         
                     </form>                                                                 
                 </div>
@@ -194,10 +194,14 @@
                         {% endif %}             
                     </div>
                     <i class="fas fa-plus" id="icon-add-item" onclick="addListItem('{{receipt_data.type_receipt}}')" ></i>     
-                    <button type="button" class="btn btn-warning">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary" onclick="submitUpdateListItem('{{receipt_data.type_receipt}}', '{{receipt_data.id}}')">แก้ไขรายการสินค้า/บริการ</button>
                 </div>
-            </div>       
+
+            </div> 
+            <div class="button-editreceipt-page">
+                <a href="{{'/receiptdetail/%s'%receipt_data.id }}"><button type="button" class="btn btn-warning">ยกเลิก</button></a>
+                <button type="button" class="btn btn-primary" onclick="submitUpdateListItem('{{receipt_data.type_receipt}}', '{{receipt_data.id}}')">แก้ไขรายการสินค้า/บริการ</button>                  
+            </div> 
+               
         </div>
     </div>
 </div>
