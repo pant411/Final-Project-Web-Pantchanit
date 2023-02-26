@@ -62,7 +62,6 @@ async def receiptdetail(receipt_id: int, request: Request,
                         db: Session = Depends(get_db)):
     receipt_data = await crud.getOneReceipt_byDBId_main(db, receipt_id)
     db_item = await crud.getItem_byDBId(db, owner_receiptId = receipt_id)
-    print(receipt_data)
     return templates.TemplateResponse("receiptdetail.html", {
         "request": request, 
         "receipt_data": receipt_data, 
@@ -238,11 +237,12 @@ async def editOneReceipt(request: Request,
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
 @app.patch("/receipts/editreceiptall/{receipt_id}/{type_receipt}", tags = ["Receipts"])
-async def editReceiptAll(receipt_id: int,
-                       type_receipt: int,
-                       payload: schemas.SubmitEditItem, 
-                       db: Session = Depends(get_db)):
-    print(payload)
+async def editReceiptAll(request: Request,
+                         receipt_id: int,
+                         type_receipt: int,
+                         payload: schemas.SubmitEditItem, 
+                         db: Session = Depends(get_db)):
+    # print(payload)
     db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
     db_receipt = db_receipt_query.first()
     if db_receipt is None:
@@ -289,3 +289,5 @@ async def editReceiptAll(receipt_id: int,
         await crud.removeOneItemByIndex(db, id = ele, owner_receiptId=receipt_id)
     
     return {"success": True}
+    # redirect_url = request.url_for('receiptdetail', **{"receipt_id": receipt_id})   
+    # return RedirectResponse(redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)

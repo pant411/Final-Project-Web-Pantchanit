@@ -101,12 +101,9 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
     }),
     headers: {
       'Content-type': 'application/json; charset=UTF-8',
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
     },
-  }).then((response) => response.json())
-    .then((json) => console.log(json))
-    .then(
-      window.location = "/editreceipt/"+receipt_id+"?nocache=" + (new Date()).getTime()
-    );
+  }).then(window.location.href = "/receiptdetail/" + receipt_id);
 
 }
 

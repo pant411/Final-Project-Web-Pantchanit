@@ -8,5 +8,8 @@ load_dotenv()
 def main(type_receipt: int, file: any):
 
     url = os.getenv("URL_MAINSERVICE")
-    r = requests.post(url = url, params={"type_receipt": type_receipt}, files={"file": file})
+    r = requests.post(
+        url = url + "/receipts/file/submitreceipt", 
+        params={"type_receipt": type_receipt}, 
+        files={"file": file})
     return r.json()

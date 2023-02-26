@@ -18,14 +18,30 @@
             {% for ele in list_data %}
                 <tr id="{{ele.id}}">
                     <td><a href="{{'/receiptdetail/%s'%ele.id }}">{{ele["filename"]}}</a></td>
+                    {% if ele["receiptID"] %}
                     <td>{{ele["receiptID"]}}</td>
-                    {% if ele["dateReceipt"] != none %}
+                    {% else %}
+                    <td>ไม่พบข้อมูล</td>
+                    {% endif %}
+
+                    {% if ele["dateReceipt"] %}
                         <td>{{ele["dateReceipt"].strftime('%d-%m-%Y')}}</td>
                     {% else %}
-                        <td></td>
+                        <td>ไม่พบข้อมูล</td>
                     {% endif %}
+
+                    {% if ele["shopName"] %}
                     <td>{{ele["shopName"]}}</td>
+                    {% else %}
+                    <td>ไม่พบข้อมูล</td>
+                    {% endif %}
+
+                    {% if ele["customerName"] %}
                     <td>{{ele["customerName"]}}</td>
+                    {% else %}
+                    <td>ไม่พบข้อมูล</td>
+                    {% endif %}                    
+
                 </tr>                
             {% endfor %}     
         </tbody>

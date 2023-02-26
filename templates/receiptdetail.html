@@ -23,22 +23,62 @@
         <div class="block-detail-receipt-section">
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-detail" role="tabpanel" aria-labelledby="pills-detail-tab">
-                    
+                    {% if receipt_data.receiptID %}
                     <h4>หมายเลข: {{receipt_data.receiptID}}</h4>
-                    {% if receipt_data.dateReceipt != none %}
+                    {% else %}
+                    <h4>หมายเลข: ไม่พบข้อมูล</h4>
+                    {% endif %}
+                    
+                    {% if receipt_data.dateReceipt %}
                     <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%d-%m-%Y')}}</h4>
                     {% else %}
-                    <h4>วันที่ออกใบเสร็จรับเงิน: </h4>
+                    <h4>วันที่ออกใบเสร็จรับเงิน: ไม่พบข้อมูล</h4>
                     {% endif %}
+
                     <h4 id="about-shop">ข้อมูลของร้านค้า</h4>
+                    {% if receipt_data.shopName %}
                     <p>ชื่อ: {{receipt_data.shopName}}</p>
+                    {% else %}
+                    <p>ชื่อ: ไม่พบข้อมูล</p>
+                    {% endif %}
+
+                    {% if receipt_data.addressShop %}
                     <p>ที่อยู่: {{receipt_data.addressShop}}</p>
+                    {% else %}
+                    <p>ที่อยู่: ไม่พบข้อมูล</p>
+                    {% endif %}
+                    
+                    {% if receipt_data.shopPhone %}
                     <p>เบอร์โทรศัพท์: {{receipt_data.shopPhone}}</p>
+                    {% else %}
+                    <p>เบอร์โทรศัพท์: ไม่พบข้อมูล</p>
+                    {% endif %}                    
+
+                    {% if receipt_data.taxIDShop %}
                     <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDShop}}</p>
+                    {% else %}
+                    <p>เลขประจำตัวผู้เสียภาษี: ไม่พบข้อมูล</p>
+                    {% endif %}    
+
                     <h4 id="about-cust">ข้อมูลของลูกค้า</h4>
+                    {% if receipt_data.customerName %}
                     <p>ชื่อ: {{receipt_data.customerName}}</p>
+                    {% else %}
+                    <p>ชื่อ: ไม่พบข้อมูล</p>
+                    {% endif %}    
+
+                    {% if receipt_data.addressCust %}
                     <p>ที่อยู่: {{receipt_data.addressCust}}</p>
+                    {% else %}
+                    <p>ที่อยู่: ไม่พบข้อมูล</p>
+                    {% endif %}
+
+                    {% if receipt_data.taxIDCust %}
                     <p>เลขประจำตัวผู้เสียภาษี: {{receipt_data.taxIDCust}}</p>
+                    {% else %}
+                    <p>เลขประจำตัวผู้เสียภาษี: ไม่พบข้อมูล</p>
+                    {% endif %}    
+
                 </div>
 
                 <div class="tab-pane fade" id="pills-item" role="tabpanel" aria-labelledby="pills-item-tab">
