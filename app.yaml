@@ -1,0 +1,7 @@
+runtime: python38
+env: flex
+entrypoint: uvicorn app:app
+
+runtime_config:
+    operating_system: "ubuntu18"
+    runtime_version: "3.8"

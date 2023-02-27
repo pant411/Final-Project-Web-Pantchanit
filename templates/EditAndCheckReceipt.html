@@ -7,7 +7,7 @@
     <div class="image-receipt-section">
         <h5 id="filename-receipt">{{receipt_data.filename}}</h5>
         <div class="content-image-receipt-section">
-            <img src="{{ url_for('static', path=receipt_data.pathImage) }}" id="image-receipt"> 
+            <img src="{{ receipt_data.pathImage }}" id="image-receipt"> 
         </div>  
     </div>
     <div class="detail-receipt-section">

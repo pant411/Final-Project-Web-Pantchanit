@@ -14,6 +14,11 @@ from sqlalchemy.orm import Session
 from db import crud, models, schemas
 from db.database import SessionLocal, engine
 
+from google.cloud import storage
+import os
+
+from datetime import datetime, timedelta
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="My Final Project", debug=True)
@@ -45,6 +50,39 @@ def get_db(request: Request):
 app.mount("/static", StaticFiles(directory=Path(__file__).parent.absolute() / "static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
+
+# define function that generates the public URL, default expiration is set to 24 hours
+def get_cs_file_url(bucket_name, file_name, expire_in=datetime.now() + timedelta(5000)): 
+    storage_client = storage.Client()
+
+    bucket = storage_client.bucket(bucket_name)
+    url = bucket.blob(file_name).generate_signed_url(expire_in)
+
+    return url
+
+def upload_blob_from_memory(bucket_name, contents, destination_blob_name):
+    """Uploads a file to the bucket."""
+
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+
+    # The contents to upload to the file
+    # contents = "these are my contents"
+
+    # The ID of your GCS object
+    # destination_blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_string(contents)
+
+    # print(
+    #     f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}."
+    # )
+    return True
+
 
 
 #################################### Template Module #################################### 
@@ -112,18 +150,20 @@ async def submitReceipt(request: Request,
     # print("tuuu",type_receipt)
     content_receipt = file.file.read()           
     data = main(type_receipt, content_receipt)
-    path_file = "img/" + file.filename
-    data["pathImage"] = path_file
-    data["filename"] = file.filename
     # print(data["dateReceipt"])
-    print(data)
+    # print(data)
+
+    # print(db_receipt)
+    # await file.seek(0)
+    # with open("static/"+path_file, "wb+") as file_object:
+    #     file_object.write(content_receipt)
+    upload_blob_from_memory(os.getenv("BUCKETNAME_STORAGE"),content_receipt, file.filename)
+    data["pathImage"] = get_cs_file_url(os.getenv("BUCKETNAME_STORAGE"),file.filename)
+    data["filename"] = file.filename
+    
     db_receipt = await crud.create_receipt_main(db=db, 
                                                 receipt=data, 
-                                                type_receipt=type_receipt)
-    # print(db_receipt)
-    await file.seek(0)
-    with open("static/"+path_file, "wb+") as file_object:
-        file_object.write(content_receipt)
+                                                type_receipt=type_receipt)    
     redirect_url = request.url_for('editreceipt', **{"receipt_id": db_receipt.id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 

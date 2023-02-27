@@ -16,7 +16,7 @@ class Receipt(Base):
 
     id = Column(Integer, primary_key=True, index=True) # PK
     filename = Column(String(250), index=True)
-    pathImage = Column(String(250), index=True)
+    pathImage = Column(String(1000), index=True)
     receiptID = Column(String(250), index=True)
     dateReceipt = Column(DateTime, index=True)
     items = relationship("Item", back_populates="owner_receipt") # FK

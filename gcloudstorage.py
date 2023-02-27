@@ -40,11 +40,42 @@ def list_cs_files(bucket_name):
     return file_list
 
 # define function that generates the public URL, default expiration is set to 24 hours
-def get_cs_file_url(bucket_name, file_name, expire_in=datetime.today() + datetime.timedelta(1)): 
+def get_cs_file_url(bucket_name, file_name, expire_in=datetime.today() + datetime.timedelta(10000)): 
     storage_client = storage.Client()
 
     bucket = storage_client.bucket(bucket_name)
     url = bucket.blob(file_name).generate_signed_url(expire_in)
 
     return url
+
+def upload_blob_from_stream(bucket_name, file_obj, destination_blob_name):
+    """Uploads bytes from a stream or other file-like object to a blob."""
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+
+    # The stream or file (file-like object) from which to read
+    # import io
+    # file_obj = io.BytesIO()
+    # file_obj.write(b"This is test data.")
+
+    # The desired name of the uploaded GCS object (blob)
+    # destination_blob_name = "storage-object-name"
+
+    # Construct a client-side representation of the blob.
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    # Rewind the stream to the beginning. This step can be omitted if the input
+    # stream will always be at a correct position.
+    file_obj.seek(0)
+
+    # Upload data from the stream to your bucket.
+    blob.upload_from_file(file_obj)
+
+    # print(
+    #     f"Stream data uploaded to {destination_blob_name} in bucket {bucket_name}."
+    # )
+
+    return True
 
