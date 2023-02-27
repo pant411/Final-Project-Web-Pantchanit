@@ -21,12 +21,12 @@ class Receipt(Base):
     dateReceipt = Column(DateTime, index=True)
     items = relationship("Item", back_populates="owner_receipt") # FK
     shopName = Column(String(250), index=True)
-    taxIDShop = Column(String(30), index=True)
-    shopPhone = Column(String(30), index=True)
+    taxIDShop = Column(String(100), index=True)
+    shopPhone = Column(String(100), index=True)
     addressShop = Column(String(250), index=True)   
 
     customerName = Column(String(250), index=True)
-    taxIDCust = Column(String(30), index=True)
+    taxIDCust = Column(String(100), index=True)
     addressCust = Column(String(250), index=True)
     type_receipt = Column(Integer, index=True)
     

@@ -74,7 +74,7 @@ p {
   font-family: 'Niramit', sans-serif;
   font-weight: 500;
   font-size: 28px;
-  color: #f2ec38;
+  color: #fdcc37;
 }
 
 /* --------------------- homepage ------------------- */
@@ -198,7 +198,7 @@ p {
   font-family: 'Niramit', sans-serif;
   font-weight: 600;
   font-size: 72px;
-  color: #f2ec38;
+  color: #fdcc37;
   text-align: center;
   padding: 28px;
   /*border: 2px solid red;*/
@@ -232,9 +232,36 @@ p {
   height: 100vh;
 }
 
+#describe-upload-img {
+	margin-bottom: 25px;
+}
+
+#type-file-image-describe {
+	font-size: 16px;
+	color: red;
+	margin-top: 4px;
+}
+
+#option-type-item {
+	font-size: 18px;
+}
+
+#radio1, #radio2 {
+	font-size: 18px;
+}
+
+.item-option {
+	display: flex;
+	gap: 8px;
+	justify-content: center;
+	align-items: center;
+	margin-top: 30px;
+	margin-bottom: 10px;
+}
+
 #icon-receipt {
   display: flex;
-  gap: 15px;
+  gap: 25px;
   margin-top: 30px;
 }
 
