@@ -90,7 +90,8 @@ async def getReceiptByAll(db: Session):
                           models.Receipt.receiptID,
                           models.Receipt.dateReceipt,
                           models.Receipt.shopName,
-                          models.Receipt.customerName)\
+                          models.Receipt.customerName,
+                          models.Receipt.Created_At)\
                    .all()
     return db_receipt_list
 

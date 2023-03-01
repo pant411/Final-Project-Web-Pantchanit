@@ -35,6 +35,8 @@
                     <h4>วันที่ออกใบเสร็จรับเงิน: ไม่พบข้อมูล</h4>
                     {% endif %}
 
+                    <h4>เพิ่มข้อมูลเมื่อ: {{receipt_data.Created_At.strftime('%m/%d/%Y, %H:%M:%S')}}</h4>
+
                     <h4 id="about-shop">ข้อมูลของร้านค้า</h4>
                     {% if receipt_data.shopName %}
                     <p>ชื่อ: {{receipt_data.shopName}}</p>

@@ -8,10 +8,11 @@
         <thead>
         <tr>
             <th class="th text-center">ชื่อไฟล์</th>
-            <th class="th text-center">เลขที่ใบเสร็จรับเงิน</th>
+            <th class="th text-center">หมายเลข</th>
             <th class="th text-center">วันที่ออกใบเสร็จรับเงิน</th>
             <th class="th text-center">ชื่อร้านค้า</th>
             <th class="th text-center">ชื่อลูกค้า</th>
+            <th class="th text-center">วันที่เพิ่มข้อมูล</th>
         </tr>
         </thead>
         <tbody class="receipt-detail">
@@ -40,7 +41,9 @@
                     <td>{{ele["customerName"]}}</td>
                     {% else %}
                     <td>ไม่พบข้อมูล</td>
-                    {% endif %}                    
+                    {% endif %}        
+                    
+                    <td>{{ele["Created_At"].strftime('%d/%m/%Y, %H:%M:%S')}}</td>       
 
                 </tr>                
             {% endfor %}     

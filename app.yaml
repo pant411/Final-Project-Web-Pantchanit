@@ -1,7 +1,46 @@
-runtime: python38
+runtime: python
 env: flex
-entrypoint: uvicorn app:app
-
+entrypoint: gunicorn -b :$PORT main:app -k uvicorn.workers.UvicornWorker -t 300
 runtime_config:
-    operating_system: "ubuntu18"
-    runtime_version: "3.8"
+    python_version: 3.7
+
+env_variables:
+    DB_SERVICE: "mysql+pymysql://"
+    INSTANCE_CONNECTION_NAME: "myfinalproject-378408:asia-southeast1:mysqldb1"
+    DB_USER: "user"
+    DB_PASS: "m'KNaoSvFJ9s(6>%"
+    DB_NAME: "DB-Receipt"
+    GOOGLE_APPLICATION_CREDENTIALS: "myfinalproject-378408-7f9567f3ca2c.json"
+    URL_MAINSERVICE: "https://receiptsextractionfromimageservice-4h7olhkfla-as.a.run.app"
+    BUCKETNAME_STORAGE: "myfinalproject-378408_cloudbuild"
+
+handlers:
+- url: /(.*\.css)
+  mime_type: text/css
+  static_files: static/\1
+  upload: static/css/(.*\.css)
+- url: /(.*\.js)
+  mime_type: text/javascript
+  static_files: static/\1
+  upload: static/js/(.*\.js)
+
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 2
+  memory_gb: 8
+  disk_size_gb: 10
+
+liveness_check:
+  initial_delay_sec: 3600
+  check_interval_sec: 300
+  timeout_sec: 300
+  failure_threshold: 2
+  success_threshold: 2
+
+readiness_check:
+  check_interval_sec: 300
+  timeout_sec: 300
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300
