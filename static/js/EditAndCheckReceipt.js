@@ -1,127 +1,51 @@
 const ListRemove = [];
 
-async function updateItemReceipt(thisElement,receipt_id, type_receipt) {
-  let parentDiv = thisElement.parentElement.parentElement;
-  let item_id = parentDiv.id
-  console.log(item_id);
-  let nameItem = parentDiv.children[0].children[1].value;
-  let payload = {} 
-  if (type_receipt == 1) {
-    let qty = Number(parentDiv.children[1].children[1].value);
-    let unitQty = parentDiv.children[2].children[1].value;
-    let pricePerQty = Number(parentDiv.children[3].children[1].value);
-    let priceItemTotal = Number(parentDiv.children[4].children[1].value);
-    payload = {
-      nameItem: nameItem,
-      qty: qty,
-      unitQty: unitQty,
-      pricePerQty: pricePerQty,
-      priceItemTotal: priceItemTotal
-    }    
-  } else if (type_receipt == 0) {
-    let priceItemTotal = Number(parentDiv.children[1].children[1].value);
-    payload = {
-      nameItem: nameItem,
-      priceItemTotal: priceItemTotal
-    }     
-  }
-  console.log(payload);
-  // console.log(receipt_id);
-  // console.log(type_receipt);
-  // console.log(item_id);
-  // console.log(item_id);
-  await fetch('/receipts/editoneitem/' + receipt_id + '/' + item_id, {
-    method: 'PATCH',
-    body: JSON.stringify(payload),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-  }).then((response) => response.json())
-    .then((json) => console.log(json))
-    .then(location.href = "/editreceipt/"+receipt_id);
-}
-
-async function updateItemReceiptCheck(thisElement,receipt_id,type_receipt) {
-  let parentDiv = thisElement.parentElement;
-  let item_id = parentDiv.id
-  let nameItem = parentDiv.children[0].children[1].value;
-  let payload = {} 
-  if (type_receipt == 1) {
-    let qty = parentDiv.children[1].children[1].value;
-    let unitQty = parentDiv.children[2].children[1].value;
-    let pricePerQty = Number(parentDiv.children[3].children[1].value);
-    let priceItemTotal = Number(parentDiv.children[4].children[1].value);
-    payload = {
-      nameItem: nameItem,
-      qty: qty,
-      unitQty: unitQty,
-      pricePerQty: pricePerQty,
-      priceItemTotal: priceItemTotal
-    }    
-  } else if (type_receipt == 0) {
-    let priceItemTotal = Number(parentDiv.children[1].children[1].value);
-    payload = {
-      nameItem: nameItem,
-      priceItemTotal: priceItemTotal
-    }     
-  }
-  // console.log(payload);
-  // console.log(receipt_id);
-  // console.log(type_receipt);
-  // console.log(item_id);
-  // console.log(item_id);
-  await fetch('/receipts/editoneitem/' + receipt_id + '/' + item_id, {
-    method: 'PATCH',
-    body: JSON.stringify(payload),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-  }).then(location.href = "/checkreceipt/"+receipt_id);
-}
-
-async function removeItemReceipt(thisElement,receipt_id) {
-  let parentDiv = thisElement.parentElement;
-  let item_id = parentDiv.id
-  console.log(item_id)
-  await fetch('/receipts/deleteitem/' + receipt_id + '/' + item_id, {
-      method: 'DELETE',
-    })
-      .then((response) => response.json())
-      .then((json) => console.log(json))
-      .then(location.href = "/editreceipt/"+receipt_id);
-}
-
-async function removeItemReceiptCheck(thisElement,receipt_id) {
-  let parentDiv = thisElement.parentElement;
-  let item_id = parentDiv.id
-  await fetch('/receipts/deleteitem/' + receipt_id + '/' + item_id, {
-      method: 'DELETE',
-    })
-      .then((response) => response.json())
-      .then((json) => console.log(json))
-      .then(location.href = "/checkreceipt/"+receipt_id);
-}
-
-async function addItemReceipt(receipt_id) {
-  await fetch('/receipts/editoneitem/' + receipt_id + '/' + item_id, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    })
-      .then((response) => response.json())
-      .then((json) => console.log(json));
-}
-
 async function submitUpdateListItem(type_receipt,receipt_id) {
   let thisElement =  document.getElementById("list-item-receipt-section");
   let listItem = thisElement.children;
-
   let ListItemUpdate = [];
+  let payloadReceipt = {}
+
+  let receiptID = document.getElementById("input-receipt-id").value
+  let dateReceipt = document.getElementById("input-receipt-date").value
+  let shopName = document.getElementById("input-receipt-shopname").value
+  let shopPhone = document.getElementById("input-receipt-shopphone").value
+  let addressShop = document.getElementById("input-receipt-addressshop").value
+  let taxIDShop = document.getElementById("input-receipt-taxIDShop").value
+  let customerName = document.getElementById("input-receipt-customerName").value
+  let addressCust = document.getElementById("input-receipt-addressCust").value
+  let taxIDCust = document.getElementById("input-receipt-taxIDCust").value
+
+  if (receiptID) {
+    payloadReceipt['receiptID'] = receiptID
+  }
+  if (dateReceipt) {
+    payloadReceipt['dateReceipt'] = dateReceipt
+  }
+  if (shopName) {
+    payloadReceipt['shopName'] = shopName
+  }
+  if (shopPhone) {
+    payloadReceipt['shopPhone'] = shopPhone
+  }
+  if (addressShop) {
+    payloadReceipt['addressShop'] = addressShop
+  }  
+  if (taxIDShop) {
+    payloadReceipt['taxIDShop'] = taxIDShop
+  }
+  if (customerName) {
+    payloadReceipt['customerName'] = customerName
+  }
+  if (addressCust) {
+    payloadReceipt['addressCust'] = addressCust
+  }
+  if (taxIDCust) {
+    payloadReceipt['taxIDCust'] = taxIDCust
+  }
 
   for (let ele of listItem) {
-    let payload = {};
+    let payloadItem = {};
     let id = Number(ele.id)
     if (type_receipt == 1) {
       let nameItem = ele.children[0].children[1].value;
@@ -130,56 +54,56 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
       let pricePerQty = Number(ele.children[3].children[1].value);
       let priceItemTotal = Number(ele.children[4].children[1].value);
       if (id) {
-        payload['id'] = id
+        payloadItem['id'] = id
       }
       if (nameItem) {
-        payload['nameItem'] = nameItem
+        payloadItem['nameItem'] = nameItem
       }
       if (nameItem) {
-        payload['nameItem'] = nameItem
+        payloadItem['nameItem'] = nameItem
       }
       if (qty) {
-        payload['qty'] = qty
+        payloadItem['qty'] = qty
       }
       if (unitQty) {
-        payload['unitQty'] = unitQty
+        payloadItem['unitQty'] = unitQty
       }
       if (pricePerQty) {
-        payload['pricePerQty'] = pricePerQty
+        payloadItem['pricePerQty'] = pricePerQty
       }
       if (priceItemTotal) {
-        payload['priceItemTotal'] = priceItemTotal
+        payloadItem['priceItemTotal'] = priceItemTotal
       }      
     } else if (type_receipt == 0) {
       let nameItem = ele.children[0].children[1].value;
       let priceItemTotal = Number(ele.children[1].children[1].value);
       if (id) {
-        payload['id'] = id
+        payloadItem['id'] = id
       }
       if (nameItem) {
-        payload['nameItem'] = nameItem
+        payloadItem['nameItem'] = nameItem
       }
       if (priceItemTotal) {
-        payload['priceItemTotal'] = priceItemTotal
+        payloadItem['priceItemTotal'] = priceItemTotal
       }
     }
-    ListItemUpdate.push(payload)
+    ListItemUpdate.push(payloadItem)
   }
   console.log(ListItemUpdate);
   console.log(ListRemove);
   console.log(receipt_id);
-  await fetch('/receipts/editmanyitem/' + receipt_id + '/' + type_receipt, {
+  await fetch('/receipts/editreceiptall/' + receipt_id + '/' + type_receipt, {
     method: 'PATCH',
     body: JSON.stringify({
       editItem: ListItemUpdate,
-      deleteItem: ListRemove
+      deleteItem: ListRemove,
+      dataReceipt: payloadReceipt
     }),
     headers: {
       'Content-type': 'application/json; charset=UTF-8',
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
     },
-  }).then((response) => response.json())
-    .then((json) => console.log(json))
-    .then(location.href = "/editreceipt/"+receipt_id);
+  }).then(window.location.href = "/receiptdetail/" + receipt_id);
 
 }
 

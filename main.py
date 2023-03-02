@@ -1,29 +1,27 @@
 # built in module
-from typing import List, Union
+from typing import Union
 from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi_pagination import Page, paginate, add_pagination
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
 # from werkzeug.utils import secure_filename
-import cv2
-import numpy as np
-from datetime import datetime
-
-# my module
-from mainModule import runMain # main application of project
+from ExtractionFromImageService import main
 
 from sqlalchemy.orm import Session
 
 from db import crud, models, schemas
 from db.database import SessionLocal, engine
 
+from google.cloud import storage
+import os
+
+from datetime import datetime, timedelta
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="My Final Project", debug=True)
-
-add_pagination(app)
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -49,9 +47,42 @@ app.add_middleware(
 def get_db(request: Request):
     return request.state.db
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=Path(__file__).parent.absolute() / "static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
+
+# define function that generates the public URL, default expiration is set to 24 hours
+def get_cs_file_url(bucket_name, file_name, expire_in=datetime.now() + timedelta(5000)): 
+    storage_client = storage.Client()
+
+    bucket = storage_client.bucket(bucket_name)
+    url = bucket.blob(file_name).generate_signed_url(expire_in)
+
+    return url
+
+def upload_blob_from_memory(bucket_name, contents, destination_blob_name):
+    """Uploads a file to the bucket."""
+
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+
+    # The contents to upload to the file
+    # contents = "these are my contents"
+
+    # The ID of your GCS object
+    # destination_blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_string(contents)
+
+    # print(
+    #     f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}."
+    # )
+    return True
+
 
 
 #################################### Template Module #################################### 
@@ -69,7 +100,6 @@ async def receiptdetail(receipt_id: int, request: Request,
                         db: Session = Depends(get_db)):
     receipt_data = await crud.getOneReceipt_byDBId_main(db, receipt_id)
     db_item = await crud.getItem_byDBId(db, owner_receiptId = receipt_id)
-    print(receipt_data)
     return templates.TemplateResponse("receiptdetail.html", {
         "request": request, 
         "receipt_data": receipt_data, 
@@ -118,44 +148,24 @@ async def submitReceipt(request: Request,
                         file: UploadFile = File(...), 
                         db: Session = Depends(get_db)):
     # print("tuuu",type_receipt)
-    content_receipt = file.file.read()
-    image = cv2.imdecode(np.fromstring(content_receipt, np.uint8),\
-            cv2.IMREAD_UNCHANGED)
-    # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
-    data = runMain(image, type_receipt)
-    path_file = "img/" + file.filename
-    data["pathImage"] = path_file
-    data["filename"] = file.filename
+    content_receipt = file.file.read()           
+    data = main(type_receipt, content_receipt)
     # print(data["dateReceipt"])
-    print(data)
+    # print(data)
+
+    # print(db_receipt)
+    # await file.seek(0)
+    # with open("static/"+path_file, "wb+") as file_object:
+    #     file_object.write(content_receipt)
+    upload_blob_from_memory(os.getenv("BUCKETNAME_STORAGE"),content_receipt, file.filename)
+    data["pathImage"] = get_cs_file_url(os.getenv("BUCKETNAME_STORAGE"),file.filename)
+    data["filename"] = file.filename
+    
     db_receipt = await crud.create_receipt_main(db=db, 
                                                 receipt=data, 
-                                                type_receipt=type_receipt)
-    # print(db_receipt)
-    await file.seek(0)
-    with open("static/"+path_file, "wb+") as file_object:
-        file_object.write(content_receipt)
+                                                type_receipt=type_receipt)    
     redirect_url = request.url_for('editreceipt', **{"receipt_id": db_receipt.id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-    # return data
-
-@app.post("/receipts/submitreceipt", tags = ["Receipts"])
-async def submitReceipt2(type_receipt: int = Form(...), 
-                         file: UploadFile = File(...)):
-    # print("tuuu",type_receipt)
-    content_receipt = file.file.read()
-    print(content_receipt)
-    image = cv2.imdecode(np.fromstring(content_receipt, np.uint8),\
-            cv2.IMREAD_UNCHANGED)
-    # path_file = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)           
-    data = runMain(image, type_receipt)
-    path_file = "img/" + file.filename
-    data["pathImage"] = path_file
-    data["filename"] = file.filename
-    # data["receipt-content"] = content_receipt
-    # redirect_url = request.url_for('checkreceipt')   
-    # return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
-    return data
 
 @app.get("/receipts/getOneByID/{receipt_id}", 
          tags = ["Receipts"], 
@@ -166,12 +176,6 @@ async def getOneReceipt(receipt_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, 
                             detail="Receipt not found with the given ID")
     return await crud.getOneReceipt_byDBId_main(db, receipt_id)
-
-@app.get("/receipts/getByPagination/", 
-         tags = ["Receipts"], 
-         response_model=Page[schemas.ResponseReceiptAll])
-async def getReceiptByPagination(db: Session = Depends(get_db)):
-    return await paginate(crud.getReceiptByAll(db))
 
 @app.delete('/receipts/deleteReceiptByID/{receipt_id}', 
             tags = ["Receipts"])
@@ -229,13 +233,68 @@ async def editOneItem(receipt_id: int,
     db.refresh(db_item)
     return db_item
 
-@app.patch("/receipts/editmanyitem/{receipt_id}/{type_receipt}", tags = ["Receipts"])
-async def editManyItem(receipt_id: int,
-                       type_receipt: int,
-                       data_item: schemas.SubmitEditItem, 
-                       db: Session = Depends(get_db)):
-    print(data_item)
-    for ele in data_item.editItem:
+@app.post("/receipts/editonereceipt/{receipt_id}", 
+           tags = ["Receipts"], 
+           response_model=schemas.ResponseEditReceipt)
+async def editOneReceipt(request: Request,
+                         receipt_id: int,
+                         receiptID: Union[str, None] = Form(default=None),
+                         dateReceipt: Union[str, None] = Form(default=None),
+                         shopName: Union[str, None] = Form(default=None),
+                         shopPhone: Union[str, None] = Form(default=None),
+                         addressShop: Union[str, None] = Form(default=None),
+                         taxIDShop: Union[str, None] = Form(default=None),
+                         customerName: Union[str, None] = Form(default=None),
+                         addressCust: Union[str, None] = Form(default=None),
+                         taxIDCust: Union[str, None] = Form(default=None),
+                         db: Session = Depends(get_db)):
+    print(receiptID)
+    db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
+    db_receipt = db_receipt_query.first()
+    if db_receipt is None:
+        raise HTTPException(status_code=404, 
+                            detail="Receipt not found with the given ID") 
+    
+    update_data = {}
+    if receiptID: update_data["receiptID"] = receiptID
+    if dateReceipt: update_data["dateReceipt"] = dateReceipt
+    if shopName: update_data["shopName"] = shopName
+    if shopPhone: update_data["shopPhone"] = shopPhone
+    if addressShop: update_data["addressShop"] = addressShop
+    if taxIDShop: update_data["taxIDShop"] = taxIDShop
+    if customerName: update_data["customerName"] = customerName
+    if addressCust: update_data["addressCust"] = addressCust
+    if taxIDCust: update_data["taxIDCust"] = taxIDCust
+
+    # print(update_data)
+    # update_data = data_receipt.dict(exclude_unset=True)
+    db_receipt_query.filter(models.Receipt.id == receipt_id)\
+                    .update(update_data, synchronize_session=False)
+    db.commit()
+    db.refresh(db_receipt)
+    # return db_receipt
+    redirect_url = request.url_for('editreceipt', **{"receipt_id": receipt_id})   
+    return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+@app.patch("/receipts/editreceiptall/{receipt_id}/{type_receipt}", tags = ["Receipts"])
+async def editReceiptAll(request: Request,
+                         receipt_id: int,
+                         type_receipt: int,
+                         payload: schemas.SubmitEditItem, 
+                         db: Session = Depends(get_db)):
+    # print(payload)
+    db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
+    db_receipt = db_receipt_query.first()
+    if db_receipt is None:
+        raise HTTPException(status_code=404, 
+                            detail="Receipt not found with the given ID") 
+    update_data = (payload.dataReceipt).dict(exclude_unset=True)
+    db_receipt_query.filter(models.Receipt.id == receipt_id)\
+                    .update(update_data, synchronize_session=False)
+    db.commit()
+    db.refresh(db_receipt)
+
+    for ele in payload.editItem:
         db_item_query = db.query(models.Item).filter_by(
             owner_receiptId = receipt_id,
             id = ele.id)
@@ -266,49 +325,9 @@ async def editManyItem(receipt_id: int,
             db.commit()
             db.refresh(db_item)
 
-    for ele in data_item.deleteItem:
+    for ele in payload.deleteItem:
         await crud.removeOneItemByIndex(db, id = ele, owner_receiptId=receipt_id)
     
     return {"success": True}
-
-@app.post("/receipts/editonereceipt/{receipt_id}", 
-           tags = ["Receipts"], 
-           response_model=schemas.ResponseEditReceipt)
-async def editOneReceipt(request: Request,
-                         receipt_id: int,
-                         receiptID: Union[str, None] = Form(...),
-                         dateReceipt: Union[str, None] = Form(...),
-                         shopName: Union[str, None] = Form(...),
-                         shopPhone: Union[str, None] = Form(...),
-                         addressShop: Union[str, None] = Form(...),
-                         taxIDShop: Union[str, None] = Form(...),
-                         customerName: Union[str, None] = Form(...),
-                         addressCust: Union[str, None] = Form(...),
-                         taxIDCust: Union[str, None] = Form(...),
-                         db: Session = Depends(get_db)):
-    # print(receiptID)
-    db_receipt_query = db.query(models.Receipt).filter_by(id = receipt_id)
-    db_receipt = db_receipt_query.first()
-    if db_receipt is None:
-        raise HTTPException(status_code=404, 
-                            detail="Receipt not found with the given ID") 
-    update_data = {
-        "receiptID": receiptID,
-        "dateReceipt": dateReceipt,
-        "shopName": shopName,
-        "shopPhone": shopPhone,
-        "addressShop": addressShop,
-        "taxIDShop": taxIDShop,
-        "customerName": customerName,
-        "addressCust": addressCust,
-        "taxIDCust": taxIDCust,
-    }
-    # print(update_data)
-    # update_data = data_receipt.dict(exclude_unset=True)
-    db_receipt_query.filter(models.Receipt.id == receipt_id)\
-                    .update(update_data, synchronize_session=False)
-    db.commit()
-    db.refresh(db_receipt)
-    # return db_receipt
-    redirect_url = request.url_for('editreceipt', **{"receipt_id": receipt_id})   
-    return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+    # redirect_url = request.url_for('receiptdetail', **{"receipt_id": receipt_id})   
+    # return RedirectResponse(redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)

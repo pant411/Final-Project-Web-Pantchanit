@@ -6,7 +6,7 @@ COPY . /myapp
 
 WORKDIR /myapp
 
-ENV PYTHONUNBUFFERED True
+# ENV PYTHONUNBUFFERED True
 
 RUN apt-get update && \
     apt-get install -y \
@@ -21,10 +21,12 @@ RUN apt-get update && \
         libxext6 \
         gcc && \
     pip install --upgrade pip && \
-    pip install --no-cache-dir -r /myapp/library_list.txt         
+    pip install --no-cache-dir -r /myapp/requirements.txt     
 
-EXPOSE 8080
+RUN chmod 744 /myapp/static/css
+RUN chmod 744 /myapp/static/js
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+# EXPOSE 8080
 
-# CMD exec gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 app:app
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD gunicorn -b :$PORT main:app -k uvicorn.workers.UvicornWorker --workers 1 --threads 8 --timeout 0

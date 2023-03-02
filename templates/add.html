@@ -4,20 +4,47 @@
 
 {% block content %}
 <div class="container-lg upload-page">
-    <form action="/receipts/submit" method="post" enctype="multipart/form-data">
-        <div class="form-group mb-3 buttonHolder">
+    <form action="/receipts/submit" method="post" enctype="multipart/form-data" id="form-add">
+        <div class="form-group mb-3 buttonHolder" id="form-submit">
+            <h3 id="describe-upload-img">ท่านสามารถเพิ่มข้อมูลใบเสร็จรับเงินโดยการอัพโหลดรูปภาพเข้าสู่ระบบ</h3>
             <input title="upload image" class="form-control" name="file" type="file" accept="image/*">
-            <div class="form-check">
-                <input type="radio" class="form-check-input" id="radio1" name="type_receipt" value="0" checked>ไม่ระบุปริมาณสินค้าหรือบริการ
-                <label class="form-check-label" for="radio1"></label>
+            <p id="type-file-image-describe">* รองรับชนิดไฟล์ bmp, jpg, jpeg, png, tiff และ tif เท่านั้น</p>
+            <div class="item-option">
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="radio1" name="type_receipt" value="0" checked> <p id="option-type-item">ไม่ระบุปริมาณสินค้าหรือบริการ</p>
+                    <label class="form-check-label" for="radio1"></label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="form-check-input" id="radio2" name="type_receipt" value="1"> <p id="option-type-item">ระบุปริมาณสินค้าหรือบริการ</p>
+                    <label class="form-check-label" for="radio2"></label>
+                </div>                   
             </div>
-            <div class="form-check">
-                <input type="radio" class="form-check-input" id="radio2" name="type_receipt" value="1">ระบุปริมาณสินค้าหรือบริการ
-                <label class="form-check-label" for="radio2"></label>
-            </div>      
-            <input type="submit" class="btn btn-primary mr-2 text-center">  
+            <input type="submit" class="btn btn-primary mr-2 text-center" >  
         </div>
     </form>
+    <div class="windows8" id="loading">
+        <div class="wBall" id="wBall_1">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_2">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_3">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_4">
+            <div class="wInnerBall"></div>
+        </div>
+        <div class="wBall" id="wBall_5">
+            <div class="wInnerBall"></div>
+        </div>
+    </div>
 </div>
 
+
+
 {% endblock content %}
+
+{% block scripts %}
+<script src="/static/js/loading.js"></script>
+{% endblock %}

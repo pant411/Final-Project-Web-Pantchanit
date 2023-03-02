@@ -1,20 +1,4 @@
 services:
-      
-  db:
-    container_name: db-project
-    image: mysql:latest
-    volumes: 
-      - mysql_volume:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3306:3306"
-    networks:
-       - fastapi_network
 
   app:
     container_name: myweb-project
@@ -28,15 +12,9 @@ services:
       - .env.production
     ports:
       - 8080:8080
-    depends_on:
-      - db
     networks:
       - fastapi_network
 
-volumes:
-  mysql_volume:
-    driver: local
-                      
 networks:
   fastapi_network:
     external: true

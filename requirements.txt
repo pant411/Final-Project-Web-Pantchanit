@@ -1,18 +1,8 @@
-matplotlib
-numpy
-opencv-contrib-python
-pandas
-pillow
-pytesseract
-pythainlp
-deskew
-typing
 fastapi
 uvicorn[standard]
 jinja2
 sqlalchemy
 PyMySQL[rsa]
-fastapi-pagination
 python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
@@ -21,3 +11,4 @@ python-Levenshtein
 python-dotenv
 gunicorn
 cloud-sql-python-connector[pymysql]
+google-cloud-storage

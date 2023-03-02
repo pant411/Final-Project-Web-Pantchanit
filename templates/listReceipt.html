@@ -8,24 +8,43 @@
         <thead>
         <tr>
             <th class="th text-center">ชื่อไฟล์</th>
-            <th class="th text-center">เลขที่ใบเสร็จรับเงิน</th>
+            <th class="th text-center">หมายเลข</th>
             <th class="th text-center">วันที่ออกใบเสร็จรับเงิน</th>
             <th class="th text-center">ชื่อร้านค้า</th>
             <th class="th text-center">ชื่อลูกค้า</th>
+            <th class="th text-center">วันที่เพิ่มข้อมูล</th>
         </tr>
         </thead>
         <tbody class="receipt-detail">
             {% for ele in list_data %}
                 <tr id="{{ele.id}}">
                     <td><a href="{{'/receiptdetail/%s'%ele.id }}">{{ele["filename"]}}</a></td>
+                    {% if ele["receiptID"] %}
                     <td>{{ele["receiptID"]}}</td>
-                    {% if ele["dateReceipt"] != none %}
+                    {% else %}
+                    <td>ไม่พบข้อมูล</td>
+                    {% endif %}
+
+                    {% if ele["dateReceipt"] %}
                         <td>{{ele["dateReceipt"].strftime('%d-%m-%Y')}}</td>
                     {% else %}
-                        <td></td>
+                        <td>ไม่พบข้อมูล</td>
                     {% endif %}
+
+                    {% if ele["shopName"] %}
                     <td>{{ele["shopName"]}}</td>
+                    {% else %}
+                    <td>ไม่พบข้อมูล</td>
+                    {% endif %}
+
+                    {% if ele["customerName"] %}
                     <td>{{ele["customerName"]}}</td>
+                    {% else %}
+                    <td>ไม่พบข้อมูล</td>
+                    {% endif %}        
+                    
+                    <td>{{ele["Created_At"].strftime('%d/%m/%Y, %H:%M:%S')}}</td>       
+
                 </tr>                
             {% endfor %}     
         </tbody>
@@ -36,5 +55,5 @@
 {% endblock content %}
 
 {% block scripts %}
-<script src="{{ url_for ('static', path='/js/datatable.js') }}"></script>
+<script src="/static/js/datatable.js"></script>
 {% endblock %}
