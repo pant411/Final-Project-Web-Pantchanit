@@ -1,5 +1,5 @@
 # built in module
-from typing import Union
+from typing import Union, List
 from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -166,6 +166,11 @@ async def submitReceipt(request: Request,
                                                 type_receipt=type_receipt)    
     redirect_url = request.url_for('editreceipt', **{"receipt_id": db_receipt.id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/receipts/submitmultiple", tags = ["Receipts"])
+async def submitMultipleReceipt(files: List[UploadFile],
+                                db: Session = Depends(get_db)):
+   return {"filenames": [file.filename for file in files]}
 
 @app.get("/receipts/getOneByID/{receipt_id}", 
          tags = ["Receipts"], 
