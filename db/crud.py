@@ -5,7 +5,7 @@ from . import models, schemas
 
 #################################### for get method #################################### 
 
-async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateMain, dict], type_receipt: int):
+async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateMain, dict]):
     # create shop
     # print(receipt)
 
@@ -14,7 +14,6 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
         pathImage = receipt["pathImage"],
         receiptID = receipt["receiptID"], 
         dateReceipt = receipt["dateReceipt"],
-        type_receipt = type_receipt,
         shopName = receipt["shopName"], 
         taxIDShop = receipt["taxIDShop"], 
         addressShop = receipt["addressShop"],
@@ -26,44 +25,46 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
     db.add(db_receipt)
     db.commit()
     db.refresh(db_receipt)
-
-    db_item = await create_item(db, listItems = receipt["items"], owner_receiptId = db_receipt.id, type_receipt = type_receipt)
-
+    db_item = await create_item(db, listItems = receipt["items"], owner_receiptId = db_receipt.id)
     return db_receipt
 
-async def create_item(db: Session, listItems: any, owner_receiptId: int, type_receipt: int):
+async def create_many_receipt(db: Session, listReceipts: List):
+    res = []
+    for ele in listReceipts:
+        db_receipt = models.Receipt(
+            filename = ele,
+            status = 0    
+        )
+        db.add(db_receipt)
+        db.commit()
+        db.refresh(db_receipt)
+        res.append({
+            "id": db_receipt.id, 
+            "filename": db_receipt.filename, 
+            "status": db_receipt.status })
+    return res
+
+async def create_item(db: Session, listItems: any, owner_receiptId: int):
     objects = []
     for ele in listItems:
-        if type_receipt == 0:
-            db_items = models.Item(
-                nameItem = ele["nameItem"], 
-                priceItemTotal = ele["priceItemTotal"],
-                owner_receiptId = owner_receiptId
-            )
-        elif type_receipt == 1:
-            db_items = models.Item(
+        db_items = models.Item(
                 nameItem = ele["nameItem"], 
                 qty = ele["qty"],
                 unitQty = ele["unitQty"],
                 pricePerQty = ele["pricePerQty"],
                 priceItemTotal = ele["priceItemTotal"],
                 owner_receiptId = owner_receiptId
-            )        
+        )        
         objects.append(db_items)
+    
     db.bulk_save_objects(objects)
     db.commit()
 
-async def create_one_item(db: Session, item: any, owner_receiptId: int, type_receipt: int):
+
+async def create_one_item(db: Session, item: any, owner_receiptId: int):
     db_item = None
     print(item)
-    if type_receipt == 0:
-        db_item = models.Item(
-            nameItem = item["nameItem"], 
-            priceItemTotal = item["priceItemTotal"],
-            owner_receiptId = owner_receiptId
-        )
-    elif type_receipt == 1:
-        db_item = models.Item(
+    db_item = models.Item(
             nameItem = item["nameItem"], 
             qty = item["qty"],
             unitQty = item["unitQty"],
@@ -91,6 +92,14 @@ async def getReceiptByAll(db: Session):
                           models.Receipt.dateReceipt,
                           models.Receipt.shopName,
                           models.Receipt.customerName,
+                          models.Receipt.Created_At)\
+                   .all()
+    return db_receipt_list
+
+async def getStatusReceiptByAll(db: Session):
+    db_receipt_list = db.query(models.Receipt.id,
+                          models.Receipt.filename,
+                          models.Receipt.status,
                           models.Receipt.Created_At)\
                    .all()
     return db_receipt_list

@@ -646,3 +646,7 @@ p {
   margin-top: 8px;
   float: right;
 }
+
+#button-status-re {
+	display: flex;
+}

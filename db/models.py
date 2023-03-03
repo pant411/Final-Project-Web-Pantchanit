@@ -24,18 +24,18 @@ class Receipt(Base):
     taxIDShop = Column(String(100), index=True)
     shopPhone = Column(String(100), index=True)
     addressShop = Column(String(250), index=True)   
-
     customerName = Column(String(250), index=True)
     taxIDCust = Column(String(100), index=True)
     addressCust = Column(String(250), index=True)
-    type_receipt = Column(Integer, index=True)
+    # type_receipt = Column(Integer, index=True)
+    # 0 is not complete, 1 is ocr finished, 2 is already check (availble show), 3 is ocr fail
+    status = Column(Integer, index=True) 
     
     Created_At = Column(TIMESTAMP,
         server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
     Updated_At = Column(TIMESTAMP, 
         server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
         server_onupdate=FetchedValue())
-    
 
 class Item(Base): # back to Receipt
     __tablename__ = "items"

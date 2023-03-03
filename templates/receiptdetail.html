@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="pills-item" role="tabpanel" aria-labelledby="pills-item-tab">
-                    {% if receipt_data.type_receipt == 1 %}
+              
                         <table id="myTable-detail-1" class="table table-striped" style="width: 100% !important">
                             <thead>
                                 <tr>
@@ -132,33 +132,7 @@
                                 {% endfor %}     
                             </tbody>
                         </table>
-                    {% elif receipt_data.type_receipt == 0 %}
-                        <table id="myTable-detail-2" class=" table table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">รายการ</th>
-                                    <th class="text-center">ราคารวม</th>
-                                </tr>
-                            </thead>
-                            <tbody class="receipt-detail">
-                                {% for ele in items %}
-                                    <tr id="{{ele.id}}">
-                                        {% if ele.nameItem %}
-                                        <td>{{ele.nameItem}}</td>
-                                        {% else %}
-                                        <td>ไม่พบข้อมูล</td>
-                                        {% endif %}
-                                        {% if ele.priceItemTotal %}
-                                        <td class="text-center">{{ele.priceItemTotal}}</td>
-                                        {% else %}
-                                        <td class="text-center">ไม่พบข้อมูล</td>
-                                        {% endif %}
-                                    </tr>                
-                                {% endfor %}     
-                            </tbody>                    
-                        </table>
 
-                    {% endif %}
                 </div>
             </div>       
         <div class="button-editreceipt-page">
