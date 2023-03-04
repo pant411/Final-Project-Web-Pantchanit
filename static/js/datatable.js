@@ -4,9 +4,9 @@ $(document).ready(function () {
             scrollY: '60vh',
             scrollCollapse: true,
             paging: true,
-            order: [
-                [5, "desc"]
-            ],
+            pageLength: 6,
+            lengthChange: false,
+            ordering: false
         }
     ).adjust();
 });

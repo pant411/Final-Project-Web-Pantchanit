@@ -27,7 +27,7 @@
                     {% elif ele["status"] == 3 %}
                     <td class="text-center">เพิ่มข้อมูลไม่สำเร็จ</td>
                     {% endif %}
-                    <td class="text-center">{{ele["Created_At"]}}</td>   
+                    <td class="text-center">{{ele["Created_At"].strftime('%d/%m/%Y, %H:%M:%S')}}</td>   
                     <td id="button-status-re">
                         <a href="{{'/editreceipt/%s'%ele.id }}"><button type="button" class="btn btn-success"><i class="fas fa-edit"></i></button></a>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ModalRemove{{ele.id}}"><i class="far fa-trash-alt"></i></button>

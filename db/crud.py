@@ -88,7 +88,8 @@ async def getReceiptByAll(db: Session):
                           models.Receipt.shopName,
                           models.Receipt.customerName,
                           models.Receipt.Created_At)\
-                   .all()
+                    .order_by(models.Receipt.Created_At.desc())\
+                    .all()
     return db_receipt_list
 
 async def getStatusReceiptByAll(db: Session):
@@ -96,7 +97,8 @@ async def getStatusReceiptByAll(db: Session):
                           models.Receipt.filename,
                           models.Receipt.status,
                           models.Receipt.Created_At)\
-                   .all()
+                        .order_by(models.Receipt.Created_At.desc())\
+                        .all()
     return db_receipt_list
 
 

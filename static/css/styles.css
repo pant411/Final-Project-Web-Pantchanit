@@ -669,3 +669,11 @@ p {
 #size-nav-logo {
 	height: 45px;
 }
+
+#myTable_paginate {
+	margin-top: 36px;
+}
+
+#myTable-status_paginate {
+	margin-top: 30px;
+}
