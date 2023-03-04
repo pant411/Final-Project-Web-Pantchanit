@@ -86,7 +86,7 @@ def upload_blob_from_memory(bucket_name, contents, destination_blob_name):
         
 #################################### Template Module #################################### 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/home", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
@@ -104,7 +104,7 @@ async def receiptdetail(receipt_id: int, request: Request,
         "receipt_data": receipt_data, 
         "items": db_item})
 
-@app.get("/listreceipts/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db)):
     list_data = await crud.getReceiptByAll(db)
     return templates.TemplateResponse("listReceipt.html", {
