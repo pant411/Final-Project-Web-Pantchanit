@@ -27,7 +27,8 @@ class Receipt(Base):
     customerName = Column(String(250), index=True)
     taxIDCust = Column(String(100), index=True)
     addressCust = Column(String(250), index=True)
-    # type_receipt = Column(Integer, index=True)
+    # 0 -> without qty, 1 -> with qty
+    type_item = Column(Integer, index=True)
     # 0 is not complete, 1 is ocr finished, 2 is already check (availble show), 3 is ocr fail
     status = Column(Integer, index=True) 
     

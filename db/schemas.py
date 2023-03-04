@@ -54,6 +54,7 @@ class RequestEditReceipt(BaseModel):
     customerName: Optional[str]
     taxIDCust: Optional[str]
     addressCust: Optional[str]
+    type_item: Optional[int]
     class Config:
         orm_mode = True
 
@@ -97,7 +98,7 @@ class ReceiptCreateMain(BaseModel):
     taxIDCust: Optional[str]
     addressCust: Optional[str]
     status: Optional[int]
-    # type_receipt: Optional[int]
+    type_item: Optional[int]
     # about item
     items: List[Item]
     # priceTotal: float
@@ -144,7 +145,7 @@ class ResponseGetOneReceipt(BaseModel):
     taxIDCust: Optional[str]
     addressCust: Optional[str]
     status: Optional[int]
-    # type_receipt: Optional[int]
+    type_item: Optional[int]
     # purchase_id: int
     # priceTotal: float
     items: List[Item] 
@@ -182,7 +183,7 @@ class ResponseAnalyzeReceipt(BaseModel):
     addressShop: Optional[str]
     customer: Optional[str]
     addressCust: Optional[str]
-    # type_receipt: Optional[int]
+    type_item: Optional[int]
     status: Optional[int]
     items: List[Item] = []
     class Config:

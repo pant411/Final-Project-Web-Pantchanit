@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="pills-item" role="tabpanel" aria-labelledby="pills-item-tab">
-              
+                    {% if receipt_data.type_item == 1 %}
                         <table id="myTable-detail-1" class="table table-striped" style="width: 100% !important">
                             <thead>
                                 <tr>
@@ -132,35 +132,39 @@
                                 {% endfor %}     
                             </tbody>
                         </table>
+                    {% elif receipt_data.type_item == 0 %}
+                        <table id="myTable-detail-2" class=" table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">รายการ</th>
+                                    <th class="text-center">ราคารวม</th>
+                                </tr>
+                            </thead>
+                            <tbody class="receipt-detail">
+                                {% for ele in items %}
+                                    <tr id="{{ele.id}}">
+                                        {% if ele.nameItem %}
+                                        <td>{{ele.nameItem}}</td>
+                                        {% else %}
+                                        <td>ไม่พบข้อมูล</td>
+                                        {% endif %}
+                                        {% if ele.priceItemTotal %}
+                                        <td class="text-center">{{ele.priceItemTotal}}</td>
+                                        {% else %}
+                                        <td class="text-center">ไม่พบข้อมูล</td>
+                                        {% endif %}
+                                    </tr>                
+                                {% endfor %}     
+                            </tbody>                    
+                        </table>
+
+                    {% endif %}
 
                 </div>
-            </div>       
-        <div class="button-editreceipt-page">
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModalRemove">ลบ</button> 
-            <a href="{{'/editreceipt/%s'%receipt_data.id }}"><button type="button" class="btn btn-info">แก้ไข</button></a>         
-        </div>    
+            </div>          
         </div>
 
 
-    </div>
-
-    <!-- Modal Remove -->
-    <div class="modal fade" id="ModalRemove" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Warming</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                        <div class="modal-body">
-                            คุณต้องการลบรายการใบเสร็จรับเงิน ?
-                        </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary" onclick="removeReceipt('{{receipt_data.id}}')">ตกลง</button>
-                </div>
-            </div>
-        </div>
     </div>
 
 </div>

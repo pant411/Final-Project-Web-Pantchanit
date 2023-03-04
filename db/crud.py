@@ -20,46 +20,41 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
         shopPhone = receipt["shopPhone"],
         customerName = receipt["customerName"],
         addressCust = receipt["addressCust"],
-        taxIDCust = receipt["taxIDCust"]        
+        taxIDCust = receipt["taxIDCust"],
+        type_item = receipt["type_item"],
+        status = 1     
     )
     db.add(db_receipt)
     db.commit()
     db.refresh(db_receipt)
-    db_item = await create_item(db, listItems = receipt["items"], owner_receiptId = db_receipt.id)
+    db_item = await create_item(
+            db, 
+            listItems = receipt["items"],
+            owner_receiptId = db_receipt.id,
+            type_item=receipt["type_item"])
     return db_receipt
 
-async def create_many_receipt(db: Session, listReceipts: List):
-    res = []
-    for ele in listReceipts:
-        db_receipt = models.Receipt(
-            filename = ele,
-            status = 0    
-        )
-        db.add(db_receipt)
-        db.commit()
-        db.refresh(db_receipt)
-        res.append({
-            "id": db_receipt.id, 
-            "filename": db_receipt.filename, 
-            "status": db_receipt.status })
-    return res
-
-async def create_item(db: Session, listItems: any, owner_receiptId: int):
+async def create_item(db: Session, listItems: any, owner_receiptId: int, type_item: int):
     objects = []
     for ele in listItems:
-        db_items = models.Item(
+        if type_item == 0:
+            db_items = models.Item(
+                nameItem = ele["nameItem"], 
+                priceItemTotal = ele["priceItemTotal"],
+                owner_receiptId = owner_receiptId
+            )
+        elif type_item == 1:
+            db_items = models.Item(
                 nameItem = ele["nameItem"], 
                 qty = ele["qty"],
                 unitQty = ele["unitQty"],
                 pricePerQty = ele["pricePerQty"],
                 priceItemTotal = ele["priceItemTotal"],
                 owner_receiptId = owner_receiptId
-        )        
+            )        
         objects.append(db_items)
-    
     db.bulk_save_objects(objects)
     db.commit()
-
 
 async def create_one_item(db: Session, item: any, owner_receiptId: int):
     db_item = None

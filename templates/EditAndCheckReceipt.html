@@ -119,7 +119,23 @@
 
                 <div class="tab-pane fade" id="pills-item" role="tabpanel" aria-labelledby="pills-item-tab">
                     <div id="list-item-receipt-section">
-                        
+                        <div class="row" style="margin-bottom: 5px;" id="x1">
+                            <div class="form-group col-2"><label >ชนิดรายการสินค้า:</label></div>
+                            
+                            <div class="form-group col-5">
+                                
+                                <select id="type-item-dropdown" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                                    {% if receipt_data.type_item == 0 %}
+                                    <option value="0" selected>ไม่มีการระบุปริมาณ/จำนวน</option>
+                                    <option value="1">มีการระบุปริมาณ/จำนวน</option>
+                                    {% else %}
+                                    <option value="0">ไม่มีการระบุปริมาณ/จำนวน</option>
+                                    <option value="1" selected>มีการระบุปริมาณ/จำนวน</option>
+                                    {% endif %}
+                                </select>                                 
+                            </div>
+                        </div>
+
                             {% for ele in items %}
                                 <div class="row" id="{{ele.id}}">
                                     <div class="form-group col-5">
@@ -169,13 +185,13 @@
                             {% endfor %}
          
                     </div>
-                    <i class="fas fa-plus" id="icon-add-item" onclick="addListItem('{{receipt_data.type_receipt}}')" ></i>     
+                    <i class="fas fa-plus" id="icon-add-item" onclick="addListItem('{{receipt_data.type_item}}')" ></i>     
                 </div>
 
             </div> 
             <div class="button-editreceipt-page">
                 <a href="{{'/receiptdetail/%s'%receipt_data.id }}"><button type="button" class="btn btn-warning">ยกเลิก</button></a>
-                <button type="button" class="btn btn-primary" onclick="submitUpdateListItem('{{receipt_data.type_receipt}}', '{{receipt_data.id}}')">แก้ไขรายการสินค้า/บริการ</button>                  
+                <button type="button" class="btn btn-primary" onclick="submitUpdateListItem('{{receipt_data.type_item}}', '{{receipt_data.id}}')">แก้ไขรายการสินค้า/บริการ</button>                  
             </div> 
                
         </div>
