@@ -1,6 +1,6 @@
 const ListRemove = [];
 
-async function submitUpdateListItem(type_item ,receipt_id) {
+async function submitUpdateListItem(receipt_id) {
   let thisElement =  document.getElementById("list-item-receipt-section");
   let listItem = thisElement.children;
   let ListItemUpdate = [];
@@ -46,24 +46,22 @@ async function submitUpdateListItem(type_item ,receipt_id) {
   if (type_item) {
     payloadReceipt["type_item"] = type_item
   }
-  console.log(payloadReceipt);
+  // console.log(payloadReceipt);
   for (let ele of listItem) {
     if (ele.id === "x1") {
       continue;
     }
     let payloadItem = {};
     let id = Number(ele.id)
+    let nameItem = ele.children[0].children[1].value;
+    let qty = Number(ele.children[1].children[1].value);
+    let unitQty = ele.children[2].children[1].value;
+    let pricePerQty = Number(ele.children[3].children[1].value);
+    let priceItemTotal = Number(ele.children[4].children[1].value);    
     if (type_item == 1) {
-      let nameItem = ele.children[0].children[1].value;
-      let qty = Number(ele.children[1].children[1].value);
-      let unitQty = ele.children[2].children[1].value;
-      let pricePerQty = Number(ele.children[3].children[1].value);
-      let priceItemTotal = Number(ele.children[4].children[1].value);
+
       if (id) {
         payloadItem['id'] = id
-      }
-      if (nameItem) {
-        payloadItem['nameItem'] = nameItem
       }
       if (nameItem) {
         payloadItem['nameItem'] = nameItem
@@ -81,8 +79,8 @@ async function submitUpdateListItem(type_item ,receipt_id) {
         payloadItem['priceItemTotal'] = priceItemTotal
       }      
     } else if (type_item == 0) {
-      let nameItem = ele.children[0].children[1].value;
-      let priceItemTotal = Number(ele.children[1].children[1].value);
+      // let nameItem = ele.children[0].children[1].value;
+      // let priceItemTotal = Number(ele.children[1].children[1].value);
       if (id) {
         payloadItem['id'] = id
       }
@@ -95,10 +93,10 @@ async function submitUpdateListItem(type_item ,receipt_id) {
     }
     ListItemUpdate.push(payloadItem)
   }
-  console.log(ListItemUpdate);
-  console.log(ListRemove);
-  console.log(receipt_id);
-  /*await fetch('/receipts/editreceiptall/' + receipt_id + '/' + type_item, {
+  // console.log(ListItemUpdate);
+  // console.log(ListRemove);
+  // console.log(receipt_id);
+  await fetch('/receipts/editreceiptall/' + receipt_id + '/' + type_item, {
     method: 'PATCH',
     body: JSON.stringify({
       editItem: ListItemUpdate,
@@ -109,8 +107,14 @@ async function submitUpdateListItem(type_item ,receipt_id) {
       'Content-type': 'application/json; charset=UTF-8',
       'Cache-Control': 'no-cache, no-store, must-revalidate'
     },
-  }).then(window.location.href = "/receiptdetail/" + receipt_id);*/
-
+  }).then(response => {
+    if (response.ok) {
+        return window.location.href = "/receiptdetail/" + receipt_id;
+    } else {
+        return {status: response.status};
+    }
+})
+  
 }
 
 function addListItem(type_item) {

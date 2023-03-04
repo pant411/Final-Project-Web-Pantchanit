@@ -292,9 +292,8 @@ async def editOneReceipt(request: Request,
     redirect_url = request.url_for('editreceipt', **{"receipt_id": receipt_id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
-@app.patch("/receipts/editreceiptall/{receipt_id}", tags = ["Receipts"])
-async def editReceiptAll(request: Request,
-                         receipt_id: int,
+@app.patch("/receipts/editreceiptall/{receipt_id}/{type_item}", tags = ["Receipts"])
+async def editReceiptAll(receipt_id: int,
                          type_item: int,
                          payload: schemas.SubmitEditItem, 
                          db: Session = Depends(get_db)):
@@ -305,6 +304,7 @@ async def editReceiptAll(request: Request,
         raise HTTPException(status_code=404, 
                             detail="Receipt not found with the given ID") 
     update_data = (payload.dataReceipt).dict(exclude_unset=True)
+    update_data["status"] = 2
     db_receipt_query.filter(models.Receipt.id == receipt_id)\
                     .update(update_data, synchronize_session=False)
     db.commit()
@@ -335,6 +335,10 @@ async def editReceiptAll(request: Request,
             await crud.create_one_item(db, addItem, receipt_id)
         else:
             update_data = ele.dict(exclude_unset=True) 
+            if type_item == 0:
+                update_data["qty"] = None
+                update_data["unitQty"] = None
+                update_data["pricePerQty"] = None
             db_item_query.filter(models.Item.id == ele.id)\
                          .update(update_data, synchronize_session=False)
             db.commit()
