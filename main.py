@@ -168,7 +168,9 @@ async def submitReceipt(request: Request,
 @app.post("/receipts/submitmultiple", tags = ["Receipts"])
 async def submitMultipleReceipt(files: List[UploadFile] = File(...),
                                 db: Session = Depends(get_db)):
-    
+    if len(files) > 10:
+        raise HTTPException(status_code=404, 
+                            detail="You can upload a maximum of 10 images.")  
     for idx in range(len(files)):
         content_receipt = files[idx].file.read()
         data = main_service(content_receipt)
