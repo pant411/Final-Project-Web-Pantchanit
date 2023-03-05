@@ -10,6 +10,7 @@
             <th class="th text-center">ชื่อไฟล์</th>
             <th class="th text-center">สถานะ</th>
             <th class="th text-center">เวลาที่เพิ่มข้อมูล</th>
+            <th class="th text-center">เวลาที่แก้ไขข้อมูลล่าสุด</th>
             <th class="th text-center">Action</th>
         </tr>
         </thead>
@@ -27,7 +28,18 @@
                     {% elif ele["status"] == 3 %}
                     <td class="text-center">เพิ่มข้อมูลไม่สำเร็จ</td>
                     {% endif %}
-                    <td class="text-center">{{ele["Created_At"].strftime('%d/%m/%Y, %H:%M:%S')}}</td>   
+                    <td class="text-center">
+                        <script>
+                            var datetime = new Date('{{ele.Created_At}}');  
+                            document.write(datetime.toLocaleString("th-TH")); 
+                        </script>
+                    </td>   
+                    <td class="text-center">
+                        <script>
+                            var datetime = new Date('{{ele.Updated_At}}');  
+                            document.write(datetime.toLocaleString("th-TH")); 
+                        </script>                        
+                    </td>   
                     <td id="button-status-re">
                         <a href="{{'/editreceipt/%s'%ele.id }}"><button type="button" class="btn btn-success"><i class="fas fa-edit"></i></button></a>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ModalRemove{{ele.id}}"><i class="far fa-trash-alt"></i></button>

@@ -154,12 +154,22 @@ class ResponseGetOneReceipt(BaseModel):
 
 class ResponseReceiptAll(BaseModel):
     id: int
-    filename: str
-    pathImage: str
-    receiptID: str
+    filename: Optional[str]
+    pathImage: Optional[str]
+    receiptID: Optional[str]
     dateReceipt: Optional[datetime]
-    shopName: str
-    customerName: str
+    shopName: Optional[str]
+    customerName: Optional[str]
+    Created_At: datetime
+    class Config:
+        orm_mode = True
+
+class ResponseStatusReceiptAll(BaseModel):
+    id: int
+    filename: str
+    status: int
+    Created_At: Optional[datetime]
+    Updated_At: Optional[datetime]
     class Config:
         orm_mode = True
 

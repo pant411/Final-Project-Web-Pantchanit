@@ -30,12 +30,22 @@
                     {% endif %}
                     
                     {% if receipt_data.dateReceipt %}
-                    <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%d-%m-%Y')}}</h4>
+                    <h4>วันที่ออกใบเสร็จรับเงิน: 
+                        <script>
+                            var datetime = new Date('{{receipt_data.dateReceipt}}');  
+                            document.write(datetime.toLocaleDateString("th-TH")); 
+                        </script>
+                    </h4>
                     {% else %}
                     <h4>วันที่ออกใบเสร็จรับเงิน: ไม่พบข้อมูล</h4>
                     {% endif %}
 
-                    <h4>เพิ่มข้อมูลเมื่อ: {{receipt_data.Created_At.strftime('%m/%d/%Y, %H:%M:%S')}}</h4>
+                    <h4>เพิ่มข้อมูลเมื่อ: 
+                        <script>
+                            var datetime = new Date('{{receipt_data.Created_At}}');  
+                            document.write(datetime.toLocaleString("th-TH")); 
+                        </script>
+                    </h4>
 
                     <h4 id="about-shop">ข้อมูลของร้านค้า</h4>
                     {% if receipt_data.shopName %}

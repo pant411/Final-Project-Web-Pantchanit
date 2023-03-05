@@ -17,12 +17,14 @@ from db.database import SessionLocal, engine
 
 from google.cloud import storage
 import os
-import asyncio
+from fastapi_pagination import Page, add_pagination, paginate
 from datetime import datetime, timedelta
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="My Final Project", debug=True)
+
+add_pagination(app)
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -231,6 +233,24 @@ async def removeManyItemByIndex(receipt_id: int,
 async def getItemAll(receipt_id: int, db: Session = Depends(get_db)):
     return await crud.getItem_byDBId(db, owner_receiptId=receipt_id)
 
+@app.get("/receipts/getlistreceipts", response_model=schemas.ResponseReceiptAll, tags = ["Receipts"])
+async def getAllReceiptList(db: Session = Depends(get_db)):
+    return await crud.getReceiptByAll(db)
+
+@app.get("/receipts/getstatusreceipts", response_model=schemas.ResponseStatusReceiptAll, tags = ["Receipts"])
+async def getStatusReceiptList(db: Session = Depends(get_db)):
+    return await crud.getStatusReceiptByAll(db)
+
+@app.get("/receipts/getlistreceiptpagination", response_model=Page[schemas.ResponseReceiptAll], tags = ["Receipts"])
+async def getAllReceiptPagination(db: Session = Depends(get_db)):
+    list_data = await crud.getReceiptByAll(db)
+    return paginate(list_data)
+
+@app.get("/receipts/statusreceiptspagination", response_model=Page[schemas.ResponseStatusReceiptAll], tags = ["Receipts"])
+async def getStatusReceiptPagination(db: Session = Depends(get_db)):
+    list_data = await crud.getStatusReceiptByAll(db)
+    return paginate(list_data)
+
 @app.patch("/receipts/editoneitem/{receipt_id}/{item_id}", tags = ["Receipts"])
 async def editOneItem(receipt_id: int, 
                       item_id: int, 
@@ -307,6 +327,7 @@ async def editReceiptAll(receipt_id: int,
                             detail="Receipt not found with the given ID") 
     update_data = (payload.dataReceipt).dict(exclude_unset=True)
     update_data["status"] = 2
+    update_data["Updated_At"] = datetime.now()
     db_receipt_query.filter(models.Receipt.id == receipt_id)\
                     .update(update_data, synchronize_session=False)
     db.commit()
@@ -352,3 +373,4 @@ async def editReceiptAll(receipt_id: int,
     return {"success": True}
     # redirect_url = request.url_for('receiptdetail', **{"receipt_id": receipt_id})   
     # return RedirectResponse(redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+

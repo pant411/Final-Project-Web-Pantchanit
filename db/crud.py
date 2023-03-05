@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Union
-
+import datetime
 from . import models, schemas
 
 #################################### for get method #################################### 
@@ -22,7 +22,9 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
         addressCust = receipt["addressCust"],
         taxIDCust = receipt["taxIDCust"],
         type_item = receipt["type_item"],
-        status = 1     
+        status = 1,
+        Created_At = datetime.datetime.now(),
+        Updated_At = datetime.datetime.now()
     )
     db.add(db_receipt)
     db.commit()
@@ -96,11 +98,11 @@ async def getStatusReceiptByAll(db: Session):
     db_receipt_list = db.query(models.Receipt.id,
                           models.Receipt.filename,
                           models.Receipt.status,
-                          models.Receipt.Created_At)\
+                          models.Receipt.Created_At,
+                          models.Receipt.Updated_At)\
                         .order_by(models.Receipt.Created_At.desc())\
                         .all()
     return db_receipt_list
-
 
 async def getItem_byDBId(db: Session, owner_receiptId: int):
    db_item = db.query(models.Item).filter_by(owner_receiptId = owner_receiptId).all()
