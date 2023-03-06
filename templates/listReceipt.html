@@ -29,7 +29,7 @@
                         <td class="text-center">
                             <script>
                                 var datetime = new Date('{{ele.dateReceipt}}');  
-                                document.write(datetime.toLocaleDateString("th-TH")); 
+                                document.write(datetime.toLocaleDateString()); 
                             </script>
                         </td>
                     {% else %}
@@ -51,7 +51,7 @@
                     <td class="text-center">
                         <script>
                             var datetime = new Date('{{ele.Created_At}}');  
-                            document.write(datetime.toLocaleString("th-TH")); 
+                            document.write(datetime.toLocaleString()); 
                         </script>
                     </td>       
 
