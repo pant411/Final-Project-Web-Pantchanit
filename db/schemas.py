@@ -1,6 +1,6 @@
-from typing import List, Union
+from typing import List
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from pydantic.schema import Optional
 
 class Item(BaseModel): 

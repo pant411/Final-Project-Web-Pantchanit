@@ -6,6 +6,7 @@ COPY . /myapp
 
 WORKDIR /myapp
 
+ENV TZ="Asia/Bangkok"
 # ENV PYTHONUNBUFFERED True
 
 RUN apt-get update && \
@@ -23,8 +24,8 @@ RUN apt-get update && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r /myapp/requirements.txt     
 
-RUN chmod 744 /myapp/static/css
-RUN chmod 744 /myapp/static/js
+# RUN chmod 744 /myapp/static/css
+# RUN chmod 744 /myapp/static/js
 
 # EXPOSE 8080
 

@@ -33,7 +33,7 @@
                     <h4>วันที่ออกใบเสร็จรับเงิน: 
                         <script>
                             var datetime = new Date('{{receipt_data.dateReceipt}}');  
-                            document.write(datetime.toLocaleDateString()); 
+                            document.write(datetime.toLocaleDateString('th-TH', {timeZone: 'Asia/Bangkok'})); 
                         </script>
                     </h4>
                     {% else %}
@@ -43,7 +43,7 @@
                     <h4>เพิ่มข้อมูลเมื่อ: 
                         <script>
                             var datetime = new Date('{{receipt_data.Created_At}}');  
-                            document.write(datetime.toLocaleString()); 
+                            document.write(datetime.toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})); 
                         </script>
                     </h4>
 

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} <title>รายการใบเสร็จ</title> {% endblock %}
+{% block title %} <title>สถานะรายการใบเสร็จ</title> {% endblock %}
 
 {% block content %}
 <div class="container-fluid my-content">
@@ -22,7 +22,7 @@
                     {% if ele["status"] == 0 %}
                     <td class="text-center">กำลังเพิ่มข้อมูล</td>
                     {% elif ele["status"] == 1 %}
-                    <td class="text-center">เพิ่มข้อมูลสำเร็จแต่ยังไม่ตรวจสอบความถูกต้อง</td>
+                    <td class="text-center">รอตรวจสอบความถูกต้อง</td>
                     {% elif ele["status"] == 2 %}
                     <td class="text-center">ตรวจสอบความถูกต้องแล้ว</td>
                     {% elif ele["status"] == 3 %}
@@ -31,13 +31,13 @@
                     <td class="text-center">
                         <script>
                             var datetime = new Date('{{ele.Created_At}}');  
-                            document.write(datetime.toLocaleString()); 
+                            document.write(datetime.toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})); 
                         </script>
                     </td>   
                     <td class="text-center">
                         <script>
                             var datetime = new Date('{{ele.Updated_At}}');  
-                            document.write(datetime.toLocaleString()); 
+                            document.write(datetime.toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})); 
                         </script>                        
                     </td>   
                     <td id="button-status-re">

@@ -1,16 +1,13 @@
-from sqlalchemy import  text,\
-                        Column,\
+from sqlalchemy import  Column,\
                         ForeignKey,\
                         Integer,\
                         String,\
                         DateTime,\
                         TIMESTAMP,\
-                        FLOAT,\
-                        func
+                        FLOAT
+
 from sqlalchemy.orm import relationship
-from sqlalchemy.schema import FetchedValue
 from .database import Base
-import datetime
 
 class Receipt(Base):
     __tablename__ = "receipts"
@@ -33,8 +30,8 @@ class Receipt(Base):
     # 0 is not complete, 1 is ocr finished, 2 is already check (availble show), 3 is ocr fail
     status = Column(Integer, index=True) 
     
-    Created_At = Column(DateTime)
-    Updated_At = Column(DateTime)
+    Created_At = Column(TIMESTAMP)
+    Updated_At = Column(TIMESTAMP)
 
 class Item(Base): # back to Receipt
     __tablename__ = "items"

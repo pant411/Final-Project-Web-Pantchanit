@@ -73,8 +73,13 @@ p {
 .nav-header #receipt-name {
   font-family: 'Niramit', sans-serif;
   font-weight: 500;
-  font-size: 28px;
+  font-size: 25px;
   color: #fdcc37;
+}
+
+.logo-nav {
+	display: flex;
+	gap: 18px;
 }
 
 /* --------------------- homepage ------------------- */
@@ -645,7 +650,7 @@ p {
 
 .button-editreceipt-page {
   margin-top: 8px;
-  float: right;
+  float: left;
 }
 
 #button-status-re {
