@@ -109,9 +109,9 @@ async function submitUpdateListItem(receipt_id) {
     },
   }).then(response => {
     if (response.ok) {
-        return window.location.href = "/receiptdetail/" + receipt_id;
+        return window.location.href = "/statusreceipts";
     } else {
-        return {status: response.status};
+        alert(response.status);
     }
 })
   
