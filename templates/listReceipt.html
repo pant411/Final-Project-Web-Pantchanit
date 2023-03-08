@@ -9,7 +9,7 @@
         <tr>
             <th class="th text-center">ชื่อไฟล์</th>
             <th class="th text-center">หมายเลข</th>
-            <th class="th text-center">วันที่ออกใบเสร็จรับเงิน</th>
+            <th class="th text-center">ประเภท</th>
             <th class="th text-center">ชื่อร้านค้า</th>
             <th class="th text-center">ชื่อลูกค้า</th>
             <th class="th text-center">เวลาที่เพิ่มข้อมูล</th>
@@ -25,15 +25,18 @@
                     <td class="text-center">ไม่พบข้อมูล</td>
                     {% endif %}
 
-                    {% if ele["dateReceipt"] %}
-                        <td class="text-center">
-                            <script>
-                                var datetime = new Date('{{ele.dateReceipt}}');  
-                                document.write(datetime.toLocaleDateString('th-TH', {timeZone: 'Asia/Bangkok'})); 
-                            </script>
-                        </td>
-                    {% else %}
-                        <td class="text-center">ไม่พบข้อมูล</td>
+                    {% if ele["type_receipt"] == -1 %}
+                    <td class="text-center">ไม่พบข้อมูล</td>
+                    {% elif ele["type_receipt"] == 0 %}
+                    <td class="text-center">ใบเสร็จรับเงิน</td>
+                    {% elif ele["type_receipt"] == 1 %}
+                    <td class="text-center">ใบเสนอราคา</td>
+                    {% elif ele["type_receipt"] == 2 %}
+                    <td class="text-center">ใบแจ้งหนี้</td>
+                    {% elif ele["type_receipt"] == 3 %}
+                    <td class="text-center">ใบส่งของ</td>
+                    {% elif ele["type_receipt"] == 4 %}
+                    <td class="text-center">ใบส่งสินค้า</td>
                     {% endif %}
 
                     {% if ele["shopName"] %}

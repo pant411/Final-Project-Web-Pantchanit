@@ -40,6 +40,24 @@
                     <h4>วันที่ออกใบเสร็จรับเงิน: ไม่พบข้อมูล</h4>
                     {% endif %}
 
+                    <h4>ประเภทเอกสาร: 
+
+                        {% if receipt_data.type_receipt == -1 %}
+                        ไม่พบข้อมูล
+                        {% elif receipt_data.type_receipt == 0 %}
+                        ใบเสร็จรับเงิน
+                        {% elif receipt_data.type_receipt == 1 %}
+                        ใบเสนอราคา
+                        {% elif receipt_data.type_receipt == 2 %}
+                        ใบแจ้งหนี้
+                        {% elif receipt_data.type_receipt == 3 %}
+                        ใบส่งของ
+                        {% elif receipt_data.type_receipt == 4 %}
+                        ใบส่งสินค้า
+                        {% endif %}                        
+
+                    </h4>
+
                     <h4>เพิ่มข้อมูลเมื่อ: 
                         <script>
                             var datetime = new Date('{{receipt_data.Created_At}}');  

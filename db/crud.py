@@ -22,6 +22,7 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
         addressCust = receipt["addressCust"],
         taxIDCust = receipt["taxIDCust"],
         type_item = receipt["type_item"],
+        type_receipt = receipt["type_receipt"],
         status = 1,
         Created_At = datetime.datetime.now(),
         Updated_At = datetime.datetime.now()
@@ -87,6 +88,7 @@ async def getReceiptByAll(db: Session):
                           models.Receipt.pathImage,
                           models.Receipt.receiptID,
                           models.Receipt.dateReceipt,
+                          models.Receipt.type_receipt,
                           models.Receipt.shopName,
                           models.Receipt.customerName,
                           models.Receipt.Created_At)\

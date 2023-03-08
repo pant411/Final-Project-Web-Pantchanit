@@ -28,6 +28,7 @@ class Receipt(Base):
     # 0 -> without qty, 1 -> with qty
     type_item = Column(Integer, index=True)
     # 0 is not complete, 1 is ocr finished, 2 is already check (availble show), 3 is ocr fail
+    type_receipt = Column(Integer, index=True)
     status = Column(Integer, index=True) 
     
     Created_At = Column(TIMESTAMP)
