@@ -16,6 +16,7 @@ async function submitUpdateListItem(receipt_id) {
   let addressCust = document.getElementById("input-receipt-addressCust").value
   let taxIDCust = document.getElementById("input-receipt-taxIDCust").value
   let type_item = document.getElementById("type-item-dropdown").value;
+  let type_receipt = document.getElementById("type-receipt-dropdown").value;
   if (receiptID) {
     payloadReceipt['receiptID'] = receiptID
   }
@@ -45,6 +46,9 @@ async function submitUpdateListItem(receipt_id) {
   }
   if (type_item) {
     payloadReceipt["type_item"] = type_item
+  }
+  if (type_receipt) {
+    payloadReceipt["type_receipt"] = type_receipt
   }
   // console.log(payloadReceipt);
   for (let ele of listItem) {

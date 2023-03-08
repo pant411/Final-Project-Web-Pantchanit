@@ -30,14 +30,14 @@
                     {% endif %}
                     
                     {% if receipt_data.dateReceipt %}
-                    <h4>วันที่ออกใบเสร็จรับเงิน: 
+                    <h4>วันที่ออกเอกสาร: 
                         <script>
                             var datetime = new Date('{{receipt_data.dateReceipt}}');  
                             document.write(datetime.toLocaleDateString('th-TH', {timeZone: 'Asia/Bangkok'})); 
                         </script>
                     </h4>
                     {% else %}
-                    <h4>วันที่ออกใบเสร็จรับเงิน: ไม่พบข้อมูล</h4>
+                    <h4>วันที่ออกเอกสารทางการเงิน: ไม่พบข้อมูล</h4>
                     {% endif %}
 
                     <h4>ประเภทเอกสาร: 
@@ -54,6 +54,8 @@
                         ใบส่งของ
                         {% elif receipt_data.type_receipt == 4 %}
                         ใบส่งสินค้า
+                        {% elif receipt_data.type_receipt == 5 %}
+                        ใบกำกับภาษี
                         {% endif %}                        
 
                     </h4>

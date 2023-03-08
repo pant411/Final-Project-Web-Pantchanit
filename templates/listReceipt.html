@@ -37,6 +37,8 @@
                     <td class="text-center">ใบส่งของ</td>
                     {% elif ele["type_receipt"] == 4 %}
                     <td class="text-center">ใบส่งสินค้า</td>
+                    {% elif ele["type_receipt"] == 5 %}
+                    <td class="text-center">ใบกำกับภาษี</td>
                     {% endif %}
 
                     {% if ele["shopName"] %}

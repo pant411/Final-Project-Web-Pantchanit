@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} <title>แก้ไขข้อมูลใบเสร็จรับเงิน</title> {% endblock %}
+{% block title %} <title>แก้ไขข้อมูลเอกสารทางการเงิน</title> {% endblock %}
 
 {% block content %}
 <div class="container-fluid my-content content-receipt">
@@ -25,7 +25,7 @@
                     <!--form action="{{'/receipts/editonereceipt/%s'%receipt_data.id }}" method="post" enctype="multipart/form-data" -->    
                         <div class="row">    
                             <div class="form-group col-8">
-                                <label for="input-receipt-id">หมายเลขใบเสร็จรับเงิน</label>
+                                <label for="input-receipt-id">หมายเลขเอกสารทางการเงิน</label>
                                 {% if receipt_data.receiptID == None %}
                                 <input class="form-control form-control-sm" id="input-receipt-id" type="text" name="receiptID">
                                 {% else %}
@@ -33,7 +33,7 @@
                                 {% endif %}
                             </div>
                             <div class="form-group col-4">
-                                <label for="input-receipt-date">วันที่ออกใบเสร็จรับเงิน</label>
+                                <label for="input-receipt-date">วันที่ออกเอกสารทางการเงิน</label>
                                 {% if receipt_data.dateReceipt == None %}
                                 <input class="form-control form-control-sm" id="input-receipt-date" name="dateReceipt" type="date">                        
                                 {% else %}
@@ -41,6 +41,60 @@
                                 {% endif %}
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="form-group col-4">
+                                <label for="type-receipt-dropdown">ประเภทเอกสารทางการเงิน</label>
+                                <select id="type-receipt-dropdown" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                                    {% if receipt_data.type_receipt == 0 %} 
+                                    <option value="0" selected>ใบเสร็จรับเงิน</option>
+                                    <option value="1">ใบเสนอราคา</option>
+                                    <option value="2">ใบแจ้งหนี้</option>
+                                    <option value="3" >ใบส่งของ</option>
+                                    <option value="4" >ใบส่งสินค้า</option>
+                                    <option value="5">ใบกำกับภาษี</option>   
+                                    {% elif receipt_data.type_receipt == 1 %} 
+                                    <option value="0">ใบเสร็จรับเงิน</option>
+                                    <option value="1" selected>ใบเสนอราคา</option>
+                                    <option value="2">ใบแจ้งหนี้</option>
+                                    <option value="3" >ใบส่งของ</option>
+                                    <option value="4" >ใบส่งสินค้า</option>
+                                    <option value="5">ใบกำกับภาษี</option>   
+                                    {% elif receipt_data.type_receipt == 2 %} 
+                                    <option value="0">ใบเสร็จรับเงิน</option>
+                                    <option value="1">ใบเสนอราคา</option>
+                                    <option value="2" selected>ใบแจ้งหนี้</option>
+                                    <option value="3" >ใบส่งของ</option>
+                                    <option value="4" >ใบส่งสินค้า</option>
+                                    <option value="5">ใบกำกับภาษี</option>   
+                                    {% elif receipt_data.type_receipt == 3 %} 
+                                    <option value="0">ใบเสร็จรับเงิน</option>
+                                    <option value="1">ใบเสนอราคา</option>
+                                    <option value="2">ใบแจ้งหนี้</option>
+                                    <option value="3" selected>ใบส่งของ</option>
+                                    <option value="4">ใบส่งสินค้า</option>
+                                    <option value="5">ใบกำกับภาษี</option>   
+                                    {% elif receipt_data.type_receipt == 4 %} 
+                                    <option value="0">ใบเสร็จรับเงิน</option>
+                                    <option value="1">ใบเสนอราคา</option>
+                                    <option value="2">ใบแจ้งหนี้</option>
+                                    <option value="3">ใบส่งของ</option>
+                                    <option value="4" selected>ใบส่งสินค้า</option>  
+                                    <option value="5">ใบกำกับภาษี</option>     
+                                    {% elif receipt_data.type_receipt == 5 %} 
+                                    <option value="0">ใบเสร็จรับเงิน</option>
+                                    <option value="1">ใบเสนอราคา</option>
+                                    <option value="2">ใบแจ้งหนี้</option>
+                                    <option value="3">ใบส่งของ</option>
+                                    <option value="4">ใบส่งสินค้า</option>  
+                                    <option value="5" selected>ใบกำกับภาษี</option>    
+                                    {% endif %}
+                                </select>                                
+                            </div>
+
+
+                        </div>
+
                         <h5 id="input-shop">ข้อมูลของร้านค้า</h5>
                         <div class="row">
                             <div class="form-group col-8">
