@@ -14,8 +14,6 @@ RUN apt-get update && \
         build-essential \
         python3-dev \
         python3-setuptools \
-        tesseract-ocr \
-        tesseract-ocr-tha \
         make \
         ffmpeg \
         libsm6 \
