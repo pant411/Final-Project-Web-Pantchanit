@@ -1,10 +1,10 @@
 $(document).ready(function () {
     $("#myTable").DataTable(
         {
-            scrollY: '60vh',
+            scrollY: '72vh',
             scrollCollapse: true,
             paging: true,
-            pageLength: 6,
+            pageLength: 10,
             lengthChange: false,
             ordering: false
         }

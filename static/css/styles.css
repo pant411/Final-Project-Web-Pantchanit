@@ -13,12 +13,21 @@ body, html {
   overflow: hidden; /* Hide scrollbars */
 }
 
-h1, h2, h3, th, td, table, thead, tbody, div {
+h1, h2, h3, div {
   font-family: 'Athiti', sans-serif;
+}
+
+th, td, table, thead, tbody {
+  font-family: 'Athiti', sans-serif;
+  font-size: 18px;
 }
 
 p {
   font-family: 'Athiti', sans-serif;
+  font-size: 20px;
+}
+
+label, input {
   font-size: 20px;
 }
 
@@ -31,6 +40,7 @@ p {
 
 .my-content {
   margin-top: 20px;
+  align-items: center;
 }
 
 .nav-header {
@@ -98,6 +108,10 @@ p {
   justify-content: center;
 }
 
+/*.receipt-detail {
+	height: 100vh;
+}*/
+
 .receipt-detail a:link {
   color: #000;
 }
@@ -113,17 +127,18 @@ p {
 
 /*---------- receipts details page -----------*/
 .content-receipt .image-receipt-section .content-image-receipt-section #image-receipt {
-  max-width: 375px;
+  max-width: 25vw;
   /*display: flex;*/
   align-items: center;
   /*border: 2px solid #ccc;*/
   justify-content: center;
 }
 
-.content-receipt .image-receipt-section #filename-receipt {
+#filename-receipt {
   align-items: center;
   justify-content: center;
-  margin-bottom: 2vh;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .content-receipt .image-receipt-section .condition-receipt {
@@ -676,9 +691,9 @@ p {
 }
 
 #myTable_paginate {
-	margin-top: 36px;
+	margin-top: 15px;
 }
 
 #myTable-status_paginate {
-	margin-top: 30px;
+	margin-top: 20px;
 }

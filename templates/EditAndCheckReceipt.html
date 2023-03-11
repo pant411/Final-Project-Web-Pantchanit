@@ -3,9 +3,9 @@
 {% block title %} <title>แก้ไขข้อมูลเอกสารทางการเงิน</title> {% endblock %}
 
 {% block content %}
+<h5 id="filename-receipt">ไฟล์: {{receipt_data.filename}}</h5>
 <div class="container-fluid my-content content-receipt">
     <div class="image-receipt-section">
-        <h5 id="filename-receipt">{{receipt_data.filename}}</h5>
         <div class="content-image-receipt-section">
             <img src="{{ receipt_data.pathImage }}" id="image-receipt"> 
         </div>  
