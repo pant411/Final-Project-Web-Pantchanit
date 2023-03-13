@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $("#myTable").DataTable(
         {
-            scrollY: '72vh',
+            scrollY: '60vh',
             scrollCollapse: true,
             paging: true,
             pageLength: 10,

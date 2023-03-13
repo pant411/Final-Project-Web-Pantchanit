@@ -19,6 +19,7 @@ from google.cloud import storage
 import os
 from fastapi_pagination import Page, add_pagination, paginate
 from datetime import datetime, timedelta
+import re
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -174,17 +175,18 @@ async def submitMultipleReceipt(files: List[UploadFile] = File(...),
         raise HTTPException(status_code=404, 
                             detail="You can upload a maximum of 10 images.")  
     for idx in range(len(files)):
-        content_receipt = files[idx].file.read()
-        data = main_service(content_receipt)
-        upload_blob_from_memory(
-            os.getenv("BUCKETNAME_STORAGE"),
-            content_receipt, 
-            files[idx].filename)
-        data["pathImage"] = get_cs_file_url(
-            os.getenv("BUCKETNAME_STORAGE"), 
-            files[idx].filename)
-        data["filename"] = files[idx].filename
-        db_receipts = await crud.create_receipt_main(db, data)
+        if re.search("^.*\.(jpg|jpeg|png|tiff|tif|bmp)$",files[idx].filename):
+            content_receipt = files[idx].file.read()
+            data = main_service(content_receipt)
+            upload_blob_from_memory(
+                os.getenv("BUCKETNAME_STORAGE"),
+                content_receipt, 
+                files[idx].filename)
+            data["pathImage"] = get_cs_file_url(
+                os.getenv("BUCKETNAME_STORAGE"), 
+                files[idx].filename)
+            data["filename"] = files[idx].filename
+            db_receipts = await crud.create_receipt_main(db, data)
     return RedirectResponse("/statusreceipts", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/receipts/getOneByID/{receipt_id}", 
