@@ -1,6 +1,6 @@
 const ListRemove = [];
 
-async function submitUpdateListItem(type_receipt,receipt_id) {
+async function submitUpdateListItem(receipt_id) {
   let thisElement =  document.getElementById("list-item-receipt-section");
   let listItem = thisElement.children;
   let ListItemUpdate = [];
@@ -15,7 +15,8 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
   let customerName = document.getElementById("input-receipt-customerName").value
   let addressCust = document.getElementById("input-receipt-addressCust").value
   let taxIDCust = document.getElementById("input-receipt-taxIDCust").value
-
+  let type_item = document.getElementById("type-item-dropdown").value;
+  let type_receipt = document.getElementById("type-receipt-dropdown").value;
   if (receiptID) {
     payloadReceipt['receiptID'] = receiptID
   }
@@ -43,21 +44,28 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
   if (taxIDCust) {
     payloadReceipt['taxIDCust'] = taxIDCust
   }
-
+  if (type_item) {
+    payloadReceipt["type_item"] = type_item
+  }
+  if (type_receipt) {
+    payloadReceipt["type_receipt"] = type_receipt
+  }
+  // console.log(payloadReceipt);
   for (let ele of listItem) {
+    if (ele.id === "x1") {
+      continue;
+    }
     let payloadItem = {};
     let id = Number(ele.id)
-    if (type_receipt == 1) {
-      let nameItem = ele.children[0].children[1].value;
-      let qty = Number(ele.children[1].children[1].value);
-      let unitQty = ele.children[2].children[1].value;
-      let pricePerQty = Number(ele.children[3].children[1].value);
-      let priceItemTotal = Number(ele.children[4].children[1].value);
+    let nameItem = ele.children[0].children[1].value;
+    let qty = Number(ele.children[1].children[1].value);
+    let unitQty = ele.children[2].children[1].value;
+    let pricePerQty = Number(ele.children[3].children[1].value);
+    let priceItemTotal = Number(ele.children[4].children[1].value);    
+    if (type_item == 1) {
+
       if (id) {
         payloadItem['id'] = id
-      }
-      if (nameItem) {
-        payloadItem['nameItem'] = nameItem
       }
       if (nameItem) {
         payloadItem['nameItem'] = nameItem
@@ -74,9 +82,9 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
       if (priceItemTotal) {
         payloadItem['priceItemTotal'] = priceItemTotal
       }      
-    } else if (type_receipt == 0) {
-      let nameItem = ele.children[0].children[1].value;
-      let priceItemTotal = Number(ele.children[1].children[1].value);
+    } else if (type_item == 0) {
+      // let nameItem = ele.children[0].children[1].value;
+      // let priceItemTotal = Number(ele.children[1].children[1].value);
       if (id) {
         payloadItem['id'] = id
       }
@@ -89,10 +97,10 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
     }
     ListItemUpdate.push(payloadItem)
   }
-  console.log(ListItemUpdate);
-  console.log(ListRemove);
-  console.log(receipt_id);
-  await fetch('/receipts/editreceiptall/' + receipt_id + '/' + type_receipt, {
+  // console.log(ListItemUpdate);
+  // console.log(ListRemove);
+  // console.log(receipt_id);
+  await fetch('/receipts/editreceiptall/' + receipt_id + '/' + type_item, {
     method: 'PATCH',
     body: JSON.stringify({
       editItem: ListItemUpdate,
@@ -103,11 +111,17 @@ async function submitUpdateListItem(type_receipt,receipt_id) {
       'Content-type': 'application/json; charset=UTF-8',
       'Cache-Control': 'no-cache, no-store, must-revalidate'
     },
-  }).then(window.location.href = "/receiptdetail/" + receipt_id);
-
+  }).then(response => {
+    if (response.ok) {
+        return window.location.href = "/statusreceipts";
+    } else {
+        alert(response.status);
+    }
+})
+  
 }
 
-function addListItem(type_receipt) {
+function addListItem(type_item) {
   add_item_0 =`
   <div class="row" >
     <div class="form-group col-7">
@@ -152,9 +166,9 @@ function addListItem(type_receipt) {
 
   let thisElement =  document.getElementById("list-item-receipt-section");
 
-  if(type_receipt == 0) {
+  if(type_item == 0) {
     thisElement.innerHTML += add_item_0;
-  } else if (type_receipt == 1) {
+  } else if (type_item == 1) {
     thisElement.innerHTML += add_item_1;
   }
 }

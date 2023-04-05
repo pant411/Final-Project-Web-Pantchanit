@@ -3,9 +3,9 @@
 {% block title %} <title>รายละเอียดของใบเสร็จรับเงิน</title> {% endblock %}
 
 {% block content %}
+<h5 id="filename-receipt">ไฟล์: {{receipt_data.filename}}</h5>
 <div class="container-fluid my-content content-receipt">
     <div class="image-receipt-section">
-        <h5 id="filename-receipt">{{receipt_data.filename}}</h5>
         <div class="content-image-receipt-section">
             <img src="{{ receipt_data.pathImage }}" id="image-receipt"> 
         </div>
@@ -30,12 +30,42 @@
                     {% endif %}
                     
                     {% if receipt_data.dateReceipt %}
-                    <h4>วันที่ออกใบเสร็จรับเงิน: {{(receipt_data.dateReceipt).strftime('%d-%m-%Y')}}</h4>
+                    <h4>วันที่ออกเอกสาร: 
+                        <script>
+                            var datetime = new Date('{{receipt_data.dateReceipt}}');  
+                            document.write(datetime.toLocaleDateString('th-TH', {timeZone: 'Asia/Bangkok'})); 
+                        </script>
+                    </h4>
                     {% else %}
-                    <h4>วันที่ออกใบเสร็จรับเงิน: ไม่พบข้อมูล</h4>
+                    <h4>วันที่ออกเอกสารทางการเงิน: ไม่พบข้อมูล</h4>
                     {% endif %}
 
-                    <h4>เพิ่มข้อมูลเมื่อ: {{receipt_data.Created_At.strftime('%m/%d/%Y, %H:%M:%S')}}</h4>
+                    <h4>ประเภทเอกสาร: 
+
+                        {% if receipt_data.type_receipt == -1 %}
+                        ไม่พบข้อมูล
+                        {% elif receipt_data.type_receipt == 0 %}
+                        ใบเสร็จรับเงิน
+                        {% elif receipt_data.type_receipt == 1 %}
+                        ใบเสนอราคา
+                        {% elif receipt_data.type_receipt == 2 %}
+                        ใบแจ้งหนี้
+                        {% elif receipt_data.type_receipt == 3 %}
+                        ใบส่งของ
+                        {% elif receipt_data.type_receipt == 4 %}
+                        ใบส่งสินค้า
+                        {% elif receipt_data.type_receipt == 5 %}
+                        ใบกำกับภาษี
+                        {% endif %}                        
+
+                    </h4>
+
+                    <h4>เพิ่มข้อมูลเมื่อ: 
+                        <script>
+                            var datetime = new Date('{{receipt_data.Created_At}}');  
+                            document.write(datetime.toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})); 
+                        </script>
+                    </h4>
 
                     <h4 id="about-shop">ข้อมูลของร้านค้า</h4>
                     {% if receipt_data.shopName %}
@@ -84,7 +114,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="pills-item" role="tabpanel" aria-labelledby="pills-item-tab">
-                    {% if receipt_data.type_receipt == 1 %}
+                    {% if receipt_data.type_item == 1 %}
                         <table id="myTable-detail-1" class="table table-striped" style="width: 100% !important">
                             <thead>
                                 <tr>
@@ -132,7 +162,7 @@
                                 {% endfor %}     
                             </tbody>
                         </table>
-                    {% elif receipt_data.type_receipt == 0 %}
+                    {% elif receipt_data.type_item == 0 %}
                         <table id="myTable-detail-2" class=" table table-striped">
                             <thead>
                                 <tr>
@@ -159,34 +189,12 @@
                         </table>
 
                     {% endif %}
+
                 </div>
-            </div>       
-        <div class="button-editreceipt-page">
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModalRemove">ลบ</button> 
-            <a href="{{'/editreceipt/%s'%receipt_data.id }}"><button type="button" class="btn btn-info">แก้ไข</button></a>         
-        </div>    
+            </div>          
         </div>
 
 
-    </div>
-
-    <!-- Modal Remove -->
-    <div class="modal fade" id="ModalRemove" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Warming</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                        <div class="modal-body">
-                            คุณต้องการลบรายการใบเสร็จรับเงิน ?
-                        </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary" onclick="removeReceipt('{{receipt_data.id}}')">ตกลง</button>
-                </div>
-            </div>
-        </div>
     </div>
 
 </div>

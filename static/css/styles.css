@@ -13,12 +13,21 @@ body, html {
   overflow: hidden; /* Hide scrollbars */
 }
 
-h1, h2, h3, th, td, table, thead, tbody, div {
+h1, h2, h3, div {
   font-family: 'Athiti', sans-serif;
+}
+
+th, td, table, thead, tbody {
+  font-family: 'Athiti', sans-serif;
+  font-size: 18px;
 }
 
 p {
   font-family: 'Athiti', sans-serif;
+  font-size: 20px;
+}
+
+label, input {
   font-size: 20px;
 }
 
@@ -31,13 +40,14 @@ p {
 
 .my-content {
   margin-top: 20px;
+  align-items: center;
 }
 
 .nav-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 2.5%;
+  padding: 16px 2%;
   background-color: #52A7E0;
 }
 
@@ -59,7 +69,7 @@ p {
 
 .nav-header .nav_links li {
   display: inline-block;
-  padding: 0px 20px;
+  padding: 0px 16px;
 }
 
 .nav-header .nav_links li a {
@@ -73,8 +83,13 @@ p {
 .nav-header #receipt-name {
   font-family: 'Niramit', sans-serif;
   font-weight: 500;
-  font-size: 28px;
+  font-size: 25px;
   color: #fdcc37;
+}
+
+.logo-nav {
+	display: flex;
+	gap: 18px;
 }
 
 /* --------------------- homepage ------------------- */
@@ -93,6 +108,10 @@ p {
   justify-content: center;
 }
 
+/*.receipt-detail {
+	height: 100vh;
+}*/
+
 .receipt-detail a:link {
   color: #000;
 }
@@ -108,17 +127,18 @@ p {
 
 /*---------- receipts details page -----------*/
 .content-receipt .image-receipt-section .content-image-receipt-section #image-receipt {
-  max-width: 375px;
+  max-width: 25vw;
   /*display: flex;*/
   align-items: center;
   /*border: 2px solid #ccc;*/
   justify-content: center;
 }
 
-.content-receipt .image-receipt-section #filename-receipt {
+#filename-receipt {
   align-items: center;
   justify-content: center;
-  margin-bottom: 2vh;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .content-receipt .image-receipt-section .condition-receipt {
@@ -160,7 +180,7 @@ p {
   border-right: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
   border-left: 1px solid #dee2e6;
-  height: 72vh;
+  height: 68vh;
   overflow-y: scroll;
 }
 
@@ -240,6 +260,7 @@ p {
 	font-size: 16px;
 	color: red;
 	margin-top: 4px;
+	margin-bottom: 40px;
 }
 
 #option-type-item {
@@ -644,5 +665,35 @@ p {
 
 .button-editreceipt-page {
   margin-top: 8px;
-  float: right;
+  float: left;
+}
+
+#button-status-re {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+}
+
+.create-by {
+	position: fixed;
+	bottom: 10px;
+	right: 8px;
+	font-size: 12px;
+}
+
+.create-by p {
+	font-size: 14px;
+}
+
+#size-nav-logo {
+	height: 45px;
+}
+
+#myTable_paginate {
+	margin-top: 15px;
+}
+
+#myTable-status_paginate {
+	margin-top: 20px;
 }

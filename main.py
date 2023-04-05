@@ -1,13 +1,14 @@
 # built in module
-from typing import Union
-from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response, Form
+from typing import Union, List
+from fastapi import FastAPI, Request, File, UploadFile, status, Depends, HTTPException, Response, Form, BackgroundTasks
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 # from werkzeug.utils import secure_filename
-from ExtractionFromImageService import main
+from ExtractionFromImageService import main_service
+from fastapi.concurrency import run_in_threadpool
 
 from sqlalchemy.orm import Session
 
@@ -16,12 +17,15 @@ from db.database import SessionLocal, engine
 
 from google.cloud import storage
 import os
-
+from fastapi_pagination import Page, add_pagination, paginate
 from datetime import datetime, timedelta
+import re
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="My Final Project", debug=True)
+
+add_pagination(app)
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -82,12 +86,10 @@ def upload_blob_from_memory(bucket_name, contents, destination_blob_name):
     #     f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}."
     # )
     return True
-
-
-
+        
 #################################### Template Module #################################### 
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/home", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
@@ -105,12 +107,21 @@ async def receiptdetail(receipt_id: int, request: Request,
         "receipt_data": receipt_data, 
         "items": db_item})
 
-@app.get("/listreceipts", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def getlistReceiptAllPage(request: Request, db: Session = Depends(get_db)):
     list_data = await crud.getReceiptByAll(db)
     return templates.TemplateResponse("listReceipt.html", {
         "request": request, 
         "list_data": list_data})
+
+@app.get("/statusreceipts", response_class=HTMLResponse)
+async def getStatusReceipt(request: Request, db: Session = Depends(get_db)):
+    list_data = await crud.getStatusReceiptByAll(db)
+    # list_data = []
+    return templates.TemplateResponse("statusReceipt.html", {
+        "request": request, 
+        "list_data": list_data
+    })
 
 @app.get("/checkreceipt/{receipt_id}", response_class=HTMLResponse)
 async def checkreceipt(receipt_id: int, request: Request, db: Session = Depends(get_db)):
@@ -144,28 +155,39 @@ async def createReceipt(receipt: schemas.ReceiptCreateMain,
 
 @app.post("/receipts/submit", tags = ["Receipts"])
 async def submitReceipt(request: Request,
-                        type_receipt: int = Form(...), 
                         file: UploadFile = File(...), 
                         db: Session = Depends(get_db)):
-    # print("tuuu",type_receipt)
     content_receipt = file.file.read()           
-    data = main(type_receipt, content_receipt)
-    # print(data["dateReceipt"])
-    # print(data)
-
-    # print(db_receipt)
-    # await file.seek(0)
-    # with open("static/"+path_file, "wb+") as file_object:
-    #     file_object.write(content_receipt)
+    data = main_service(content_receipt)
     upload_blob_from_memory(os.getenv("BUCKETNAME_STORAGE"),content_receipt, file.filename)
     data["pathImage"] = get_cs_file_url(os.getenv("BUCKETNAME_STORAGE"),file.filename)
     data["filename"] = file.filename
     
     db_receipt = await crud.create_receipt_main(db=db, 
-                                                receipt=data, 
-                                                type_receipt=type_receipt)    
+                                                receipt=data)    
     redirect_url = request.url_for('editreceipt', **{"receipt_id": db_receipt.id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/receipts/submitmultiple", tags = ["Receipts"])
+async def submitMultipleReceipt(files: List[UploadFile] = File(...),
+                                db: Session = Depends(get_db)):
+    if len(files) > 10:
+        raise HTTPException(status_code=404, 
+                            detail="You can upload a maximum of 10 images.")  
+    for idx in range(len(files)):
+        if re.search("^.*\.(jpg|jpeg|png|tiff|tif|bmp)$",files[idx].filename):
+            content_receipt = files[idx].file.read()
+            data = main_service(content_receipt)
+            upload_blob_from_memory(
+                os.getenv("BUCKETNAME_STORAGE"),
+                content_receipt, 
+                files[idx].filename)
+            data["pathImage"] = get_cs_file_url(
+                os.getenv("BUCKETNAME_STORAGE"), 
+                files[idx].filename)
+            data["filename"] = files[idx].filename
+            db_receipts = await crud.create_receipt_main(db, data)
+    return RedirectResponse("/statusreceipts", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/receipts/getOneByID/{receipt_id}", 
          tags = ["Receipts"], 
@@ -212,6 +234,24 @@ async def removeManyItemByIndex(receipt_id: int,
 @app.get("/receipts/getItemAll/{receipt_id}", tags = ["Receipts"])
 async def getItemAll(receipt_id: int, db: Session = Depends(get_db)):
     return await crud.getItem_byDBId(db, owner_receiptId=receipt_id)
+
+@app.get("/receipts/getlistreceipts", response_model=schemas.ResponseReceiptAll, tags = ["Receipts"])
+async def getAllReceiptList(db: Session = Depends(get_db)):
+    return await crud.getReceiptByAll(db)
+
+@app.get("/receipts/getstatusreceipts", response_model=schemas.ResponseStatusReceiptAll, tags = ["Receipts"])
+async def getStatusReceiptList(db: Session = Depends(get_db)):
+    return await crud.getStatusReceiptByAll(db)
+
+@app.get("/receipts/getlistreceiptpagination", response_model=Page[schemas.ResponseReceiptAll], tags = ["Receipts"])
+async def getAllReceiptPagination(db: Session = Depends(get_db)):
+    list_data = await crud.getReceiptByAll(db)
+    return paginate(list_data)
+
+@app.get("/receipts/statusreceiptspagination", response_model=Page[schemas.ResponseStatusReceiptAll], tags = ["Receipts"])
+async def getStatusReceiptPagination(db: Session = Depends(get_db)):
+    list_data = await crud.getStatusReceiptByAll(db)
+    return paginate(list_data)
 
 @app.patch("/receipts/editoneitem/{receipt_id}/{item_id}", tags = ["Receipts"])
 async def editOneItem(receipt_id: int, 
@@ -276,10 +316,9 @@ async def editOneReceipt(request: Request,
     redirect_url = request.url_for('editreceipt', **{"receipt_id": receipt_id})   
     return RedirectResponse(redirect_url, status_code=status.HTTP_303_SEE_OTHER)
 
-@app.patch("/receipts/editreceiptall/{receipt_id}/{type_receipt}", tags = ["Receipts"])
-async def editReceiptAll(request: Request,
-                         receipt_id: int,
-                         type_receipt: int,
+@app.patch("/receipts/editreceiptall/{receipt_id}/{type_item}", tags = ["Receipts"])
+async def editReceiptAll(receipt_id: int,
+                         type_item: int,
                          payload: schemas.SubmitEditItem, 
                          db: Session = Depends(get_db)):
     # print(payload)
@@ -289,6 +328,8 @@ async def editReceiptAll(request: Request,
         raise HTTPException(status_code=404, 
                             detail="Receipt not found with the given ID") 
     update_data = (payload.dataReceipt).dict(exclude_unset=True)
+    update_data["status"] = 2
+    update_data["Updated_At"] = datetime.now()
     db_receipt_query.filter(models.Receipt.id == receipt_id)\
                     .update(update_data, synchronize_session=False)
     db.commit()
@@ -300,15 +341,14 @@ async def editReceiptAll(request: Request,
             id = ele.id)
         db_item = db_item_query.first()
         if db_item is None :
-            print("add!!!!")
             addItem = {}
-            if type_receipt == 0:
+            if type_item == 0:
                 addItem = {
                     "nameItem": ele.nameItem,
                     "priceItemTotal": ele.priceItemTotal,
                     "owner_receiptId": receipt_id
                 }
-            elif type_receipt == 1:
+            elif type_item == 1:
                 addItem = {
                     "nameItem": ele.nameItem,
                     "qty": ele.qty,
@@ -316,10 +356,14 @@ async def editReceiptAll(request: Request,
                     "pricePerQty": ele.pricePerQty,
                     "priceItemTotal": ele.priceItemTotal,
                     "owner_receiptId": receipt_id
-                }                
-            await crud.create_one_item(db, addItem, receipt_id, type_receipt)
+                }           
+            await crud.create_one_item(db, addItem, receipt_id)
         else:
             update_data = ele.dict(exclude_unset=True) 
+            if type_item == 0:
+                update_data["qty"] = None
+                update_data["unitQty"] = None
+                update_data["pricePerQty"] = None
             db_item_query.filter(models.Item.id == ele.id)\
                          .update(update_data, synchronize_session=False)
             db.commit()
@@ -331,3 +375,4 @@ async def editReceiptAll(request: Request,
     return {"success": True}
     # redirect_url = request.url_for('receiptdetail', **{"receipt_id": receipt_id})   
     # return RedirectResponse(redirect_url, status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+

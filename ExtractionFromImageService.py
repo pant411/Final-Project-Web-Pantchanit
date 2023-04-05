@@ -5,11 +5,10 @@ import os
 # load env vars
 load_dotenv()
 
-def main(type_receipt: int, file: any):
+def main_service(file: any):
 
     url = os.getenv("URL_MAINSERVICE")
     r = requests.post(
-        url = url + "/receipts/file/submitreceipt", 
-        params={"type_receipt": type_receipt}, 
+        url = url + "/receipts/file/submitreceipt",
         files={"file": file})
     return r.json()

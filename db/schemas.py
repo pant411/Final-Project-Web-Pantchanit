@@ -1,6 +1,6 @@
-from typing import List, Union
+from typing import List
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from pydantic.schema import Optional
 
 class Item(BaseModel): 
@@ -54,6 +54,8 @@ class RequestEditReceipt(BaseModel):
     customerName: Optional[str]
     taxIDCust: Optional[str]
     addressCust: Optional[str]
+    type_item: Optional[int]
+    type_receipt: Optional[int]
     class Config:
         orm_mode = True
 
@@ -96,7 +98,9 @@ class ReceiptCreateMain(BaseModel):
     customerName: Optional[str]
     taxIDCust: Optional[str]
     addressCust: Optional[str]
-    # type_receipt: Optional[int]
+    status: Optional[int]
+    type_item: Optional[int]
+    type_receipt: Optional[int]
     # about item
     items: List[Item]
     # priceTotal: float
@@ -142,6 +146,8 @@ class ResponseGetOneReceipt(BaseModel):
     customerName: Optional[str]
     taxIDCust: Optional[str]
     addressCust: Optional[str]
+    status: Optional[int]
+    type_item: Optional[int]
     type_receipt: Optional[int]
     # purchase_id: int
     # priceTotal: float
@@ -151,12 +157,22 @@ class ResponseGetOneReceipt(BaseModel):
 
 class ResponseReceiptAll(BaseModel):
     id: int
-    filename: str
-    pathImage: str
-    receiptID: str
+    filename: Optional[str]
+    pathImage: Optional[str]
+    receiptID: Optional[str]
     dateReceipt: Optional[datetime]
-    shopName: str
-    customerName: str
+    shopName: Optional[str]
+    customerName: Optional[str]
+    Created_At: datetime
+    class Config:
+        orm_mode = True
+
+class ResponseStatusReceiptAll(BaseModel):
+    id: int
+    filename: str
+    status: int
+    Created_At: Optional[datetime]
+    Updated_At: Optional[datetime]
     class Config:
         orm_mode = True
 
@@ -180,7 +196,9 @@ class ResponseAnalyzeReceipt(BaseModel):
     addressShop: Optional[str]
     customer: Optional[str]
     addressCust: Optional[str]
-    # type_receipt: Optional[int]
+    type_item: Optional[int]
+    type_receipt: Optional[int]
+    status: Optional[int]
     items: List[Item] = []
     class Config:
         orm_mode = True

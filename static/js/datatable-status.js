@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("#myTable").DataTable(
+    $("#myTable-status").DataTable(
         {
             scrollY: '60vh',
             scrollCollapse: true,

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %} <title>สถานะรายการใบเสร็จ</title> {% endblock %}
+
+{% block content %}
+<div class="container-fluid my-content">
+    <table id="myTable-status" class="display table table-striped" style="width: 100%;">
+        <thead>
+        <tr>
+            <th class="th text-center">ชื่อไฟล์</th>
+            <th class="th text-center">สถานะ</th>
+            <th class="th text-center">เวลาที่เพิ่มข้อมูล</th>
+            <th class="th text-center">เวลาที่แก้ไขข้อมูลล่าสุด</th>
+            <th class="th text-center">Action</th>
+        </tr>
+        </thead>
+        <tbody class="receipt-detail">
+            {% for ele in list_data %}
+                <tr id="{{ele.id}}">
+                    <td><a href="{{'/receiptdetail/%s'%ele.id }}">{{ele["filename"]}}</a></td>
+
+                    {% if ele["status"] == 0 %}
+                    <td class="text-center">กำลังเพิ่มข้อมูล</td>
+                    {% elif ele["status"] == 1 %}
+                    <td class="text-center">รอตรวจสอบ</td>
+                    {% elif ele["status"] == 2 %}
+                    <td class="text-center">ได้รับการแก้ไข</td>
+                    {% elif ele["status"] == 3 %}
+                    <td class="text-center">เพิ่มข้อมูลไม่สำเร็จ</td>
+                    {% endif %}
+                    <td class="text-center">
+                        <script>
+                            var datetime = new Date('{{ele.Created_At}}');  
+                            document.write(datetime.toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})); 
+                        </script>
+                    </td>   
+                    <td class="text-center">
+                        <script>
+                            var datetime = new Date('{{ele.Updated_At}}');  
+                            document.write(datetime.toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})); 
+                        </script>                        
+                    </td>   
+                    <td id="button-status-re">
+                        <a href="{{'/editreceipt/%s'%ele.id }}"><button type="button" class="btn btn-success"><i class="fas fa-edit"></i></button></a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ModalRemove{{ele.id}}"><i class="far fa-trash-alt"></i></button>
+                </tr>                
+            {% endfor %}     
+        </tbody>
+    </table>
+    {% for ele in list_data %}
+    <!-- Modal Remove -->
+    <div class="modal fade" id="ModalRemove{{ele.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Warming</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                        <div class="modal-body">
+                            คุณต้องการลบรายการใบเสร็จรับเงิน ?
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" onclick="removeReceipt('{{ele.id}}')">ตกลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}  
+</div>
+
+                
+{% endblock content %}
+
+{% block scripts %}
+<script src="/static/js/datatable-status.js"></script>
+<script src="/static/js/statusReceipt.js"></script>
+{% endblock %}

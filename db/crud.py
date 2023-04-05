@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
 from typing import List, Union
-
+import datetime
 from . import models, schemas
 
 #################################### for get method #################################### 
 
-async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateMain, dict], type_receipt: int):
+async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateMain, dict]):
     # create shop
     # print(receipt)
 
@@ -14,33 +14,39 @@ async def create_receipt_main(db: Session, receipt: Union[schemas.ReceiptCreateM
         pathImage = receipt["pathImage"],
         receiptID = receipt["receiptID"], 
         dateReceipt = receipt["dateReceipt"],
-        type_receipt = type_receipt,
         shopName = receipt["shopName"], 
         taxIDShop = receipt["taxIDShop"], 
         addressShop = receipt["addressShop"],
         shopPhone = receipt["shopPhone"],
         customerName = receipt["customerName"],
         addressCust = receipt["addressCust"],
-        taxIDCust = receipt["taxIDCust"]        
+        taxIDCust = receipt["taxIDCust"],
+        type_item = receipt["type_item"],
+        type_receipt = receipt["type_receipt"],
+        status = 1,
+        Created_At = datetime.datetime.now(),
+        Updated_At = datetime.datetime.now()
     )
     db.add(db_receipt)
     db.commit()
     db.refresh(db_receipt)
-
-    db_item = await create_item(db, listItems = receipt["items"], owner_receiptId = db_receipt.id, type_receipt = type_receipt)
-
+    db_item = await create_item(
+            db, 
+            listItems = receipt["items"],
+            owner_receiptId = db_receipt.id,
+            type_item=receipt["type_item"])
     return db_receipt
 
-async def create_item(db: Session, listItems: any, owner_receiptId: int, type_receipt: int):
+async def create_item(db: Session, listItems: any, owner_receiptId: int, type_item: int):
     objects = []
     for ele in listItems:
-        if type_receipt == 0:
+        if type_item == 0:
             db_items = models.Item(
                 nameItem = ele["nameItem"], 
                 priceItemTotal = ele["priceItemTotal"],
                 owner_receiptId = owner_receiptId
             )
-        elif type_receipt == 1:
+        elif type_item == 1:
             db_items = models.Item(
                 nameItem = ele["nameItem"], 
                 qty = ele["qty"],
@@ -53,17 +59,10 @@ async def create_item(db: Session, listItems: any, owner_receiptId: int, type_re
     db.bulk_save_objects(objects)
     db.commit()
 
-async def create_one_item(db: Session, item: any, owner_receiptId: int, type_receipt: int):
+async def create_one_item(db: Session, item: any, owner_receiptId: int):
     db_item = None
     print(item)
-    if type_receipt == 0:
-        db_item = models.Item(
-            nameItem = item["nameItem"], 
-            priceItemTotal = item["priceItemTotal"],
-            owner_receiptId = owner_receiptId
-        )
-    elif type_receipt == 1:
-        db_item = models.Item(
+    db_item = models.Item(
             nameItem = item["nameItem"], 
             qty = item["qty"],
             unitQty = item["unitQty"],
@@ -89,12 +88,23 @@ async def getReceiptByAll(db: Session):
                           models.Receipt.pathImage,
                           models.Receipt.receiptID,
                           models.Receipt.dateReceipt,
+                          models.Receipt.type_receipt,
                           models.Receipt.shopName,
                           models.Receipt.customerName,
                           models.Receipt.Created_At)\
-                   .all()
+                    .order_by(models.Receipt.Created_At.desc())\
+                    .all()
     return db_receipt_list
 
+async def getStatusReceiptByAll(db: Session):
+    db_receipt_list = db.query(models.Receipt.id,
+                          models.Receipt.filename,
+                          models.Receipt.status,
+                          models.Receipt.Created_At,
+                          models.Receipt.Updated_At)\
+                        .order_by(models.Receipt.Created_At.desc())\
+                        .all()
+    return db_receipt_list
 
 async def getItem_byDBId(db: Session, owner_receiptId: int):
    db_item = db.query(models.Item).filter_by(owner_receiptId = owner_receiptId).all()
