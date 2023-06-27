@@ -16,5 +16,14 @@
 
 ## ตัวอย่างหน้าเว็บ
 
-![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/"up-image1 copy.png"?raw=true)
-![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/"up-image2 copy.png"?raw=true)
+<p align="center">หน้าแสดงรายละเอียดของเอกสารทางการเงิน (รายละเอียดทั่วไป)</p>
+
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/up-image11.png?raw=true)
+
+<p align="center">หน้าแสดงรายละเอียดของเอกสารทางการเงิน (รายการสินค้า)</p>
+
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/up-image22.png?raw=true)
+
+<p align="center">หน้าแสดงรายการของเอกสารทางการเงิน</p>
+
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/Screenshot1.png?raw=true)
