@@ -16,6 +16,18 @@
 
 ## ตัวอย่างหน้าเว็บ
 
+<p align="center">หน้าเพิ่มข้อมูลของรายการเอกสารทางการเงินด้วยไฟล์รูปภาพ</p>
+
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/image(1).png?raw=true)
+
+<p align="center">หน้าแสดงสถานะรายการเอกสารทางการเงิน</p>
+
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/image.png?raw=true)
+
+<p align="center">หน้าแสดงรายการของเอกสารทางการเงิน</p>
+
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/Screenshot1.png?raw=true)
+
 <p align="center">หน้าแสดงรายละเอียดของเอกสารทางการเงิน (รายละเอียดทั่วไป)</p>
 
 ![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/up-image11.png?raw=true)
@@ -24,6 +36,10 @@
 
 ![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/up-image22.png?raw=true)
 
-<p align="center">หน้าแสดงรายการของเอกสารทางการเงิน</p>
+<p align="center">หน้าแก้ไขข้อมูลเอกสารทางการเงิน (รายละเอียดทั่วไป)</p>
 
-![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/Screenshot1.png?raw=true)
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/image(3).png?raw=true)
+
+<p align="center">หน้าแก้ไขข้อมูลเอกสารทางการเงิน (รายการสินค้า)</p>
+
+![alt text](https://github.com/pant411/Final-Project-Web-Pantchanit/blob/main/image(2).png?raw=true)
