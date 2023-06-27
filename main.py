@@ -15,7 +15,6 @@ from sqlalchemy.orm import Session
 from db import crud, models, schemas
 from db.database import SessionLocal, engine
 
-from google.cloud import storage
 import os
 from fastapi_pagination import Page, add_pagination, paginate
 from datetime import datetime, timedelta
@@ -55,37 +54,6 @@ app.mount("/static", StaticFiles(directory=Path(__file__).parent.absolute() / "s
 
 templates = Jinja2Templates(directory="templates")
 
-# define function that generates the public URL, default expiration is set to 24 hours
-def get_cs_file_url(bucket_name, file_name, expire_in=datetime.now() + timedelta(5000)): 
-    storage_client = storage.Client()
-
-    bucket = storage_client.bucket(bucket_name)
-    url = bucket.blob(file_name).generate_signed_url(expire_in)
-
-    return url
-
-def upload_blob_from_memory(bucket_name, contents, destination_blob_name):
-    """Uploads a file to the bucket."""
-
-    # The ID of your GCS bucket
-    # bucket_name = "your-bucket-name"
-
-    # The contents to upload to the file
-    # contents = "these are my contents"
-
-    # The ID of your GCS object
-    # destination_blob_name = "storage-object-name"
-
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-
-    blob.upload_from_string(contents)
-
-    # print(
-    #     f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}."
-    # )
-    return True
         
 #################################### Template Module #################################### 
 
@@ -159,8 +127,11 @@ async def submitReceipt(request: Request,
                         db: Session = Depends(get_db)):
     content_receipt = file.file.read()           
     data = main_service(content_receipt)
-    upload_blob_from_memory(os.getenv("BUCKETNAME_STORAGE"),content_receipt, file.filename)
-    data["pathImage"] = get_cs_file_url(os.getenv("BUCKETNAME_STORAGE"),file.filename)
+    path_file = "/static/uploadfile/" + file.filename
+    await file.seek(0)
+    with open(path_file, "wb+") as file_object:
+        file_object.write(content_receipt)
+    data["pathImage"] = path_file
     data["filename"] = file.filename
     
     db_receipt = await crud.create_receipt_main(db=db, 
@@ -178,13 +149,11 @@ async def submitMultipleReceipt(files: List[UploadFile] = File(...),
         if re.search("^.*\.(jpg|jpeg|png|tiff|tif|bmp)$",files[idx].filename):
             content_receipt = files[idx].file.read()
             data = main_service(content_receipt)
-            upload_blob_from_memory(
-                os.getenv("BUCKETNAME_STORAGE"),
-                content_receipt, 
-                files[idx].filename)
-            data["pathImage"] = get_cs_file_url(
-                os.getenv("BUCKETNAME_STORAGE"), 
-                files[idx].filename)
+            path_file = "static/uploadfile/" + files[idx].filename
+            await files[idx].seek(0)
+            with open("static/uploadfile/" + files[idx].filename, "wb+") as file_object:
+                file_object.write(content_receipt)
+            data["pathImage"] = path_file
             data["filename"] = files[idx].filename
             db_receipts = await crud.create_receipt_main(db, data)
     return RedirectResponse("/statusreceipts", status_code=status.HTTP_303_SEE_OTHER)
